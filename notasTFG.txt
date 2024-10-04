@@ -1,0 +1,29 @@
+Plataforma Social para la Conexión entre Deportistas y Entrenadores
+
+- Red social para comunicar deportitas y entrenadores
+- Los entrenadores ofrecen paquetes de entrenamiento y dieta durante unas semanas 
+- Los clientes aceptan y agregan paquetes dando feedback de los entrenamientos y dietas
+- Los clientes tienen fotos y feedback de evolución de sus entrenamientos
+- Durante el tiempo en que los clientes y entrenadores están conectados la información
+es visible y pueden tener comunicación.
+
+Numero de Javi   --> 657019300
+
+Numero de Aurora --> 671884544
+
+python flask
+
+//Dependecias----------------
+python3 3.13.3
+	---Entorno virtual e instalacion de flask
+	apt install python3.12-venv
+	python -m venv venv
+	source venv/bin/activate
+	pip Flask Flask-CORS
+	
+	
+react 
+	npm install -D tailwindcss
+	npm install axios
+
+	
