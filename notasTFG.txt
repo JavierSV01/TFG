@@ -20,6 +20,8 @@ python3 3.13.3
 	python -m venv venv
 	source venv/bin/activate
 	pip Flask Flask-CORS
+	pip install Flask-PyMongo
+	Instalar mongodb en el sistema anfitrion
 	
 	
 react 

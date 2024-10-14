@@ -1,14 +1,15 @@
-import { Login } from './componentes/login'
-import { ChakraProvider } from '@chakra-ui/react'
+import { PaginaInicio } from './componentes/PaginaInicio'
+import { PaginaPrincipal } from './componentes/PaginaPrincipal'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 function App () {
   return (
-    <ChakraProvider>
-      <main>
-        <Login />
-      </main>
-    </ChakraProvider>
-
+    <Router>
+      <Routes>
+        <Route path='/' element={<PaginaInicio />} />
+        <Route path='/principal' element={<PaginaPrincipal />} />
+      </Routes>
+    </Router>
   )
 }
 
