@@ -25,7 +25,10 @@ python3 3.13.3
 	
 	
 react 
-	npm install -D tailwindcss
 	npm install axios
+	npm install react-router-dom
+	npm i @chakra-ui/icons
+
+	
 
 	

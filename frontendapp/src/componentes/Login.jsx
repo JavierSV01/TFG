@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text } from '@chakra-ui/react'
+import { useNavigate } from 'react-router-dom'
 
 export function Login () {
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
   const passwordRef = useRef('')
   const [message, setMessage] = useState('')
+  const navigate = useNavigate()
 
   // Función que se ejecuta al enviar el formulario
   const handleSubmit = async (e) => {
@@ -22,12 +24,14 @@ export function Login () {
       axios.defaults.withCredentials = true
       const response = await axios.post('http://localhost:3001/login', loginData)
       setMessage(response.data.mensaje || 'Inicio exitoso') // Muestra el mensaje del servidor o uno predeterminado
+      navigate('/principal')
     } catch (error) {
       const serverMessage = error.response?.data?.mensaje || 'Ocurrió un error. Inténtalo de nuevo.'
       setMessage(serverMessage) // Muestra el mensaje del servidor o uno predeterminado
       console.error('Error:', error)
     }
   }
+
   return (
     <Box w='100%' display='flex' justifyContent='center' alignItems='center'>
       <Box w='400px' p={8} bg='white' boxShadow='lg' borderRadius='md'>

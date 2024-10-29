@@ -60,7 +60,6 @@ def login():
         if user and check_password_hash(user['contrasenia'], password):
             session.permanent = True
             session['usuario'] = username
-            print("Sesión después del login:", session)
             return jsonify({"mensaje": "Inicio de sesión exitoso"}), 200
         else:
             return jsonify({"mensaje": "Credenciales incorrectas"}), 401
@@ -68,9 +67,8 @@ def login():
         return jsonify({"mensaje": "Faltan datos"}), 400
 
 
-@app.route('/panel')
+@app.route('/isLogin')
 def dashboard():
-    print("Sesión después del login:", session)
     if 'usuario' in session:  # Verificar si hay una sesión activa
         usuario = session['usuario']
         return jsonify({"mensaje": f"Bienvenido al dashboard, {usuario}"}), 200

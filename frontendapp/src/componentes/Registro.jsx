@@ -60,7 +60,7 @@ export function Registro () {
 
             {message && <Text color='red.500'>{message}</Text>}
             <Button colorScheme='blue' type='submit' w='100%'>
-              Login
+              Registrarme
             </Button>
           </Stack>
         </form>
