@@ -30,12 +30,13 @@ def add_user():
     data = request.json
     usuario = data.get('usuario')
     password = data.get('contrasenia')
+    rol = data.get('rol')
 
     password_encrypted = generate_password_hash(password)
     if usuario and password:
         try:
             # Intentar insertar el nuevo usuario
-            mongo.db.usuarios.insert_one({'usuario': usuario, 'contrasenia': password_encrypted})
+            mongo.db.usuarios.insert_one({'usuario': usuario, 'contrasenia': password_encrypted, 'rol': rol})
             return jsonify({"mensaje": "Usuario agregado con éxito"}), 201
         except DuplicateKeyError:
             # Manejar el error si el usuario ya existe
@@ -79,6 +80,39 @@ def dashboard():
 def logout():
     session.pop('usuario', None)  # Eliminar el usuario de la sesión
     return jsonify({"mensaje": "Sesión cerrada"}), 200
+
+@app.route('/entrenamiento', methods=['POST'])
+def save_entrenamiento():
+    # Verificar que el usuario esté logueado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    data = request.json
+    title = data.get('title', 'Entrenamiento sin título')
+    description = data.get('description', 'Sin descripción')
+    weeks = data.get('weeks', [])
+
+    # Crear el entrenamiento con un ID único
+    entrenamiento = {
+        "title": title,
+        "description": description,
+        "weeks": weeks
+    }
+
+    # Agregar el entrenamiento en el array 'entrenamientos' del usuario
+    result = mongo.db.usuarios.update_one(
+        {"usuario": usuario},
+        {"$push": {"entrenamientos": entrenamiento}}
+    )
+
+    if result.modified_count > 0:
+        return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
+    else:
+        return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
+
 
 
 if __name__ == '__main__':

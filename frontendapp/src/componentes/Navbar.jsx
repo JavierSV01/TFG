@@ -34,7 +34,7 @@ function Navbar () {
 
   return (
     <ChakraProvider>
-      <Box bg='blue.500' px={4}>
+      <Box bg='blue.900' px={4}>
         <Flex h={16} alignItems='center' justifyContent='space-between'>
           <Box fontWeight='bold' color='white'>MiLogo</Box>
 
@@ -44,6 +44,7 @@ function Navbar () {
             <NavLink href='/crearEntrenamiento' label='Nuevo Entrenemiento' />
             <NavLink href='/services' label='Servicios' />
             <NavLink href='/contact' label='Contacto' />
+            <NavLink href='/perfil' label='Mi perfil' />
             <Button onClick={handleLogout} colorScheme='red' variant='solid'>
               Logout
             </Button>
@@ -68,6 +69,7 @@ function Navbar () {
                 <NavLink href='/crearEntrenamiento' label='Nuevo Entrenemiento' />
                 <NavLink href='/services' label='Servicios' />
                 <NavLink href='/contact' label='Contacto' />
+                <NavLink href='/perfil' label='Mi perfil' />
                 <Button onClick={handleLogout} colorScheme='red' variant='solid'>
                   Logout
                 </Button>

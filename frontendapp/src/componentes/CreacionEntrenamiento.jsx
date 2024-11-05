@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { Box, Button, Input, FormControl, FormLabel, Textarea, VStack, Heading, ChakraProvider, SimpleGrid, IconButton, HStack } from '@chakra-ui/react'
 
 export function CreacionEntrenamiento () {
   const [weeks, setWeeks] = useState([])
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
 
   // Función para añadir una nueva semana
   const addWeek = () => {
@@ -51,6 +54,21 @@ export function CreacionEntrenamiento () {
     setWeeks(newWeeks)
   }
 
+  const saveTraining = async () => {
+    const trainingData = {
+      title,
+      description,
+      weeks // Usa el array de semanas que tienes en el estado
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3001/entrenamiento', trainingData)
+      console.log(response.data.message) // Mensaje de éxito
+    } catch (error) {
+      console.error('Error al guardar el entrenamiento:', error)
+    }
+  }
+
   return (
     <ChakraProvider>
 
@@ -61,12 +79,12 @@ export function CreacionEntrenamiento () {
         <VStack spacing={4} align='flex-start'>
           <FormControl id='title'>
             <FormLabel>Título</FormLabel>
-            <Input type='text' placeholder='Título del entrenamiento' />
+            <Input type='text' placeholder='Título del entrenamiento' onChange={(e) => setTitle(e.target.value)} />
           </FormControl>
 
           <FormControl id='description'>
             <FormLabel>Descripción</FormLabel>
-            <Textarea placeholder='Descripción del entrenamiento' />
+            <Textarea placeholder='Descripción del entrenamiento' onChange={(e) => setDescription(e.target.value)} />
           </FormControl>
         </VStack>
 
@@ -104,9 +122,12 @@ export function CreacionEntrenamiento () {
                   {day.exercises.map((exercise, exerciseIndex) => (
                     <VStack key={exerciseIndex} mt={4} spacing={2} align='flex-start' pl={4} borderLeft='2px solid purple'>
                       <FormControl>
-                        <FormLabel>Nombre del ejercicio</FormLabel>
-                        {/* Botón para eliminar una semana */}
-                        <Button mt={4} colorScheme='red' onClick={() => removeExercise(weekIndex, dayIndex, exerciseIndex)}>Eliminar ejercicio</Button>
+
+                        <HStack spacing={4}>
+                          <FormLabel>Nombre del ejercicio</FormLabel>
+                          {/* Botón para eliminar una semana */}
+                          <IconButton icon={<DeleteIcon />} colorScheme='red' size='sm' onClick={() => removeExercise(weekIndex, dayIndex, exerciseIndex)} />
+                        </HStack>
 
                         <Input
                           type='text'
@@ -154,7 +175,7 @@ export function CreacionEntrenamiento () {
         ))}
 
         {/* Botón para enviar el formulario (entrenamiento completo) */}
-        <Button mt={6} colorScheme='blue'>Guardar Entrenamiento</Button>
+        <Button margin={2} mt={6} colorScheme='blue' onClick={() => saveTraining()}>Guardar Entrenamiento</Button>
       </Box>
     </ChakraProvider>
 

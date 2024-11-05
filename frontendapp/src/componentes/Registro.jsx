@@ -1,12 +1,16 @@
 import React, { useState, useRef } from 'react'
 import axios from 'axios'
-import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text, Radio, RadioGroup } from '@chakra-ui/react'
 
 export function Registro () {
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
   const passwordRef = useRef('')
   const passwordRepeatRef = useRef('')
+  const [role, setRole] = useState('entrenador') // Opción predeterminada
+  const handleRoleChange = (value) => {
+    setRole(value)
+  }
   const [message, setMessage] = useState('')
 
   // Función que se ejecuta al enviar el formulario
@@ -17,7 +21,8 @@ export function Registro () {
     const passwordRepeat = passwordRepeatRef.current.value
     const registerData = {
       usuario: username,
-      contrasenia: password
+      contrasenia: password,
+      rol: role
     }
 
     if (password !== passwordRepeat) {
@@ -58,9 +63,21 @@ export function Registro () {
               <Input ref={passwordRepeatRef} id='passwordRepeat' type='password' placeholder='Enter your password one more time' />
             </FormControl>
 
+            <Text fontSize='xl' mb={4}>Selecciona tu rol:</Text>
+            <RadioGroup onChange={handleRoleChange} value={role}>
+              <Stack direction='row' spacing={4}>
+                <Radio value='entrenador' colorScheme='blue'>
+                  Entrenador
+                </Radio>
+                <Radio value='cliente' colorScheme='blue'>
+                  Cliente
+                </Radio>
+              </Stack>
+            </RadioGroup>
+
             {message && <Text color='red.500'>{message}</Text>}
             <Button colorScheme='blue' type='submit' w='100%'>
-              Registrarme
+              Registrarme como {role === 'entrenador' ? 'Entrenador' : 'Cliente'}
             </Button>
           </Stack>
         </form>
