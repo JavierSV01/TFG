@@ -13,8 +13,6 @@ export function PaginaCreacionEntrenamiento () {
   return (
     <div>
       <Navbar />
-      <h1>{message}  </h1>
-      <h1>Pagina de creacion de entrenemiento  </h1>
       <CreacionEntrenamiento />
 
     </div>

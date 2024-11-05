@@ -72,24 +72,34 @@ export function CreacionEntrenamiento () {
   return (
     <ChakraProvider>
 
-      <Box p={8}>
+      <Box bg='blue.400' minH='100vh' color='white' p={8}>
         <Heading as='h1' mb={8}>Crear Entrenamiento</Heading>
 
         {/* Formulario para título y descripción */}
         <VStack spacing={4} align='flex-start'>
           <FormControl id='title'>
             <FormLabel>Título</FormLabel>
-            <Input type='text' placeholder='Título del entrenamiento' onChange={(e) => setTitle(e.target.value)} />
+            <Input type='text' placeholder='Título del entrenamiento' _placeholder={{ color: '#cccccc' }} onChange={(e) => setTitle(e.target.value)} />
           </FormControl>
 
           <FormControl id='description'>
             <FormLabel>Descripción</FormLabel>
-            <Textarea placeholder='Descripción del entrenamiento' onChange={(e) => setDescription(e.target.value)} />
+            <Textarea placeholder='Descripción del entrenamiento' _placeholder={{ color: '#cccccc' }} onChange={(e) => setDescription(e.target.value)} />
           </FormControl>
         </VStack>
 
         {/* Botón para añadir una semana */}
-        <Button mt={4} colorScheme='blue' onClick={addWeek}>Añadir Semana</Button>
+        <Button
+          mt={4} bgColor='blue.700' color='white' border='1px solid' _hover={{
+            bg: 'white', // Fondo blanco al hacer hover
+            color: 'black', // Texto negro al hacer hover
+            border: '1px solid', // Añade un borde para mantener la definición del botón
+            borderColor: 'blue.700' // Color del borde
+          }}
+          transition='background-color 0.3s, color 0.3s' // Transición suave para los cambios de color
+          onClick={addWeek}
+        >Añadir Semana
+        </Button>
 
         {/* Renderización de semanas */}
         {weeks.map((week, weekIndex) => (
@@ -126,12 +136,13 @@ export function CreacionEntrenamiento () {
                         <HStack spacing={4}>
                           <FormLabel>Nombre del ejercicio</FormLabel>
                           {/* Botón para eliminar una semana */}
-                          <IconButton icon={<DeleteIcon />} colorScheme='red' size='sm' onClick={() => removeExercise(weekIndex, dayIndex, exerciseIndex)} />
+                          <IconButton margin='2' icon={<DeleteIcon />} colorScheme='red' size='sm' onClick={() => removeExercise(weekIndex, dayIndex, exerciseIndex)} />
                         </HStack>
 
                         <Input
                           type='text'
                           placeholder='Ejercicio'
+                          _placeholder={{ color: '#cccccc' }}
                           value={exercise.name}
                           onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'name', e.target.value)}
                         />
@@ -142,6 +153,7 @@ export function CreacionEntrenamiento () {
                         <Input
                           type='number'
                           placeholder='Series'
+                          _placeholder={{ color: '#cccccc' }}
                           value={exercise.sets}
                           onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'sets', e.target.value)}
                         />
@@ -152,6 +164,7 @@ export function CreacionEntrenamiento () {
                         <Input
                           type='number'
                           placeholder='Repeticiones'
+                          _placeholder={{ color: '#cccccc' }}
                           value={exercise.reps}
                           onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'reps', e.target.value)}
                         />
@@ -162,6 +175,7 @@ export function CreacionEntrenamiento () {
                         <Input
                           type='number'
                           placeholder='RIR'
+                          _placeholder={{ color: '#cccccc' }}
                           value={exercise.rir}
                           onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'rir', e.target.value)}
                         />
@@ -175,7 +189,18 @@ export function CreacionEntrenamiento () {
         ))}
 
         {/* Botón para enviar el formulario (entrenamiento completo) */}
-        <Button margin={2} mt={6} colorScheme='blue' onClick={() => saveTraining()}>Guardar Entrenamiento</Button>
+        <Button
+          margin={2} mt={6} bgColor='blue.700' color='white' border='1px solid' _hover={{
+            bg: 'white', // Fondo blanco al hacer hover
+            color: 'black', // Texto negro al hacer hover
+            border: '1px solid', // Añade un borde para mantener la definición del botón
+            borderColor: 'blue.700' // Color del borde
+          }}
+          transition='background-color 0.3s, color 0.3s' // Transición suave para los cambios de color
+          onClick={() => saveTraining()}
+        >Guardar Entrenamiento
+        </Button>
+
       </Box>
     </ChakraProvider>
 

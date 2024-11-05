@@ -42,8 +42,6 @@ function Navbar () {
           <HStack as='nav' spacing={4} display={{ base: 'none', md: 'flex' }}>
             <NavLink href='/principal' label='Inicio' />
             <NavLink href='/crearEntrenamiento' label='Nuevo Entrenemiento' />
-            <NavLink href='/services' label='Servicios' />
-            <NavLink href='/contact' label='Contacto' />
             <NavLink href='/perfil' label='Mi perfil' />
             <Button onClick={handleLogout} colorScheme='red' variant='solid'>
               Logout

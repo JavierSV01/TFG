@@ -113,7 +113,23 @@ def save_entrenamiento():
     else:
         return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
 
+# Endpoint para obtener el rol del usuario autenticado
+@app.route('/user-role', methods=['GET'])
+def obtener_rol():
+    # Verificar si el usuario está autenticado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
 
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    # Buscar el rol del usuario en la base de datos
+    usuario = mongo.db.usuarios.find_one({"usuario": usuario}, {"rol": 1})
+    
+    if usuario and 'rol' in usuario:
+        return jsonify({"role": usuario['rol']}), 200
+    else:
+        return jsonify({"error": "Rol no encontrado para el usuario"}), 404
 
 if __name__ == '__main__':
     app.run(port=3001)

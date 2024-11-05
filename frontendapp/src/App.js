@@ -12,7 +12,6 @@ function App () {
         <Route path='/principal' element={<PaginaPrincipal />} />
         <Route path='/crearEntrenamiento' element={<PaginaCreacionEntrenamiento />} />
         <Route path='/perfil' element={<PaginaMiPerfil />} />
-
       </Routes>
     </Router>
   )
