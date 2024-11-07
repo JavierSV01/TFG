@@ -19,12 +19,13 @@ python3 3.13.3
 	apt install python3.12-venv
 	python -m venv venv
 	source venv/bin/activate
-	pip Flask Flask-CORS
+	pip install Flask Flask-CORS
 	pip install Flask-PyMongo
 	Instalar mongodb en el sistema anfitrion
 	
 	
 react 
+	sudo apt install npm
 	npm install axios
 	npm install react-router-dom
 	npm i @chakra-ui/icons

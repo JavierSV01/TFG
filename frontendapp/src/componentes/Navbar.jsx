@@ -40,12 +40,7 @@ function Navbar () {
 
           {/* Menu para pantallas grandes */}
           <HStack as='nav' spacing={4} display={{ base: 'none', md: 'flex' }}>
-            <NavLink href='/principal' label='Inicio' />
-            <NavLink href='/crearEntrenamiento' label='Nuevo Entrenemiento' />
-            <NavLink href='/perfil' label='Mi perfil' />
-            <Button onClick={handleLogout} colorScheme='red' variant='solid'>
-              Logout
-            </Button>
+            <NavigationMenu handleLogout={handleLogout} />
           </HStack>
 
           {/* Icono de hamburguesa para pantallas móviles */}
@@ -95,6 +90,21 @@ function NavLink ({ href, label }) {
     >
       {label}
     </Link>
+  )
+}
+
+const NavigationMenu = ({ handleLogout }) => {
+  return (
+    <>
+      <NavLink href='/' label='Inicio' />
+      <NavLink href='/crearEntrenamiento' label='Nuevo Entrenamiento' />
+      <NavLink href='/services' label='Servicios' />
+      <NavLink href='/contact' label='Contacto' />
+      <NavLink href='/perfil' label='Mi perfil' />
+      <Button onClick={handleLogout} colorScheme='red' variant='solid'>
+        Logout
+      </Button>
+    </>
   )
 }
 
