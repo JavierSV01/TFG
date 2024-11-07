@@ -8,10 +8,14 @@ const UserRoleContext = createContext()
 export const UserRoleProvider = ({ children }) => {
   const [role, setRole] = useState(null)
 
+  const backendHost = process.env.REACT_APP_BACKEND_HOST
+  const backendPort = process.env.REACT_APP_BACKEND_PORT
+  const backendUrl = 'http://' + backendHost + ':' + backendPort
+
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/user-role') // Endpoint que devuelve el rol
+        const response = await axios.get(backendUrl + '/user-role') // Endpoint que devuelve el rol
         setRole(response.data.role) // 'entrenador' o 'cliente'
       } catch (error) {
         console.error('Error fetching user role:', error)
@@ -19,7 +23,7 @@ export const UserRoleProvider = ({ children }) => {
     }
 
     fetchUserRole()
-  }, [])
+  }, [backendUrl])
 
   return (
     <UserRoleContext.Provider value={role}>

@@ -4,10 +4,15 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from pymongo.errors import DuplicateKeyError
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+import os
 
 
 app = Flask(__name__)
 
+# Obtener las variables del entorno
+host = os.getenv('BACKEND_HOST')
+port = os.getenv('BACKEND_PORT')
 
 app.secret_key = 'mysecretkey'
 
@@ -132,4 +137,4 @@ def obtener_rol():
         return jsonify({"error": "Rol no encontrado para el usuario"}), 404
 
 if __name__ == '__main__':
-    app.run(port=3001)
+    app.run(host=host, port=port)

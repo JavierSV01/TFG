@@ -15,6 +15,9 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 function Navbar () {
+  const backendHost = process.env.REACT_APP_BACKEND_HOST
+  const backendPort = process.env.REACT_APP_BACKEND_PORT
+  const backendUrl = 'http://' + backendHost + ':' + backendPort
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const navigate = useNavigate()
@@ -23,7 +26,7 @@ function Navbar () {
   const handleLogout = async () => {
     try {
       // Hacemos la petición al servidor para cerrar sesión
-      await axios.get('http://localhost:3001/logout', { withCredentials: true })
+      await axios.get(backendUrl + '/logout', { withCredentials: true })
 
       // Redirigir a la página principal '/'
       navigate('/')
@@ -58,14 +61,7 @@ function Navbar () {
           ? (
             <Box pb={4} display={{ md: 'none' }}>
               <Stack as='nav' spacing={4}>
-                <NavLink href='/' label='Inicio' />
-                <NavLink href='/crearEntrenamiento' label='Nuevo Entrenemiento' />
-                <NavLink href='/services' label='Servicios' />
-                <NavLink href='/contact' label='Contacto' />
-                <NavLink href='/perfil' label='Mi perfil' />
-                <Button onClick={handleLogout} colorScheme='red' variant='solid'>
-                  Logout
-                </Button>
+                <NavigationMenu handleLogout={handleLogout} />
               </Stack>
             </Box>
             )
@@ -96,7 +92,7 @@ function NavLink ({ href, label }) {
 const NavigationMenu = ({ handleLogout }) => {
   return (
     <>
-      <NavLink href='/' label='Inicio' />
+      <NavLink href='/principal' label='Inicio' />
       <NavLink href='/crearEntrenamiento' label='Nuevo Entrenamiento' />
       <NavLink href='/services' label='Servicios' />
       <NavLink href='/contact' label='Contacto' />

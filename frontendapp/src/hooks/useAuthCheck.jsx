@@ -5,11 +5,15 @@ export const useAuthCheck = () => {
   const [authenticated, setAuthenticated] = useState(false)
   const [message, setMessage] = useState('')
 
+  const backendHost = process.env.REACT_APP_BACKEND_HOST
+  const backendPort = process.env.REACT_APP_BACKEND_PORT
+  const backendUrl = 'http://' + backendHost + ':' + backendPort
+
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
         axios.defaults.withCredentials = true // Para enviar las cookies al backend
-        const response = await axios.get('http://localhost:3001/isLogin')
+        const response = await axios.get(backendUrl + '/isLogin')
         if (response.status === 200) {
           setAuthenticated(true)
           setMessage(response.data.mensaje || 'Sesión iniciada')
@@ -24,7 +28,7 @@ export const useAuthCheck = () => {
     }
 
     checkAuthentication()
-  }, [])
+  }, [backendUrl])
 
   return { authenticated, message }
 }

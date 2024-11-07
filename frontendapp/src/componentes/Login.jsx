@@ -4,6 +4,10 @@ import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text } from
 import { useNavigate } from 'react-router-dom'
 
 export function Login () {
+  const backendHost = process.env.REACT_APP_BACKEND_HOST
+  const backendPort = process.env.REACT_APP_BACKEND_PORT
+  const backendUrl = 'http://' + backendHost + ':' + backendPort
+
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
   const passwordRef = useRef('')
@@ -22,7 +26,7 @@ export function Login () {
 
     try {
       axios.defaults.withCredentials = true
-      const response = await axios.post('http://localhost:3001/login', loginData)
+      const response = await axios.post(backendUrl + '/login', loginData)
       setMessage(response.data.mensaje || 'Inicio exitoso') // Muestra el mensaje del servidor o uno predeterminado
       navigate('/principal')
     } catch (error) {
