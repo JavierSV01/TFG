@@ -23,6 +23,7 @@ python3 3.13.3
 	pip install Flask-PyMongo
 	Instalar mongodb en el sistema anfitrion
 	pip install python-dotenv
+
 	
 	
 react 
