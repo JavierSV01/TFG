@@ -14,11 +14,15 @@ app = Flask(__name__)
 
 # Obtener las variables del entorno
 host = os.getenv('BACKEND_HOST')
-port = os.getenv('BACKEND_PORT')
+port = 5001#os.getenv('BACKEND_PORT')
 
 app.secret_key = 'mysecretkey'
 
 CORS(app, supports_credentials=True)  # Permitir solicitudes desde cualquier origen
+
+# Configurar SameSite y Secure
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permite compartir cookies entre sitios
+app.config['SESSION_COOKIE_SECURE'] = True      # Requiere HTTPS; usa False solo para desarrollo en HTTP
 
 # Conectar a la base de datos 'appEntrenamiento'
 app.config["MONGO_URI"] = "mongodb://localhost:27017/appEntrenamiento"  # Cambia a tu URI si usas MongoDB en la nube
