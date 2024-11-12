@@ -146,8 +146,16 @@ def obtener_rol():
 @app.route('/api/usuarios/entrenadores', methods=['GET'])
 def obtener_entrenadores():
     try:
+
+        # Verificar si el usuario está autenticado
+        if 'usuario' not in session:
+            return jsonify({"error": "Usuario no autenticado"}), 401
+
+        # Obtener el ID del usuario desde la sesión
+        usuario = session['usuario']
+
         # Consulta para obtener solo los usuarios con rol "entrenador"
-        entrenadores = db.find({"rol": "entrenador"}, {"usuario":1, "presentacion":1})
+        entrenadores = db.find({"rol": "entrenador", "usuario": {"$ne": usuario}}, {"usuario":1, "presentacion":1})
         
         # Convierte el cursor de MongoDB a una lista de JSON
         entrenadores_list = list(entrenadores)
@@ -157,7 +165,8 @@ def obtener_entrenadores():
     except Exception as e:
         print("Error al obtener entrenadores:", e)
         return jsonify({"message": "Error al obtener entrenadores"}), 500
-    
+
+# Endpoint para que un cliente haga una solicitud a un determinado entrenador
 @app.route('/api/solicitudes', methods=['POST'])
 def registrar_solicitud():
     try:
@@ -170,18 +179,25 @@ def registrar_solicitud():
         # Obtener los datos enviados en el cuerpo de la solicitud
         data = request.get_json()
 
-        # Crear la solicitud con los datos del cliente y entrenador
-        solicitud = {
-            "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
-            "usuarioEntrenador": data["usuarioEntrenador"],  # El ID del entrenador
-            "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
-            "fecha": datetime.datetime.now()  # Fecha actual de la solicitud
-        }
+        # Verificar si ya existe una solicitud con el mismo usuarioCliente y usuarioEntrenador
+        solicitud_existente = mongo.db.solicitudes.find_one(
+            {"usuarioCliente": usuarioSolicitante, "usuarioEntrenador": data["usuarioEntrenador"]}
+        )
 
-        # Insertar la solicitud en la base de datos
-        mongo.db.solicitudes.insert_one(solicitud)
+        if not solicitud_existente:
+            # Crear la solicitud con los datos del cliente y entrenador
+            solicitud = {
+                "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
+                "usuarioEntrenador": data["usuarioEntrenador"],  # El ID del entrenador
+                "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
+                "fecha": datetime.datetime.now()  # Fecha actual de la solicitud
+            }
+
+            # Insertar la solicitud en la base de datos
+            mongo.db.solicitudes.insert_one(solicitud)
 
         notificacion = {
+            "_id": ObjectId(),
             "tipo": 1,
             "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
             "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
@@ -195,13 +211,37 @@ def registrar_solicitud():
         )
 
         
-
-        return jsonify({"message": "Solicitud registrada con éxito"}), 200
+        if solicitud_existente:
+            return jsonify({"mensaje": "Ya enviaste una solicitud a este entrenador. Se le ha vuelto a notificar"}), 200
+        return jsonify({"mensaje": "Solicitud registrada con éxito"}), 200
     except Exception as e:
         print(e)
-        return jsonify({"message": f"Error al registrar la solicitud: {str(e)}"}), 500
-    
-# Endpoint para obtener las notificaciones de un usuario específico
+        return jsonify({"mensaje": f"Error al registrar la solicitud: {str(e)}"}), 500
+
+
+@app.route('/api/solicitudes/entrenador', methods=['GET'])
+def obtener_solicitudes_entrenador():
+    try:
+        # Verifica si hay una sesión activa y obtiene el usuario desde la sesión
+        usuario = session.get('usuario')
+        if not usuario:
+            return jsonify({"message": "Usuario no autenticado"}), 401
+
+        # Consulta la base de datos para obtener las solicitudes del entrenador
+        solicitudes = mongo.db.solicitudes.find({"usuarioEntrenador": usuario})
+
+        # Convierte las solicitudes a una lista de diccionarios
+        solicitudes_list = list(solicitudes)
+
+        for solicitud in solicitudes_list:
+            solicitud['_id'] = str(solicitud['_id'])
+
+        return jsonify(solicitudes_list), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"message": f"Error al obtener las solicitudes: {str(e)}"}), 500
+
+# Endpoint para obtener las notificaciones del usuario con la sesion iniciada
 @app.route('/api/notificaciones', methods=['GET'])
 def obtener_notificaciones():
     # Verifica si hay una sesión activa y obtiene el clienteId desde la sesión
@@ -211,29 +251,35 @@ def obtener_notificaciones():
         return jsonify({"message": "No hay sesión activa. Por favor, inicia sesión."}), 400
     
     # Buscar notificaciones del usuario específico
-    notificaciones = list(mongo.db.solicitudes.find({'usuarioEntrenador': usuario}))
-
+    # notiUsu = mongo.db.usuarios.find_one({"usuario": usuario}, {"notificaciones": 1})
     notiUsu = mongo.db.usuarios.find_one({"usuario": usuario}, {"notificaciones": 1})
+
 
     # Si el usuario no existe, devolver error
     if not notiUsu:
         return jsonify({'error': 'Usuario no encontrado'}), 404
 
+    # Convertir el _id de cada notificación a un string
+    notificaciones = notiUsu.get('notificaciones', [])
+    for notificacion in notificaciones:
+        notificacion['_id'] = str(notificacion['_id']) 
+
     # Devolver solo las notificaciones del usuario
-    return jsonify({'notificaciones': notiUsu.get('notificaciones', [])}), 200
+    return jsonify({'notificaciones': notificaciones}), 200
 
 
 # Endpoint para aceptar asesoramiento y crear una asociación
 @app.route('/api/aceptar_asesoramiento', methods=['POST'])
 def aceptar_asesoramiento():
     data = request.json
+    print(data)
     usuarioCliente = data.get('usuarioCliente')
     usuarioEntrenador = data.get('usuarioEntrenador')
 
     if not usuarioCliente or not usuarioEntrenador:
         return jsonify({'error': 'Faltan datos del cliente o entrenador'}), 400
 
-            # Verificar si ya existe una asociación activa entre este cliente y entrenador
+    # Verificar si ya existe una asociación activa entre este cliente y entrenador
     asociacion_activa = mongo.db.asesoramientos.find_one({
         'usuarioCliente': usuarioCliente,
         'usuarioEntrenador': usuarioEntrenador,
@@ -241,7 +287,7 @@ def aceptar_asesoramiento():
     })
 
     if asociacion_activa:
-        return jsonify({'error': 'Ya estas asesorando a este cliente'}), 400
+        return jsonify({'error': 'Ya estas asesorando a este cliente'}), 200
 
     # Crear la asociación entre cliente y entrenador en la colección "asociaciones"
     nueva_asociacion = {
