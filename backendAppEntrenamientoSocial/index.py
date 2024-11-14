@@ -9,13 +9,14 @@ from bson.json_util import dumps
 import os
 import datetime
 
-
+load_dotenv()
 app = Flask(__name__)
 
 # Obtener las variables del entorno
 host = os.getenv('BACKEND_HOST')
-port = 5001#os.getenv('BACKEND_PORT')
-
+port = os.getenv('BACKEND_PORT')
+print(host)
+print(port)
 app.secret_key = 'mysecretkey'
 
 CORS(app, supports_credentials=True)  # Permitir solicitudes desde cualquier origen
@@ -296,10 +297,13 @@ def aceptar_asesoramiento():
         'estado': 1,
         'fecha_asociacion': datetime.datetime.now()
     }
-
-
-
     mongo.db.asesoramientos.insert_one(nueva_asociacion)
+    
+    # Borramos la soliciud de la coleccion una vez aceptada
+    mongo.db.solicitudes.delete_one({
+        "usuarioCliente": usuarioCliente,
+        "usuarioEntrenador": usuarioEntrenador
+    })
 
     return jsonify({'message': 'Asociación creada exitosamente'}), 201
 

@@ -8,7 +8,7 @@ const backendUrl = 'http://' + backendHost + ':' + backendPort
 
 // Componente para mostrar una lista de solicitudes de asesoramiento
 
-const ListaSolAsesoramientos = ({ solicitudes }) => {
+const ListaSolAsesoramientos = ({ solicitudes }, { setSolicitudes }) => {
   const toast = useToast()
 
   // Función para manejar la aceptación de asesoramiento
@@ -29,8 +29,8 @@ const ListaSolAsesoramientos = ({ solicitudes }) => {
         })
       } else {
         toast({
-          title: 'Error al aceptar el asesoramiento',
-          description: response.error,
+          title: 'Asesoramiento aceptado anteriormente',
+          description: response.data.error,
           status: 'success',
           duration: 5000,
           isClosable: true
@@ -75,7 +75,8 @@ const ListaSolAsesoramientos = ({ solicitudes }) => {
           <Button
             mt={4}
             colorScheme='teal'
-            onClick={() => handleAceptarAsesoramiento(sol.usuarioCliente, sol.usuarioEntrenador)}
+            onClick={() =>
+              handleAceptarAsesoramiento(sol.usuarioCliente, sol.usuarioEntrenador, solicitudes, setSolicitudes)}
           >
             Aceptar Asesoramiento
           </Button>
@@ -94,10 +95,8 @@ const SolicitudesAsesoramiento = () => {
   const obtenerSolicitudes = async () => {
     try {
       const response = await axios.get(backendUrl + '/api/solicitudes/entrenador')
-      console.log(response)
 
       setSolicitudes(response.data)
-      console.log('Aqui')
     } catch (error) {
       toast({
         title: 'Error',
@@ -115,7 +114,7 @@ const SolicitudesAsesoramiento = () => {
   }, []) // Solo se ejecuta cuando el usuarioId cambia
 
   return (
-    <ListaSolAsesoramientos solicitudes={solicitudes} />
+    <ListaSolAsesoramientos solicitudes={solicitudes} setSolicitudes={setSolicitudes} />
   )
 }
 
