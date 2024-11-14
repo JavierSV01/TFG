@@ -1,4 +1,4 @@
-import { PaginaInicio } from './componentes/PaginaInicio'
+import { PaginaLogin } from './componentes/PaginaLogin'
 import { PaginaPrincipal } from './componentes/PaginaPrincipal'
 import { PaginaCreacionEntrenamiento } from './componentes/PaginaCreacionEntrenamiento'
 import { PaginaMiPerfil } from './componentes/PaginaMiPerfil'
@@ -8,7 +8,7 @@ function App () {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<PaginaInicio />} />
+        <Route path='/' element={<PaginaLogin />} />
         <Route path='/principal' element={<PaginaPrincipal />} />
         <Route path='/crearEntrenamiento' element={<PaginaCreacionEntrenamiento />} />
         <Route path='/perfil' element={<PaginaMiPerfil />} />

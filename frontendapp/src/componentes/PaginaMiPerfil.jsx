@@ -4,6 +4,7 @@ import { useAuthCheck } from '../hooks/useAuthCheck'
 import { Box, Heading, List, ListItem, Flex, ChakraProvider } from '@chakra-ui/react'
 import { useUserRole } from '../context/useUserRole'
 import { GraficaPeso } from '../GraficaPeso'
+import Notificaciones from './SolicitudesAsesoramiento'
 
 export function PaginaMiPerfil () {
   const { authenticated, message } = useAuthCheck()
@@ -60,11 +61,7 @@ export function PaginaMiPerfil () {
 
             <Box bg='blue.800' borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
               <Heading size='lg' mb={4}>Notificaciones</Heading>
-              <List spacing={3}>
-                <ListItem>Nuevo mensaje de Juan Pérez</ListItem>
-                <ListItem>Recordatorio: Actualiza tu dieta</ListItem>
-                <ListItem>Próxima sesión de entrenamiento programada</ListItem>
-              </List>
+              <Notificaciones />
             </Box>
 
           </Flex>

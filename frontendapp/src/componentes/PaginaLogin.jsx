@@ -1,9 +1,9 @@
 import { Login } from './Login'
 import { ChakraProvider, Box, Button, HStack } from '@chakra-ui/react'
-import { Registro } from '../componentes/Registro'
+import { Registro } from './Registro'
 import { useState } from 'react'
 
-export function PaginaInicio () {
+export function PaginaLogin () {
   const [isLogin, setIsLogin] = useState(true)
   return (
     <ChakraProvider>

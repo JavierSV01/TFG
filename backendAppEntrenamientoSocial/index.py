@@ -5,7 +5,9 @@ from bson.objectid import ObjectId
 from pymongo.errors import DuplicateKeyError
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from bson.json_util import dumps
 import os
+import datetime
 
 
 app = Flask(__name__)
@@ -135,6 +137,122 @@ def obtener_rol():
         return jsonify({"role": usuario['rol']}), 200
     else:
         return jsonify({"error": "Rol no encontrado para el usuario"}), 404
+
+# Endpoint para obtener solo los usuarios con rol "entrenador"
+@app.route('/api/usuarios/entrenadores', methods=['GET'])
+def obtener_entrenadores():
+    try:
+        # Consulta para obtener solo los usuarios con rol "entrenador"
+        entrenadores = db.find({"rol": "entrenador"}, {"usuario":1, "presentacion":1})
+        
+        # Convierte el cursor de MongoDB a una lista de JSON
+        entrenadores_list = list(entrenadores)
+        
+        # Utilizamos `dumps` de `bson.json_util` para serializar correctamente los datos de MongoDB
+        return dumps(entrenadores_list), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        print("Error al obtener entrenadores:", e)
+        return jsonify({"message": "Error al obtener entrenadores"}), 500
+    
+@app.route('/api/solicitudes', methods=['POST'])
+def registrar_solicitud():
+    try:
+        # Verifica si hay una sesión activa y obtiene el clienteId desde la sesión
+        usuarioSolicitante = session.get('usuario')  # El ID del cliente está almacenado en la sesión
+
+        if not usuarioSolicitante:
+            return jsonify({"message": "No hay sesión activa. Por favor, inicia sesión."}), 400
+
+        # Obtener los datos enviados en el cuerpo de la solicitud
+        data = request.get_json()
+
+        # Crear la solicitud con los datos del cliente y entrenador
+        solicitud = {
+            "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
+            "usuarioEntrenador": data["usuarioEntrenador"],  # El ID del entrenador
+            "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
+            "fecha": datetime.datetime.now()  # Fecha actual de la solicitud
+        }
+
+        # Insertar la solicitud en la base de datos
+        mongo.db.solicitudes.insert_one(solicitud)
+
+        notificacion = {
+            "tipo": 1,
+            "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
+            "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
+            "fecha": datetime.datetime.now()  # Fecha actual de la solicitud
+        }
+
+         # Agrega la notificacion al entrenador
+        result = mongo.db.usuarios.update_one(
+            {"usuario": data["usuarioEntrenador"]},
+            {"$push": {"notificaciones": notificacion}}
+        )
+
+        
+
+        return jsonify({"message": "Solicitud registrada con éxito"}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"message": f"Error al registrar la solicitud: {str(e)}"}), 500
+    
+# Endpoint para obtener las notificaciones de un usuario específico
+@app.route('/api/notificaciones', methods=['GET'])
+def obtener_notificaciones():
+    # Verifica si hay una sesión activa y obtiene el clienteId desde la sesión
+    usuario = session.get('usuario')  # El ID del cliente está almacenado en la sesión
+
+    if not usuario:
+        return jsonify({"message": "No hay sesión activa. Por favor, inicia sesión."}), 400
+    
+    # Buscar notificaciones del usuario específico
+    notificaciones = list(mongo.db.solicitudes.find({'usuarioEntrenador': usuario}))
+
+    notiUsu = mongo.db.usuarios.find_one({"usuario": usuario}, {"notificaciones": 1})
+
+    # Si el usuario no existe, devolver error
+    if not notiUsu:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    # Devolver solo las notificaciones del usuario
+    return jsonify({'notificaciones': notiUsu.get('notificaciones', [])}), 200
+
+
+# Endpoint para aceptar asesoramiento y crear una asociación
+@app.route('/api/aceptar_asesoramiento', methods=['POST'])
+def aceptar_asesoramiento():
+    data = request.json
+    usuarioCliente = data.get('usuarioCliente')
+    usuarioEntrenador = data.get('usuarioEntrenador')
+
+    if not usuarioCliente or not usuarioEntrenador:
+        return jsonify({'error': 'Faltan datos del cliente o entrenador'}), 400
+
+            # Verificar si ya existe una asociación activa entre este cliente y entrenador
+    asociacion_activa = mongo.db.asesoramientos.find_one({
+        'usuarioCliente': usuarioCliente,
+        'usuarioEntrenador': usuarioEntrenador,
+        'estado': 1
+    })
+
+    if asociacion_activa:
+        return jsonify({'error': 'Ya estas asesorando a este cliente'}), 400
+
+    # Crear la asociación entre cliente y entrenador en la colección "asociaciones"
+    nueva_asociacion = {
+        'usuarioCliente': usuarioCliente,
+        'usuarioEntrenador': usuarioEntrenador,
+        'estado': 1,
+        'fecha_asociacion': datetime.datetime.now()
+    }
+
+
+
+    mongo.db.asesoramientos.insert_one(nueva_asociacion)
+
+    return jsonify({'message': 'Asociación creada exitosamente'}), 201
+
 
 if __name__ == '__main__':
     app.run(host=host, port=port)
