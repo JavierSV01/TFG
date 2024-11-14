@@ -93,8 +93,11 @@ const SolicitudesAsesoramiento = () => {
   // Función para obtener las notificaciones desde el backend
   const obtenerSolicitudes = async () => {
     try {
-      const response = await axios.get(backendUrl + '/api/notificaciones')
+      const response = await axios.get(backendUrl + '/api/solicitudes/entrenador')
+      console.log(response)
+
       setSolicitudes(response.data)
+      console.log('Aqui')
     } catch (error) {
       toast({
         title: 'Error',

@@ -1,4 +1,4 @@
-#!/home/javier/workspace/TFG/backendAppEntrenamientoSocial/venv/bin/python
+#!/home/javiersv/Documentos/TFG/backendAppEntrenamientoSocial/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

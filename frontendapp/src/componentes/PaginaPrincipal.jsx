@@ -16,7 +16,7 @@ const Card = ({ key, nombre, presentacion }) => {
     try {
       // Realizamos la solicitud POST al backend
       // const response =
-      await axios.post(backendUrl + '/api/solicitudes', {
+      const response = await axios.post(backendUrl + '/api/solicitudes', {
         usuarioEntrenador, // Aquí puedes pasar cualquier dato que necesites para registrar la solicitud
         mensaje: 'Solicito asesoramiento'
       })
@@ -24,7 +24,7 @@ const Card = ({ key, nombre, presentacion }) => {
       // Si la solicitud fue exitosa, mostrar un mensaje de éxito
       toast({
         title: 'Solicitud enviada',
-        description: 'Tu solicitud de asesoramiento fue registrada con éxito.',
+        description: response.data.mensaje || 'Solicitud enviada correctamente',
         status: 'success',
         duration: 5000,
         isClosable: true
