@@ -6,10 +6,27 @@ const backendHost = process.env.REACT_APP_BACKEND_HOST
 const backendPort = process.env.REACT_APP_BACKEND_PORT
 const backendUrl = 'http://' + backendHost + ':' + backendPort
 
-// Componente para mostrar una lista de solicitudes de asesoramiento
-
-const ListaSolAsesoramientos = ({ solicitudes }, { setSolicitudes }) => {
+// Componente principal que obtiene las sol
+const SolicitudesAsesoramiento = () => {
+  const [solicitudes, setSolicitudes] = useState([])
   const toast = useToast()
+
+  // Función para obtener las notificaciones desde el backend
+  const obtenerSolicitudes = async () => {
+    try {
+      const response = await axios.get(backendUrl + '/api/solicitudes/entrenador')
+
+      setSolicitudes(response.data)
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Hubo un problema al cargar las notificaciones.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+    }
+  }
 
   // Función para manejar la aceptación de asesoramiento
   const handleAceptarAsesoramiento = async (usuarioCliente, usuarioEntrenador) => {
@@ -20,6 +37,7 @@ const ListaSolAsesoramientos = ({ solicitudes }, { setSolicitudes }) => {
       })
 
       if (response.status === 201) {
+        obtenerSolicitudes()
         toast({
           title: 'Asesoramiento aceptado',
           description: 'Se ha creado la asociación correctamente.',
@@ -48,74 +66,61 @@ const ListaSolAsesoramientos = ({ solicitudes }, { setSolicitudes }) => {
   }
 
   const solOrdenadas = solicitudes.sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-  return (
-    <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
-      {solOrdenadas.map((sol) => (
-        <Box
-          key={sol._id}
-          borderWidth='1px'
-          borderRadius='md'
-          p={4}
-          boxShadow='md'
-          background='white'
-          color='black' // Texto blanco
-          borderColor='white' // Borde blanco
-          display='flex' // Usamos flexbox para alinear el contenido
-          flexDirection='column' // Aseguramos que el contenido se apile en columna
-          justifyContent='center' // Centrado vertical
-          alignItems='center' // Centrado horizontal
-          textAlign='center' // Aseguramos que el texto esté centrado
-          height='100%' // Para asegurar que el Box tenga una altura suficiente para centrar el contenido
-        >
-          <Heading as='h3' size='md' mb={2}>
-            {sol.usuarioCliente}
-          </Heading>
-          <Text mt={2}>Mensaje: {sol.mensaje}</Text>
-          <Text>Fecha: {new Date(sol.fecha).toLocaleString()}</Text>
-          <Button
-            mt={4}
-            colorScheme='teal'
-            onClick={() =>
-              handleAceptarAsesoramiento(sol.usuarioCliente, sol.usuarioEntrenador, solicitudes, setSolicitudes)}
-          >
-            Aceptar Asesoramiento
-          </Button>
-        </Box>
-      ))}
-    </SimpleGrid>
-  )
-}
-
-// Componente principal que obtiene las sol
-const SolicitudesAsesoramiento = () => {
-  const [solicitudes, setSolicitudes] = useState([])
-  const toast = useToast()
-
-  // Función para obtener las notificaciones desde el backend
-  const obtenerSolicitudes = async () => {
-    try {
-      const response = await axios.get(backendUrl + '/api/solicitudes/entrenador')
-
-      setSolicitudes(response.data)
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Hubo un problema al cargar las notificaciones.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true
-      })
-    }
-  }
 
   // Obtener las notificaciones cuando el componente se monte
   useEffect(() => {
     obtenerSolicitudes()
   }, []) // Solo se ejecuta cuando el usuarioId cambia
+  if (solOrdenadas.length === 0) {
+    return (
+      <Box textAlign='center' mt={8}>
+        <Heading as='h2' size='md' mb={4}>
+          No hay solicitudes de asesoramiento
+        </Heading>
+        <Text>¡Vuelve más tarde para ver si tienes nuevas solicitudes!</Text>
+      </Box>
+    )
+  } else {
+    return (
+    // <ListaSolAsesoramientos solicitudes={solicitudes} setSolicitudes={setSolicitudes} />
 
-  return (
-    <ListaSolAsesoramientos solicitudes={solicitudes} setSolicitudes={setSolicitudes} />
-  )
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+        {solOrdenadas.map((sol) => (
+          <Box
+            key={sol._id}
+            borderWidth='1px'
+            borderRadius='md'
+            p={4}
+            boxShadow='md'
+            background='white'
+            color='black' // Texto blanco
+            borderColor='white' // Borde blanco
+            display='flex' // Usamos flexbox para alinear el contenido
+            flexDirection='column' // Aseguramos que el contenido se apile en columna
+            justifyContent='center' // Centrado vertical
+            alignItems='center' // Centrado horizontal
+            textAlign='center' // Aseguramos que el texto esté centrado
+            height='100%'
+          >
+            <Heading as='h3' size='md' mb={2}>
+              {sol.usuarioCliente}
+            </Heading>
+            <Text mt={2}>Mensaje: {sol.mensaje}</Text>
+            <Text>Fecha: {new Date(sol.fecha).toLocaleString()}</Text>
+            <Button
+              mt={4}
+              colorScheme='teal'
+              onClick={() =>
+                handleAceptarAsesoramiento(sol.usuarioCliente, sol.usuarioEntrenador)}
+            >
+              Aceptar Asesoramiento
+            </Button>
+          </Box>
+        ))}
+      </SimpleGrid>
+
+    )
+  }
 }
 
 export default SolicitudesAsesoramiento

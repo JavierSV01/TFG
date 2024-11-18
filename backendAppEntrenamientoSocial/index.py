@@ -15,8 +15,6 @@ app = Flask(__name__)
 # Obtener las variables del entorno
 host = os.getenv('BACKEND_HOST')
 port = os.getenv('BACKEND_PORT')
-print(host)
-print(port)
 app.secret_key = 'mysecretkey'
 
 CORS(app, supports_credentials=True)  # Permitir solicitudes desde cualquier origen
@@ -185,6 +183,10 @@ def registrar_solicitud():
             {"usuarioCliente": usuarioSolicitante, "usuarioEntrenador": data["usuarioEntrenador"]}
         )
 
+        asesoramiento_existente = mongo.db.asesoramientos.find_one(
+                {"usuarioCliente": usuarioSolicitante, "usuarioEntrenador": data["usuarioEntrenador"]}
+        )
+
         if not solicitud_existente:
             # Crear la solicitud con los datos del cliente y entrenador
             solicitud = {
@@ -197,20 +199,24 @@ def registrar_solicitud():
             # Insertar la solicitud en la base de datos
             mongo.db.solicitudes.insert_one(solicitud)
 
-        notificacion = {
-            "_id": ObjectId(),
-            "tipo": 1,
-            "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
-            "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
-            "fecha": datetime.datetime.now()  # Fecha actual de la solicitud
-        }
+        #Notifico al entrenador si hay solicitud o no pero si ya esta asesorando al cliente no
+        if not asesoramiento_existente:
+            notificacion = {
+                "_id": ObjectId(),
+                "tipo": 1,
+                "usuarioCliente": usuarioSolicitante,  # El ID del cliente desde la sesión
+                "mensaje": data["mensaje"],  # Mensaje enviado en la solicitud
+                "fecha": datetime.datetime.now()  # Fecha actual de la solicitud
+            }
 
-         # Agrega la notificacion al entrenador
-        result = mongo.db.usuarios.update_one(
-            {"usuario": data["usuarioEntrenador"]},
-            {"$push": {"notificaciones": notificacion}}
-        )
+            # Agrega la notificacion al entrenador
+            result = mongo.db.usuarios.update_one(
+                {"usuario": data["usuarioEntrenador"]},
+                {"$push": {"notificaciones": notificacion}}
+            )
 
+        if asesoramiento_existente:
+            return jsonify({"mensaje": "Ya estas siendo asesorado por a " + data["usuarioEntrenador"]}), 200
         
         if solicitud_existente:
             return jsonify({"mensaje": "Ya enviaste una solicitud a este entrenador. Se le ha vuelto a notificar"}), 200
