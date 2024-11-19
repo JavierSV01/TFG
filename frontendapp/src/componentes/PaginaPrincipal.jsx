@@ -3,10 +3,7 @@ import Navbar from './Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast } from '@chakra-ui/react'
 import axios from 'axios'
-
-const backendHost = process.env.REACT_APP_BACKEND_HOST
-const backendPort = process.env.REACT_APP_BACKEND_PORT
-const backendUrl = 'http://' + backendHost + ':' + backendPort
+import { ENDPOINTS } from '../constantes/endponits'
 
 const Card = ({ key, nombre, presentacion }) => {
   const toast = useToast() // Utilizamos el Toast de Chakra UI para mostrar notificaciones
@@ -15,7 +12,7 @@ const Card = ({ key, nombre, presentacion }) => {
   const handleSolicitud = async (usuarioEntrenador) => {
     try {
       // Realizamos la solicitud POST al backend
-      const response = await axios.post(backendUrl + '/api/solicitudes', {
+      const response = await axios.post(ENDPOINTS.SOLICITUDE.APPLY, {
         usuarioEntrenador, // Aquí puedes pasar cualquier dato que necesites para registrar la solicitud
         mensaje: 'Solicito asesoramiento'
       })
@@ -65,7 +62,7 @@ const CardList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(backendUrl + '/api/usuarios/entrenadores')
+        const response = await axios.get(ENDPOINTS.USER.TRAINERS)
         setData(response.data)
       } catch (err) {
         setError('Error al obtener los datos')

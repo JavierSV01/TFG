@@ -21,7 +21,10 @@ def create_app(config_object):
 
     mongo.init_app(app)
     
-    from .auth import auth_bp as auth_blueprint
-    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    from .user import user_bp as user_blueprint
+    app.register_blueprint(user_blueprint, url_prefix='/user')
+
+    from .solicitude import solicitude_bp as sol_blueprint
+    app.register_blueprint(sol_blueprint, url_prefix='/sol')
 
     return app

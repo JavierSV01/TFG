@@ -2,12 +2,9 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { Box, Button, Input, FormControl, FormLabel, Textarea, VStack, Heading, ChakraProvider, SimpleGrid, IconButton, HStack } from '@chakra-ui/react'
+import { ENDPOINTS } from '../constantes/endponits'
 
 export function CreacionEntrenamiento () {
-  const backendHost = process.env.REACT_APP_BACKEND_HOST
-  const backendPort = process.env.REACT_APP_BACKEND_PORT
-  const backendUrl = 'http://' + backendHost + ':' + backendPort
-
   const [weeks, setWeeks] = useState([])
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -66,7 +63,7 @@ export function CreacionEntrenamiento () {
     }
 
     try {
-      const response = await axios.post(backendUrl + '/entrenamiento', trainingData)
+      const response = await axios.post(ENDPOINTS.USER.WORKOUT, trainingData)
       console.log(response.data.message) // Mensaje de éxito
     } catch (error) {
       console.error('Error al guardar el entrenamiento:', error)

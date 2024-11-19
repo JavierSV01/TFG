@@ -2,12 +2,8 @@ import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-
+import { ENDPOINTS } from '../constantes/endponits'
 export function Login () {
-  const backendHost = process.env.REACT_APP_BACKEND_HOST
-  const backendPort = process.env.REACT_APP_BACKEND_PORT
-  const backendUrl = 'http://' + backendHost + ':' + backendPort
-
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
   const passwordRef = useRef('')
@@ -26,7 +22,7 @@ export function Login () {
 
     try {
       axios.defaults.withCredentials = true
-      const response = await axios.post(backendUrl + '/auth/login', loginData, {
+      const response = await axios.post(ENDPOINTS.USER.LOGIN, loginData, {
         headers: {
           'Content-Type': 'application/json'
         }

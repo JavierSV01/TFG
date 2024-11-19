@@ -1,8 +1,5 @@
 from pymongo import MongoClient
 from flask import current_app
-from werkzeug.security import generate_password_hash
-
-
 
 class UserModel:
     @staticmethod
@@ -25,3 +22,32 @@ class UserModel:
         db = UserModel.get_db()
         result = db["usuarios"].insert_one({'usuario': usuario, 'contrasenia': contrasenaEncriptada, 'rol': rol})
         return result.inserted_id
+    
+    @staticmethod
+    def get_role(usuario):
+        db = UserModel.get_db()
+        usuario = db["usuarios"].find_one({"usuario": usuario}, {"rol": 1})
+        return usuario
+
+    @staticmethod
+    def get_trainers(usuario):
+        db = UserModel.get_db()
+        entrenadores = db["usuarios"].find({"rol": "entrenador", "usuario": {"$ne": usuario}}, {"usuario":1})
+        return entrenadores
+    
+    @staticmethod
+    def insert_notification_for_user(user, noti):
+        db = UserModel().get_db()
+        db.usuarios.update_one(
+            {"usuario": user},
+            {"$push": {"notificaciones": noti}}
+        )
+
+    @staticmethod
+    def insert_workout_for_user(user, workout):
+        db = UserModel().get_db()
+        result = db.usuarios.update_one(
+            {"usuario": user},
+            {"$push": {"entrenamientos": workout}}
+        )
+        return result

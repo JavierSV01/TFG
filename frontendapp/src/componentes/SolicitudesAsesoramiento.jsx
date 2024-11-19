@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Heading, Text, SimpleGrid, useToast, Button } from '@chakra-ui/react'
 import axios from 'axios'
-
-const backendHost = process.env.REACT_APP_BACKEND_HOST
-const backendPort = process.env.REACT_APP_BACKEND_PORT
-const backendUrl = 'http://' + backendHost + ':' + backendPort
+import { ENDPOINTS } from '../constantes/endponits'
 
 // Componente principal que obtiene las sol
 const SolicitudesAsesoramiento = () => {
@@ -14,7 +11,7 @@ const SolicitudesAsesoramiento = () => {
   // Función para obtener las notificaciones desde el backend
   const obtenerSolicitudes = async () => {
     try {
-      const response = await axios.get(backendUrl + '/api/solicitudes/entrenador')
+      const response = await axios.get(ENDPOINTS.SOLICITUDE.MYSOLICITUDE)
 
       setSolicitudes(response.data)
     } catch (error) {
@@ -31,7 +28,7 @@ const SolicitudesAsesoramiento = () => {
   // Función para manejar la aceptación de asesoramiento
   const handleAceptarAsesoramiento = async (usuarioCliente, usuarioEntrenador) => {
     try {
-      const response = await axios.post(backendUrl + '/api/aceptar_asesoramiento', {
+      const response = await axios.post(ENDPOINTS.SOLICITUDE.ACCEPT, {
         usuarioCliente,
         usuarioEntrenador
       })

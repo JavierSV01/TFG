@@ -1,12 +1,8 @@
 import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text, Radio, RadioGroup } from '@chakra-ui/react'
-
+import { ENDPOINTS } from '../constantes/endponits'
 export function Registro () {
-  const backendHost = process.env.REACT_APP_BACKEND_HOST
-  const backendPort = process.env.REACT_APP_BACKEND_PORT
-  const backendUrl = 'http://' + backendHost + ':' + backendPort
-
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
   const passwordRef = useRef('')
@@ -33,7 +29,7 @@ export function Registro () {
       setMessage('Las contraseñas no coinciden')
     } else {
       try {
-        const response = await axios.post(backendUrl + '/registro', registerData)
+        const response = await axios.post(ENDPOINTS.USER.REGISTER, registerData)
         setMessage(response.data.mensaje || 'Registro exitoso') // Muestra el mensaje del servidor o uno predeterminado
       } catch (error) {
         const serverMessage = error.response?.data?.mensaje || 'Ocurrió un error. Inténtalo de nuevo.'

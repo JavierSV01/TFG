@@ -13,11 +13,9 @@ import {
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { ENDPOINTS } from '../constantes/endponits'
 
 function Navbar () {
-  const backendHost = process.env.REACT_APP_BACKEND_HOST
-  const backendPort = process.env.REACT_APP_BACKEND_PORT
-  const backendUrl = 'http://' + backendHost + ':' + backendPort
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const navigate = useNavigate()
@@ -26,9 +24,7 @@ function Navbar () {
   const handleLogout = async () => {
     try {
       // Hacemos la petición al servidor para cerrar sesión
-      await axios.get(backendUrl + '/logout', { withCredentials: true })
-
-      // Redirigir a la página principal '/'
+      await axios.post(ENDPOINTS.USER.LOGOUT, { withCredentials: true })
       navigate('/')
     } catch (error) {
       console.error('Error al hacer logout:', error)
