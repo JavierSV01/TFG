@@ -1,10 +1,14 @@
 from flask import Blueprint, request, jsonify, session
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import UserModel
 from pymongo.errors import DuplicateKeyError
+from . import auth_bp
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-
+# Ruta para registrar un nuevo usuario
+@auth_bp.route('/', methods=['POST'])
+def basico():
+    return "<h1>Hola Mundo</h1>"
 
 # Ruta para registrar un nuevo usuario
 @auth_bp.route('/register', methods=['POST'])
@@ -30,7 +34,6 @@ def register():
 # Ruta para iniciar sesión
 @auth_bp.route('/login', methods=['POST'])
 def login():
-
     datos = request.json  # Obtener datos enviados en formato JSON
     username = datos.get('usuario')
     password = datos.get('contrasenia')
@@ -50,10 +53,7 @@ def login():
 # Ruta para comprobar si el usuario está logueado
 @auth_bp.route('/status', methods=['GET'])
 def status():
-#    if 'user_id' not in session:
-#        return jsonify({"logged_in": False}), 200
-#    return jsonify({"logged_in": True, "user_id": session['user_id']}), 200
-    if 'usuario' in session:  # Verificar si hay una sesión activa
+    if 'usuario' in session: 
         usuario = session['usuario']
         return jsonify({"mensaje": f"Bienvenido al dashboard, {usuario}"}), 200
     else:

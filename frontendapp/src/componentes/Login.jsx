@@ -26,7 +26,11 @@ export function Login () {
 
     try {
       axios.defaults.withCredentials = true
-      const response = await axios.post(backendUrl + '/login', loginData)
+      const response = await axios.post(backendUrl + '/auth/login', loginData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       setMessage(response.data.mensaje || 'Inicio exitoso') // Muestra el mensaje del servidor o uno predeterminado
       navigate('/principal')
     } catch (error) {
