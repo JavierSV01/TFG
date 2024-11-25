@@ -1,7 +1,7 @@
-import { PaginaLogin } from './componentes/PaginaLogin'
-import { PaginaPrincipal } from './componentes/PaginaPrincipal'
-import { PaginaCreacionEntrenamiento } from './componentes/PaginaCreacionEntrenamiento'
-import { PaginaMiPerfil } from './componentes/PaginaMiPerfil'
+import { PaginaLogin } from './paginas/PaginaLogin'
+import { PaginaPrincipal } from './paginas/PaginaPrincipal'
+import { PaginaCreacionEntrenamiento } from './paginas/PaginaCreacionEntrenamiento'
+import { PaginaMiPerfil } from './paginas/PaginaMiPerfil'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 function App () {

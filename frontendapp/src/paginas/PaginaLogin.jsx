@@ -1,6 +1,6 @@
-import { Login } from './Login'
+import { Login } from '../componentes/Login'
 import { ChakraProvider, Box, Button, HStack } from '@chakra-ui/react'
-import { Registro } from './Registro'
+import { Registro } from '../componentes/Registro'
 import { useState } from 'react'
 
 export function PaginaLogin () {

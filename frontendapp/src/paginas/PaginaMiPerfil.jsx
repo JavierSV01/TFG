@@ -1,10 +1,10 @@
 import React from 'react'
-import Navbar from './Navbar'
+import Navbar from '../componentes/Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { Box, Heading, List, ListItem, Flex, ChakraProvider } from '@chakra-ui/react'
 import { useUserRole } from '../context/useUserRole'
 import { GraficaPeso } from '../GraficaPeso'
-import SolicitudesAsesoramiento from './SolicitudesAsesoramiento'
+import SolicitudesAsesoramiento from '../componentes/SolicitudesAsesoramiento'
 
 export function PaginaMiPerfil () {
   const { authenticated, message } = useAuthCheck()

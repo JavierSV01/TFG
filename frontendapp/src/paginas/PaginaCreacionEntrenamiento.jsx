@@ -1,7 +1,7 @@
 import React from 'react'
-import Navbar from './Navbar'
+import Navbar from '../componentes/Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
-import { CreacionEntrenamiento } from './CreacionEntrenamiento'
+import { CreacionEntrenamiento } from '../componentes/CreacionEntrenamiento'
 
 export function PaginaCreacionEntrenamiento () {
   const { authenticated, message } = useAuthCheck()
