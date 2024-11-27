@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import { SimpleGrid, Box, Button, Heading } from '@chakra-ui/react'
+import colors from '../constantes/colores'
 
 const MisClientes = () => {
   const [clientes, setClientes] = useState([])
@@ -36,7 +37,7 @@ const MisClientes = () => {
           borderRadius='md'
           p={4}
           boxShadow='md'
-          background='white'
+          background={colors.neutral} // Fondo principal
           color='black' // Texto blanco
           borderColor='white' // Borde blanco
           display='flex' // Usamos flexbox para alinear el contenido
@@ -52,7 +53,9 @@ const MisClientes = () => {
 
           <Button
             mt={4}
-            colorScheme='teal'
+            bgColor={colors.accent} // Fondo de acento
+            color={colors.dark} // Texto oscuro
+            _hover={{ bgColor: colors.primary, color: colors.neutral }} // Cambio de color al pasar el mouse
           >
             Ver
           </Button>

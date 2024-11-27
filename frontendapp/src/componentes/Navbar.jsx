@@ -14,6 +14,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
+import colors from '../constantes/colores'
 
 function Navbar () {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -33,7 +34,7 @@ function Navbar () {
 
   return (
     <ChakraProvider>
-      <Box bg='blue.900' px={4}>
+      <Box bg={colors.primary} px={4}>
         <Flex h={16} alignItems='center' justifyContent='space-between'>
           <Box fontWeight='bold' color='white'>MiLogo</Box>
 
