@@ -10,7 +10,9 @@ export const ENDPOINTS = {
     STATUS: `${BASE_URL}/user/status`,
     ROL: `${BASE_URL}/user/role`,
     TRAINERS: `${BASE_URL}/user/trainers`,
-    WORKOUT: `${BASE_URL}/user/workout`
+    WORKOUT: `${BASE_URL}/user/workout`,
+    CLIENTS: `${BASE_URL}/user/clients`
+
   },
 
   SOLICITUDE: {

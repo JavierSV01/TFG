@@ -26,3 +26,12 @@ class AssociationModel:
     def insertAssociation(association):
         db = AssociationModel.get_db()
         db.asesoramientos.insert_one(association)   
+
+    @staticmethod
+    def getClientsByTrainer(usuario_entrenador):
+        db = AssociationModel.get_db()
+        asociaciones = db.asesoramientos.find({
+            "usuarioEntrenador": usuario_entrenador
+        })
+        clientes = [asociacion["usuarioCliente"] for asociacion in asociaciones]
+        return clientes

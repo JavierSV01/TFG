@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { ENDPOINTS } from '../constantes/endponits'
+import { SimpleGrid, Box, Button, Heading } from '@chakra-ui/react'
 
 const MisClientes = () => {
   const [clientes, setClientes] = useState([])
@@ -9,7 +11,7 @@ const MisClientes = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('http://tu-backend-api.com/clientes')
+        const response = await axios.get(ENDPOINTS.USER.CLIENTS)
         setClientes(response.data)
       } catch (err) {
         setError(err)
@@ -25,14 +27,38 @@ const MisClientes = () => {
   if (error) return <p>Error: {error.message}</p>
 
   return (
-    <div>
-      <h1>Mis Clientes</h1>
-      <ul>
-        {clientes.map(cliente => (
-          <li key={cliente.id}>{cliente.nombre}</li>
-        ))}
-      </ul>
-    </div>
+
+    <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+      {clientes.map((cliente) => (
+        <Box
+          key={cliente._id}
+          borderWidth='1px'
+          borderRadius='md'
+          p={4}
+          boxShadow='md'
+          background='white'
+          color='black' // Texto blanco
+          borderColor='white' // Borde blanco
+          display='flex' // Usamos flexbox para alinear el contenido
+          flexDirection='column' // Aseguramos que el contenido se apile en columna
+          justifyContent='center' // Centrado vertical
+          alignItems='center' // Centrado horizontal
+          textAlign='center' // Aseguramos que el texto esté centrado
+          height='100%'
+        >
+          <Heading as='h3' size='md' mb={2}>
+            {cliente}
+          </Heading>
+
+          <Button
+            mt={4}
+            colorScheme='teal'
+          >
+            Ver
+          </Button>
+        </Box>
+      ))}
+    </SimpleGrid>
   )
 }
 

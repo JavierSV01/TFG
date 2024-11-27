@@ -51,3 +51,5 @@ class UserModel:
             {"$push": {"entrenamientos": workout}}
         )
         return result
+
+    

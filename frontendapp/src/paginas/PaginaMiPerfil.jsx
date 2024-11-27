@@ -5,6 +5,7 @@ import { Box, Heading, List, ListItem, Flex, ChakraProvider } from '@chakra-ui/r
 import { useUserRole } from '../context/useUserRole'
 import { GraficaPeso } from '../GraficaPeso'
 import SolicitudesAsesoramiento from '../componentes/SolicitudesAsesoramiento'
+import MisClientes from '../componentes/MisClientes'
 
 export function PaginaMiPerfil () {
   const { authenticated, message } = useAuthCheck()
@@ -23,16 +24,9 @@ export function PaginaMiPerfil () {
           {/* Contenedor principal usando Flex */}
           <Flex direction='column' gap={6}>
             {/* Sección de "Mis Clientes" */}
-
             <Box bg='blue.800' borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-
-              <Heading size='lg' mb={4}>Mis Clientes</Heading>
-              <List spacing={3}>
-                <ListItem>Cliente 1 - Juan Pérez</ListItem>
-                <ListItem>Cliente 2 - María García</ListItem>
-                <ListItem>Cliente 3 - Pedro López</ListItem>
-                <ListItem>Cliente 4 - Laura Martínez</ListItem>
-              </List>
+              <Heading size='lg' mb={4}>Solicutudes asesoramiento</Heading>
+              <MisClientes />
             </Box>
 
             {/* Sección de "Mis Entrenamientos" y "Mis Dietas" en dos columnas */}

@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .models import UserModel
 from pymongo.errors import DuplicateKeyError
 from . import user_bp
+from app.association.helpers import getClientsByTrainer
 
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
@@ -133,3 +134,24 @@ def save_workout():
         return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
     else:
         return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
+    
+# Endpoint para obtener todos los clientes del entrenador logueado
+@user_bp.route('/clients', methods=['GET'])
+def obtener_clientes():
+    # Verificar que el usuario esté logueado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    try:
+        # Obtener los clientes del entrenador logueado
+        clientes = getClientsByTrainer(usuario)
+        # Convertir el cursor de MongoDB a una lista de JSON
+        clientes_list = list(clientes)
+        
+        # Utilizamos `dumps` de `bson.json_util` para serializar correctamente los datos de MongoDB
+        return dumps(clientes_list), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return jsonify({"message": "Error al obtener clientes"}), 500
