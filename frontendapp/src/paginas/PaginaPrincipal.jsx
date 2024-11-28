@@ -4,6 +4,7 @@ import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
+import colors from '../constantes/colores'
 
 const Card = ({ key, nombre, presentacion }) => {
   const toast = useToast() // Utilizamos el Toast de Chakra UI para mostrar notificaciones
@@ -37,18 +38,22 @@ const Card = ({ key, nombre, presentacion }) => {
   }
 
   return (
-    <Box borderWidth='1px' borderRadius='lg' p={4} boxShadow='md' background='white' color='black'>
+    <Box borderWidth='1px' borderRadius='lg' p={4} boxShadow='md' background={colors.neutral} color={colors.primary}>
       <Heading as='h3' size='md' mb={2}>
         {nombre}
       </Heading>
       <Text>{presentacion || 'Entrenador sin presentación'}</Text>
       <Button
         mt={4}
-        colorScheme='teal'
+        color={colors.white}
+        bg={colors.secondary}
         onClick={() => handleSolicitud(nombre)}
         loadingText='Enviando'
+        width='100%'
+        _hover={{ bgColor: colors.primary, color: colors.neutral }}
+        size={{ base: 'sm', md: 'md' }}
       >
-        Solicitar Asesoramiento
+        Solicitar
       </Button>
     </Box>
   )
@@ -91,8 +96,8 @@ const CardList = () => {
   }
 
   return (
-    <Container maxW='container.xl' py={6}>
-      <SimpleGrid columns={[1, 2, 3, 4]} spacing={6}>
+    <Container maxW='container.3xl' py={6}>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
         {data.map((item) => (
           <Card key={item._id.$oid} nombre={item.usuario} presentacion={item.presentacion} />
         ))}
@@ -112,12 +117,12 @@ export function PaginaPrincipal () {
   return (
     <ChakraProvider>
       <Navbar />
-      <Box bg='blue.500' color='white' minH='100vh' p={6}>
+      <Box bg={colors.neutral} color={colors.white} minH='100vh' p={6}>
 
         <Flex direction='column' gap={6}>
           {/* Sección de entrenadores */}
 
-          <Box bg='blue.800' borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+          <Box bg={colors.secondary} borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
             <Heading as='h1' size='md' mb={2}>Entrenadores</Heading>
             <CardList />
           </Box>

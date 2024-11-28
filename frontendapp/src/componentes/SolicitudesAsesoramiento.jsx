@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Box, Heading, Text, SimpleGrid, useToast, Button } from '@chakra-ui/react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
+import colors from '../constantes/colores'
 
 // Componente principal que obtiene las sol
 const SolicitudesAsesoramiento = () => {
@@ -89,14 +90,14 @@ const SolicitudesAsesoramiento = () => {
             borderRadius='md'
             p={4}
             boxShadow='md'
-            background='white'
-            color='black' // Texto blanco
-            borderColor='white' // Borde blanco
-            display='flex' // Usamos flexbox para alinear el contenido
-            flexDirection='column' // Aseguramos que el contenido se apile en columna
-            justifyContent='center' // Centrado vertical
-            alignItems='center' // Centrado horizontal
-            textAlign='center' // Aseguramos que el texto esté centrado
+            background={colors.neutral}
+            color='black'
+            borderColor='white'
+            display='flex'
+            flexDirection='column'
+            justifyContent='center'
+            alignItems='center'
+            textAlign='center'
             height='100%'
           >
             <Heading as='h3' size='md' mb={2}>
@@ -106,7 +107,9 @@ const SolicitudesAsesoramiento = () => {
             <Text>Fecha: {new Date(sol.fecha).toLocaleString()}</Text>
             <Button
               mt={4}
-              colorScheme='teal'
+              _hover={{ bgColor: colors.primary, color: colors.neutral }}
+              color={colors.white}
+              bg={colors.secondary}
               onClick={() =>
                 handleAceptarAsesoramiento(sol.usuarioCliente, sol.usuarioEntrenador)}
             >

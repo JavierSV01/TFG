@@ -35,3 +35,14 @@ class AssociationModel:
         })
         clientes = [asociacion["usuarioCliente"] for asociacion in asociaciones]
         return clientes
+    
+    @staticmethod
+    def getAssociationByUser(usuario_cliente):
+        db = AssociationModel.get_db()
+        asociaciones = db.asesoramientos.find({
+            "usuarioCliente": usuario_cliente
+        })
+        datos = []
+        for asociacion in asociaciones:
+            datos.append({asociacion})
+        return datos

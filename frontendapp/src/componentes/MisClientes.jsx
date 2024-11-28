@@ -3,11 +3,13 @@ import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import { SimpleGrid, Box, Button, Heading } from '@chakra-ui/react'
 import colors from '../constantes/colores'
+import { useNavigate } from 'react-router-dom'
 
 const MisClientes = () => {
   const [clientes, setClientes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -53,9 +55,10 @@ const MisClientes = () => {
 
           <Button
             mt={4}
-            bgColor={colors.accent} // Fondo de acento
-            color={colors.dark} // Texto oscuro
+            bgColor={colors.secondary} // Fondo de acento
+            color={colors.white} // Texto oscuro
             _hover={{ bgColor: colors.primary, color: colors.neutral }} // Cambio de color al pasar el mouse
+            onClick={() => navigate(`/cliente/${cliente}`)}
           >
             Ver
           </Button>

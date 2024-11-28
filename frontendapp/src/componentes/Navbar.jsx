@@ -15,10 +15,10 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import colors from '../constantes/colores'
-
+import { useUserRole } from '../context/useUserRole'
 function Navbar () {
   const { isOpen, onOpen, onClose } = useDisclosure()
-
+  const userRol = useUserRole()
   const navigate = useNavigate()
 
   // Función para manejar el logout
@@ -26,6 +26,7 @@ function Navbar () {
     try {
       // Hacemos la petición al servidor para cerrar sesión
       await axios.post(ENDPOINTS.USER.LOGOUT, { withCredentials: true })
+      userRol.setLogueado(false)
       navigate('/')
     } catch (error) {
       console.error('Error al hacer logout:', error)
@@ -34,7 +35,7 @@ function Navbar () {
 
   return (
     <ChakraProvider>
-      <Box bg={colors.primary} px={4}>
+      <Box bg={colors.primary} px={3}>
         <Flex h={16} alignItems='center' justifyContent='space-between'>
           <Box fontWeight='bold' color='white'>MiLogo</Box>
 
@@ -70,13 +71,14 @@ function Navbar () {
 }
 
 function NavLink ({ href, label }) {
+  const navigate = useNavigate()
   return (
     <Link
-      href={href}
+      onClick={() => navigate(href)}
       px={2}
       py={1}
       rounded='md'
-      _hover={{ bg: 'blue.700', color: 'white' }}
+      _hover={{ bg: colors.secondary, color: colors.white }}
       _focus={{ boxShadow: 'outline' }}
       color='white'
       fontWeight='bold'
@@ -87,12 +89,13 @@ function NavLink ({ href, label }) {
 }
 
 const NavigationMenu = ({ handleLogout }) => {
+  const { role } = useUserRole()
   return (
     <>
       <NavLink href='/principal' label='Inicio' />
-      <NavLink href='/crearEntrenamiento' label='Nuevo Entrenamiento' />
+      {role === 'entrenador' && <NavLink href='/crearEntrenamiento' label='Nuevo Entrenamiento' />}
       <NavLink href='/perfil' label='Mi perfil' />
-      <Button onClick={handleLogout} colorScheme='red' variant='solid'>
+      <Button onClick={handleLogout} bg={colors.accent} variant='solid' color={colors.white} _hover={{ bg: colors.neutral }}>
         Logout
       </Button>
     </>

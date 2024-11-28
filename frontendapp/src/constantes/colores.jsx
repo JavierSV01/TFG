@@ -10,18 +10,17 @@ const colors = {
   sneutral: '#859987', // Color neutro: Perfecto para secciones de fondo o para equilibrar visualmente.
   sdark: '#4a4857', // Color oscuro: Úsalo para textos principales o detalles que requieran contraste.
 
-  // https://paletadecolores.com.mx/paleta/53ac59/3b8952/0f684b/03484c/1c232e/
-  aprimary: '#53ac59',
-  asecondary: '#3b8952',
-  aaccent: '#0f684b',
-  aneutral: '#03484c',
-  adark: '#1c232e',
+  aprimary: '#660708',
+  asecondary: '#ba181b',
+  aaccent: '#f38a1e',
+  aneutral: '#f5f3f4',
+  adark: '#0b090a',
 
-  primary: '#660708',
-  secondary: '#ba181b',
-  accent: '#FF9292',
-  neutral: '#f5f3f4',
-  dark: '#0b090a'
+  primary: '#000000',
+  secondary: '#333333',
+  accent: '#004492',
+  neutral: '#AFAFAF',
+  white: '#FFFFFF'
 
 }
 // https://paletadecolores.com.mx/paleta/6da67a/77b885/86c28b/859987/4a4857/

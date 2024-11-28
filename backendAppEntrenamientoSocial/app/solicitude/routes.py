@@ -43,7 +43,7 @@ def apply():
         
         existAsso = existAssociation(usuarioSolicitante, data["usuarioEntrenador"])
 
-        if not solicitud_existente:
+        if not solicitud_existente and not existAsso:
             solicitud = {
                 "usuarioCliente": usuarioSolicitante, 
                 "usuarioEntrenador": data["usuarioEntrenador"], 

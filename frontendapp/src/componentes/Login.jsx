@@ -3,12 +3,15 @@ import axios from 'axios'
 import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { ENDPOINTS } from '../constantes/endponits'
+import { useUserRole } from '../context/useUserRole'
+
 export function Login () {
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
   const passwordRef = useRef('')
   const [message, setMessage] = useState('')
   const navigate = useNavigate()
+  const userRol = useUserRole()
 
   // Función que se ejecuta al enviar el formulario
   const handleSubmit = async (e) => {
@@ -28,6 +31,7 @@ export function Login () {
         }
       })
       setMessage(response.data.mensaje || 'Inicio exitoso') // Muestra el mensaje del servidor o uno predeterminado
+      userRol.setLogueado(true)
       navigate('/principal')
     } catch (error) {
       const serverMessage = error.response?.data?.mensaje || 'Ocurrió un error. Inténtalo de nuevo.'

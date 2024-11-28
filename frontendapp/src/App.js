@@ -3,6 +3,7 @@ import { PaginaPrincipal } from './paginas/PaginaPrincipal'
 import { PaginaCreacionEntrenamiento } from './paginas/PaginaCreacionEntrenamiento'
 import { PaginaMiPerfil } from './paginas/PaginaMiPerfil'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { PaginaCliente } from './paginas/PaginaCliente'
 
 function App () {
   return (
@@ -12,6 +13,7 @@ function App () {
         <Route path='/principal' element={<PaginaPrincipal />} />
         <Route path='/crearEntrenamiento' element={<PaginaCreacionEntrenamiento />} />
         <Route path='/perfil' element={<PaginaMiPerfil />} />
+        <Route path='/cliente/:usuario' element={<PaginaCliente />} />
       </Routes>
     </Router>
   )

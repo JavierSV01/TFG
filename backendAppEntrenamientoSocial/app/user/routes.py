@@ -5,6 +5,7 @@ from .models import UserModel
 from pymongo.errors import DuplicateKeyError
 from . import user_bp
 from app.association.helpers import getClientsByTrainer
+from app.association.helpers import getAssociationByUser
 
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
@@ -155,3 +156,29 @@ def obtener_clientes():
         return dumps(clientes_list), 200, {'Content-Type': 'application/json'}
     except Exception as e:
         return jsonify({"message": "Error al obtener clientes"}), 500
+    
+
+@user_bp.route('/info', methods=['POST'])
+def obtener_usuario():
+    # Verificar que el usuario esté logueado
+
+    data = request.json
+    usuarioCliente = data.get('usuario')
+    try:
+        # Obtener la información del usuario
+        usuario_info = UserModel.find_by_username(usuarioCliente)
+        if not usuario_info:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+        
+        # Obtener la información de las asociaciones del usuario
+        asociaciones = getAssociationByUser(usuarioCliente)
+        asociaciones_list = list(asociaciones)
+        print("Error en las dos lineas de arriba")
+        # Combinar la información del usuario con las asociaciones
+        usuario_info['asociaciones'] = asociaciones_list
+
+        # Utilizamos `dumps` de `bson.json_util` para serializar correctamente los datos de MongoDB
+        return dumps(usuario_info), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return jsonify({"message": "Error al obtener la información del usuario"}), 500

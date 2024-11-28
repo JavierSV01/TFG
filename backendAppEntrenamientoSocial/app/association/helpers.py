@@ -8,3 +8,6 @@ def insertAssociation(association):
 
 def getClientsByTrainer(usuario_entrenador):
     return AssociationModel.getClientsByTrainer(usuario_entrenador)
+
+def getAssociationByUser(usuario_cliente):
+    return AssociationModel.getAssociationByUser(usuario_cliente)
