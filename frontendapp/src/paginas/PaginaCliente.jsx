@@ -13,8 +13,9 @@ import {
 } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
-import { useUserData } from '../hooks/useUserData'
 import { useParams } from 'react-router-dom'
+import { useAuthCheck } from '../hooks/useAuthCheck'
+import { useClientInfo } from '../hooks/useClientInfo'
 
 export function PaginaCliente () {
   // Datos de ejemplo para el cliente (esto normalmente vendría de una API o estado)
@@ -34,12 +35,15 @@ export function PaginaCliente () {
       { dia: 'Miércoles', comida: 'Salmón con quinoa' }
     ]
   }
-
+  const { authenticated, message } = useAuthCheck()
   const { usuario } = useParams()
-  const { userData } = useUserData(usuario)
+  const { userData } = useClientInfo(usuario)
 
   console.log(userData)
 
+  if (!authenticated) {
+    return <div>{message}</div>
+  }
   return (
     <ChakraProvider>
       <Navbar />
@@ -60,9 +64,10 @@ export function PaginaCliente () {
             <Stack spacing={5}>
               <Box>
                 <Heading as='h2' size='lg'>Información del Cliente</Heading>
-                <Text><strong>Nombre:</strong> {cliente.nombre}</Text>
-                <Text><strong>Edad:</strong> {cliente.edad} años</Text>
-                <Text><strong>Email:</strong> {cliente.email}</Text>
+                <Text><strong>Nombre:</strong> {userData?.datos?.nombre ? userData.datos.nombre : ''} </Text>
+                <Text><strong>Edad:</strong> {userData?.datos?.edad ? userData.datos.edad : ''} años</Text>
+                <Text><strong>Altura:</strong> {userData?.datos?.altura ? userData.datos.altura : ''}</Text>
+                <Text><strong>Objetivo:</strong> {userData?.datos?.objetivo ? userData.datos.objetivo : ''}</Text>
               </Box>
 
               <Divider />

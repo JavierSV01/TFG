@@ -3,14 +3,15 @@ import Navbar from '../componentes/Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { Box, Heading, List, ListItem, Flex, ChakraProvider } from '@chakra-ui/react'
 import { useUserRole } from '../context/useUserRole'
-import { GraficaPeso } from '../GraficaPeso'
 import SolicitudesAsesoramiento from '../componentes/SolicitudesAsesoramiento'
 import MisClientes from '../componentes/MisClientes'
 import colors from '../constantes/colores'
+import { MiPerfilCliente } from '../componentes/MiPerfilCliente'
 
 export function PaginaMiPerfil () {
   const { authenticated, message } = useAuthCheck()
   const { role } = useUserRole()
+
   const margen = 10
 
   if (!authenticated) {
@@ -66,61 +67,7 @@ export function PaginaMiPerfil () {
     )
   } else {
     return (
-      <ChakraProvider>
-        <Navbar />
-        <Box bg={colors.neutral} color={colors.white} minH='100vh' p={margen}>
-          <Flex direction='column' gap={margen}>
-
-            {/* Sección de "Mis Datos Personales" */}
-
-            <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-              <Heading color={colors.white} size='lg' mb={4}>Mis Datos Personales</Heading>
-              <List spacing={3}>
-                <ListItem>Nombre: Juan Pérez</ListItem>
-                <ListItem>Edad: 30 años</ListItem>
-                <ListItem>Altura: 1.75 m</ListItem>
-                <ListItem>Peso actual: 70 kg</ListItem>
-              </List>
-            </Box>
-
-            {/* Sección de "Evolución de Peso" y "Mi Evolución Física" */}
-            <Flex direction={{ base: 'column', md: 'row' }} gap={margen}>
-
-              {/* Gráfica de Evolución de Peso */}
-              <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1} display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-                <Heading color={colors.white} size='lg' mb={4}>Evolución de Peso</Heading>
-                {/* Aquí podrías integrar una librería de gráficos, como Chart.js o Recharts */}
-                <Box bg={colors.neutral} borderRadius='3xl' p={4}>
-                  {/* Espacio para la gráfica */}
-                  <GraficaPeso />
-                </Box>
-              </Box>
-
-              {/* Sección de "Mi Evolución Física" */}
-              <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1} display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-                <Heading color={colors.white} size='lg' mb={4}>Mi Evolución Física</Heading>
-                <Flex gap={4} wrap='wrap'>
-                  {/* Imágenes de evolución física */}
-                  <Box bg={colors.neutral} borderRadius='3xl' width='100px' height='100px' />
-                  <Box bg={colors.neutral} borderRadius='3xl' width='100px' height='100px' />
-                  <Box bg={colors.neutral} borderRadius='3xl' width='100px' height='100px' />
-                </Flex>
-              </Box>
-            </Flex>
-
-            {/* Sección de "Mis Notificaciones" */}
-
-            <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-              <Heading color={colors.white} size='lg' mb={4}>Mis Notificaciones</Heading>
-              <List spacing={3}>
-                <ListItem>Nueva recomendación de ejercicio</ListItem>
-                <ListItem>Actualización de dieta sugerida</ListItem>
-                <ListItem>Recordatorio: Próxima sesión programada</ListItem>
-              </List>
-            </Box>
-          </Flex>
-        </Box>
-      </ChakraProvider>
+      <MiPerfilCliente />
     )
   }
 }

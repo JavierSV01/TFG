@@ -32,6 +32,7 @@ react
 	npm install react-router-dom
 	npm i @chakra-ui/icons
 	npm install react-chartjs-2 chart.js
+	npm install react-hook-form
 
 
 	

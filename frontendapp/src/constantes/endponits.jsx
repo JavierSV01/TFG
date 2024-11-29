@@ -12,7 +12,10 @@ export const ENDPOINTS = {
     TRAINERS: `${BASE_URL}/user/trainers`,
     WORKOUT: `${BASE_URL}/user/workout`,
     CLIENTS: `${BASE_URL}/user/clients`,
-    INFO: `${BASE_URL}/user/info`
+    INFO: `${BASE_URL}/user/allinfo`,
+    NAME: `${BASE_URL}/user/username`,
+    UPDATE_DATA: `${BASE_URL}/user/data`,
+    CLIENT_INFO: `${BASE_URL}/user/clientinfo`
   },
 
   SOLICITUDE: {

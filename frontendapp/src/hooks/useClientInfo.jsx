@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 
-export const useUserData = (usuario) => {
+export const useClientInfo = (usuario) => {
   const [userData, setUserData] = useState(null) // Estado para los datos del usuario
   const [error, setError] = useState(null) // Estado para errores
   const [loading, setLoading] = useState(true) // Estado para manejo de carga
@@ -18,7 +18,7 @@ export const useUserData = (usuario) => {
         setError(null) // Resetear error previo
 
         axios.withCredentials = true
-        const response = await axios.post(ENDPOINTS.USER.INFO, data)
+        const response = await axios.post(ENDPOINTS.USER.CLIENT_INFO, data)
         console.log(response.data.usuario)
         setUserData(response.data) // Guardar los datos obtenidos
       } catch (err) {

@@ -51,5 +51,23 @@ class UserModel:
             {"$push": {"entrenamientos": workout}}
         )
         return result
+    
+    @staticmethod
+    def insert_data_for_user(user, workout):
+        db = UserModel().get_db()
+        result = db.usuarios.update_one(
+            {"usuario": user},
+            {"$push": {"entrenamientos": workout}}
+        )
+        return result
+    
+    @staticmethod
+    def update_data_for_user(user, data):
+        db = UserModel.get_db()
+        result = db.usuarios.update_one(
+            {"usuario": user},
+            {"$set": {"datos": data}}
+        )
+        return result.matched_count
 
     

@@ -44,5 +44,5 @@ class AssociationModel:
         })
         datos = []
         for asociacion in asociaciones:
-            datos.append({asociacion})
+            datos.append(asociacion)
         return datos
