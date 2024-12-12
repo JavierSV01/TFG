@@ -11,6 +11,7 @@ export const ENDPOINTS = {
     ROL: `${BASE_URL}/user/role`,
     TRAINERS: `${BASE_URL}/user/trainers`,
     WORKOUT: `${BASE_URL}/user/workout`,
+    WORKOUTS: `${BASE_URL}/user/workouts`,
     CLIENTS: `${BASE_URL}/user/clients`,
     INFO: `${BASE_URL}/user/allinfo`,
     NAME: `${BASE_URL}/user/username`,

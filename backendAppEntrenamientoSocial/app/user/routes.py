@@ -104,6 +104,17 @@ def obtener_entrenadores():
         return jsonify({"message": "Error al obtener entrenadores"}), 500
     
 
+@user_bp.route('/workouts', methods=['GET'])
+def get_workouts():
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+    usuario = session['usuario']
+    try:
+        entrenamientos = UserModel.get_workouts_for_user(usuario)
+        return dumps(entrenamientos), 200, {'Content-Type': 'application/json'}
+    except Exception:
+        return jsonify({"message": "Error al obtener entrenamientos"}), 500
+    
 
 
 
