@@ -3,10 +3,11 @@ from flask_pymongo import PyMongo  # Si usas PyMongo para MongoDB
 from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-# Inicializar extensiones
-mongo = PyMongo()
+
 
 def create_app():
+
+
     
     app = Flask(__name__)
 
@@ -22,17 +23,7 @@ def create_app():
     #app.config["MONGO_URI"] = "mongodb+srv://javier:javier@cluster0.i0x30.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     app.config["MONGO_URI"] = "mongodb+srv://javier:javier@cluster0.i0x30.mongodb.net/appEntrenamiento"
 
-    mongo.init_app(app)
 
-
-    # Realizar un "ping" para verificar la conexión a Atlas
-    try:
-        uri = app.config["MONGO_URI"]
-        client = MongoClient(uri, server_api=ServerApi('1'))
-        client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        print("Error al conectar a MongoDB:", e)
     
     from .user import user_bp as user_blueprint
     app.register_blueprint(user_blueprint, url_prefix='/user')
