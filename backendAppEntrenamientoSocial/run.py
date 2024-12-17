@@ -3,10 +3,6 @@ from dotenv import load_dotenv
 from app.config import Config
 import os
 
-load_dotenv()
-hostEnv = os.getenv('BACKEND_HOST')
-portEnv = os.getenv('BACKEND_PORT')
-
 app = create_app()
 
 if __name__ == "__main__":
