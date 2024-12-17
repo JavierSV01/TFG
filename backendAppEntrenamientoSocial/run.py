@@ -7,7 +7,7 @@ load_dotenv()
 hostEnv = os.getenv('BACKEND_HOST')
 portEnv = os.getenv('BACKEND_PORT')
 
-app = create_app(Config)
+app = create_app()
 
 if __name__ == "__main__":
     app.run()
