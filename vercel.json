@@ -1,0 +1,19 @@
+
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "backendAppEntrenamientoSocial/run.py",
+            "use": "@vercel/python",
+            "config": {
+                "installCommand": "pip install -r backendAppEntrenamientoSocial/requirements.txt"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "backendAppEntrenamientoSocial/run.py"
+        }
+    ]
+}
