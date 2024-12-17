@@ -7,7 +7,8 @@ from pymongo.server_api import ServerApi
 
 def create_app():
 
-
+    # Inicializar extensiones
+    mongo = PyMongo()
     
     app = Flask(__name__)
 
@@ -22,6 +23,8 @@ def create_app():
     #app.config["MONGO_URI"] = "mongodb://localhost:27017/appEntrenamiento"
     #app.config["MONGO_URI"] = "mongodb+srv://javier:javier@cluster0.i0x30.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     app.config["MONGO_URI"] = "mongodb+srv://javier:javier@cluster0.i0x30.mongodb.net/appEntrenamiento"
+
+    mongo.init_app(app)
 
 
     
