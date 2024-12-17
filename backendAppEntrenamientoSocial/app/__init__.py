@@ -41,4 +41,8 @@ def create_app(config_object):
     from .solicitude import solicitude_bp as sol_blueprint
     app.register_blueprint(sol_blueprint, url_prefix='/sol')
 
+    @app.route("/")
+    def home():
+        return "¡Hola desde Flask con Blueprints en Vercel!"
+
     return app
