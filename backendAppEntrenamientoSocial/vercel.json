@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
       {
-        "src": "runbasic.py",
+        "src": "run.py",
         "use": "@vercel/python"
       }
     ],
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "runbasic.py"
+        "dest": "run.py"
       }
     ]
   }
