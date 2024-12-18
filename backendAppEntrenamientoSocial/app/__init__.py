@@ -11,9 +11,9 @@ def create_app(config_object):
     app = Flask(__name__)
 
     CORS(app, supports_credentials=True, resources={r"/*": {
-        "origins": "http://localhost:3000",  # Dominios permitidos
+        "origins": "*",  # Dominios permitidos
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Métodos permitidos
-        "allow_headers": ["Content-Type", "Authorization"]  # Encabezados permitidos
+        "allow_headers": ["X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", "Content-Length", "Content-MD5", "Content-Type", "Date", "X-Api-Version", "Authorization"]  # Encabezados permitidos
     }})
 
     app.config.from_object(config_object)
