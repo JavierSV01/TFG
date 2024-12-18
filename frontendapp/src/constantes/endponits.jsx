@@ -1,6 +1,7 @@
-const backendHost = process.env.REACT_APP_BACKEND_HOST
-const backendPort = process.env.REACT_APP_BACKEND_PORT
-const BASE_URL = 'http://' + backendHost + ':' + backendPort
+// const backendHost = process.env.REACT_APP_BACKEND_HOST
+// const backendPort = process.env.REACT_APP_BACKEND_PORT
+// const BASE_URL = 'http://' + backendHost + ':' + backendPort
+const BASE_URL = 'http://tfg-backend-flask-8ty3osvwl-javiersv01s-projects.vercel.app'
 
 export const ENDPOINTS = {
   USER: {
