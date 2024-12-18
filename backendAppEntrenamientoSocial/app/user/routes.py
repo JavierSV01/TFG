@@ -31,7 +31,6 @@ def register():
 
 # Ruta para iniciar sesión
 @user_bp.route('/login', methods=['POST'])
-@cross_origin(origins=["*"])
 def login():
     datos = request.json  # Obtener datos enviados en formato JSON
     username = datos.get('usuario')
