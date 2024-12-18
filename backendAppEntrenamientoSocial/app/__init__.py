@@ -28,7 +28,7 @@ def create_app(config_object):
     def handle_preflight():
         if request.method == "OPTIONS":
             response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+            response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add("Access-Control-Allow-Credentials", "true")
             response.headers.add("Access-Control-Allow-Headers", "*")
             response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
