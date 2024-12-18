@@ -6,6 +6,7 @@ from pymongo.errors import DuplicateKeyError
 from . import user_bp
 from app.association.helpers import getClientsByTrainer
 from app.association.helpers import getAssociationByUser
+from flask_cors import cross_origin
 
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
@@ -30,6 +31,7 @@ def register():
 
 # Ruta para iniciar sesión
 @user_bp.route('/login', methods=['POST'])
+@cross_origin(origins=["*"])
 def login():
     datos = request.json  # Obtener datos enviados en formato JSON
     username = datos.get('usuario')
