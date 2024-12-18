@@ -10,11 +10,36 @@ def create_app(config_object):
     
     app = Flask(__name__)
 
-    CORS(app, resources={r"/*": {
-        "origins": "http://localhost:3000",  # Dominios permitidos
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Métodos permitidos
-        "allow_headers": ["X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", "Content-Length", "Content-MD5", "Content-Type", "Date", "X-Api-Version", "Authorization"]  # Encabezados permitidos
-    }})
+    # Configuración de CORS más específica
+    CORS(app, 
+        resources={r"/*": {
+            "origins": "http://localhost:3000",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", 
+                            "Content-Length", "Content-MD5", "Content-Type", "Date", 
+                            "X-Api-Version", "Authorization"],
+            "expose_headers": ["Content-Range", "X-Content-Range"],
+            "supports_credentials": True,
+            "max_age": 86400  # Cache preflight requests for 24 hours
+        }})
+
+    # Manejador específico para OPTIONS
+    @app.before_request
+    def handle_preflight():
+        if request.method == "OPTIONS":
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
+
+    # Asegurar headers en todas las respuestas
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
 
     #app.config.from_object(config_object)
     #app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permite compartir cookies entre sitios
