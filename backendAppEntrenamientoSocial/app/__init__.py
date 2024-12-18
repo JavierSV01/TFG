@@ -11,7 +11,7 @@ def create_app(config_object):
     app = Flask(__name__)
     # Configuración de CORS más específica
     CORS(app, resources={r"/*": {
-        "origins": "*",  # URL específica de tu frontend
+        "origins": "http://localhost:3000",  # URL específica de tu frontend
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": [
             "X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version",
@@ -22,17 +22,6 @@ def create_app(config_object):
         "supports_credentials": True,
         "max_age": 86400  # Cache preflight requests for 24 hours
     }})
-
-    # Manejador específico para OPTIONS
-    @app.before_request
-    def handle_preflight():
-        if request.method == "OPTIONS":
-            response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            response.headers.add("Access-Control-Allow-Credentials", "true")
-            response.headers.add("Access-Control-Allow-Headers", "*")
-            response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-            return response
 
     #app.config.from_object(config_object)
     #app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permite compartir cookies entre sitios
