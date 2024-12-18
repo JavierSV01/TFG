@@ -11,7 +11,7 @@ def create_app(config_object):
     app = Flask(__name__)
     # Configuración de CORS más específica
     CORS(app, resources={r"/*": {
-        "origins": "http://localhost:3000",  # URL específica de tu frontend
+        "origins": "*",  # URL específica de tu frontend
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": [
             "X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version",
