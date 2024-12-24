@@ -1,21 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { ENDPOINTS } from '../constantes/endponits'
 import { Box, Button, Heading, Stack } from '@chakra-ui/react'
+import { usePlantillasEntrenamiento } from '../hooks/usePlantillasEntrenamiento'
 
 function MisPlantillasEntrenamiento () {
-  const [plantillas, setPlantillas] = useState([])
-
-  useEffect(() => {
-    axios
-      .get(ENDPOINTS.USER.WORKOUTS)
-      .then((response) => {
-        setPlantillas(response.data)
-      })
-      .catch((error) => {
-        console.error('Error al obtener las plantillas:', error)
-      })
-  }, [])
+  const { plantillas } = usePlantillasEntrenamiento()
 
   return (
     <Box>
@@ -25,9 +12,12 @@ function MisPlantillasEntrenamiento () {
       <Stack spacing={6}>
         {plantillas.map((plantilla, index) => (
           <li key={index}>
-            <h2>{plantilla.title}</h2>
-            <Button size='sm' onClick={() => {}}>Botón 1</Button>
-            <Button size='sm' onClick={() => {}}>Botón 2</Button>
+            <h2>{plantilla.title}
+              <Button margin='2' size='sm' onClick={() => {}}>Botón 1</Button>
+              <Button margin='2' size='sm' onClick={() => {}}>Botón 2</Button>
+
+            </h2>
+
           </li>
         ))}
       </Stack>

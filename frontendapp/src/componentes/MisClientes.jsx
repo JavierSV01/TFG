@@ -32,9 +32,9 @@ const MisClientes = () => {
   return (
 
     <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
-      {clientes.map((cliente) => (
+      {clientes.map((cliente, index) => (
         <Box
-          key={cliente._id}
+          key={index}
           borderWidth='1px'
           borderRadius='md'
           p={4}

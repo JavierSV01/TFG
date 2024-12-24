@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
 import {
   Box,
   Grid,
@@ -9,26 +10,23 @@ import {
   Stack,
   Divider,
   VStack,
-  ChakraProvider
+  ChakraProvider,
+  Select,
+  Button,
+  HStack,
+  useToast
 } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
 import { useParams } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { useClientInfo } from '../hooks/useClientInfo'
+import { usePlantillasEntrenamiento } from '../hooks/usePlantillasEntrenamiento'
+import { ENDPOINTS } from '../constantes/endponits'
 
 export function PaginaCliente () {
-  // Datos de ejemplo para el cliente (esto normalmente vendría de una API o estado)
   const cliente = {
-    nombre: 'Juan Pérez',
-    edad: 28,
-    email: 'juan.perez@ejemplo.com',
     foto: 'https://img.decrypt.co/insecure/rs:fit:1920:0:0:0/plain/https://cdn.decrypt.co/wp-content/uploads/2024/11/chillguy-gID_7.jpg@webp', // Reemplaza con la URL de la foto del cliente
-    entrenamiento: [
-      { dia: 'Lunes', ejercicio: 'Sentadillas' },
-      { dia: 'Miércoles', ejercicio: 'Pesas' },
-      { dia: 'Viernes', ejercicio: 'Cardio' }
-    ],
     dieta: [
       { dia: 'Lunes', comida: 'Pollo con arroz y ensalada' },
       { dia: 'Martes', comida: 'Pasta con vegetales' },
@@ -37,12 +35,65 @@ export function PaginaCliente () {
   }
   const { authenticated, message } = useAuthCheck()
   const { usuario } = useParams()
-  const { userData } = useClientInfo(usuario)
+  const { userData, loading, error } = useClientInfo(usuario)
 
-  console.log(userData)
+  const [selectedOption, setSelectedOption] = useState('')
+  const { plantillas } = usePlantillasEntrenamiento()
+
+  const toast = useToast()
+
+  const handleChange = (e) => {
+    setSelectedOption(e.target.value)
+  }
+
+  const handlePostAgregarEntrenamiento = async () => {
+    console.log('Opción seleccionada:', selectedOption)
+    if (!selectedOption) {
+      console.log('No se ha seleccionado una opción')
+      toast({
+        title: 'Error',
+        description: 'Selecciona una opción antes de agregar un entrenamiento.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      return
+    }
+    try {
+      const idEntrenamiento = selectedOption
+      const data = {
+        cliente: usuario,
+        id_workout: idEntrenamiento
+      }
+      axios.defaults.withCredentials = true
+      const respuesta = await axios.post(ENDPOINTS.ASSOCIATION.ADDWORKOUT, data)
+      if (respuesta.status === 201) {
+        toast({
+          title: 'Entrenamiento agregado',
+          description: 'El entrenamiento fue agregado correctamente.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        })
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Hubo un error al agregar el entrenamiento.' + error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      console.error('Error en la petición:', error)
+    }
+  }
 
   if (!authenticated) {
     return <div>{message}</div>
+  } else if (loading) {
+    return <div>Cargando...</div>
+  } else if (error) {
+    return <div>Error: {error}</div>
   }
   return (
     <ChakraProvider>
@@ -73,14 +124,21 @@ export function PaginaCliente () {
               <Divider />
 
               <Box>
-                <Heading as='h3' size='md'>Entrenamiento de esta Semana</Heading>
-                <VStack align='start' spacing={3}>
-                  {cliente.entrenamiento.map((item, index) => (
-                    <Text key={index}>
-                      <strong>{item.dia}:</strong> {item.ejercicio}
-                    </Text>
-                  ))}
-                </VStack>
+                <Heading as='h3' size='md'>Entrenamiento</Heading>
+                <Box p={4}>
+                  <HStack spacing={4}>
+                    <Select placeholder='Selecciona una opción' onChange={handleChange}>
+                      {plantillas.map((plantilla, index) => (
+                        <option key={index} value={plantilla.title}>
+                          {plantilla.title}
+                        </option>
+                      ))}
+                    </Select>
+                    <Button colorScheme='blue' onClick={handlePostAgregarEntrenamiento}>
+                      Agregar
+                    </Button>
+                  </HStack>
+                </Box>
               </Box>
 
               <Divider />

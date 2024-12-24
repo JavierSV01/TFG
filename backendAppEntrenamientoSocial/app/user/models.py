@@ -67,3 +67,16 @@ class UserModel:
         db = UserModel.get_db()
         usuario = db["usuarios"].find_one({"usuario": user}, {"plantillasDeEntrenamiento": 1})
         return usuario.get("plantillasDeEntrenamiento", [])
+    
+    @staticmethod
+    def get_one_workout_for_user(user, workoutTitle):
+        db = UserModel.get_db()
+        usuario = db["usuarios"].find_one({"usuario": user}, {"plantillasDeEntrenamiento": 1})
+        workouts = usuario.get("plantillasDeEntrenamiento", [])
+        workoutResult = []
+        for workout in workouts:
+            print(workout.get("title"), workoutTitle)
+            if workout.get("title") == workoutTitle:
+                workoutResult.append(workout)
+                return workoutResult
+        return None

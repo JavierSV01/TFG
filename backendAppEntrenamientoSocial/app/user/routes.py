@@ -111,7 +111,8 @@ def get_workouts():
     usuario = session['usuario']
     try:
         entrenamientos = UserModel.get_workouts_for_user(usuario)
-        return dumps(entrenamientos), 200, {'Content-Type': 'application/json'}
+        entrenamientos_list = list(entrenamientos)
+        return dumps(entrenamientos_list), 200, {'Content-Type': 'application/json'}
     except Exception:
         return jsonify({"message": "Error al obtener entrenamientos"}), 500
     
@@ -251,7 +252,10 @@ def obtener_info_cliente():
         # Combinar la información del usuario con las asociaciones
         info_permitida['asociacion'] = asociaciones_list
 
+        if(len(asociaciones_list) == 0):
+            return jsonify({"error": "No tienes permiso para ver la información de este cliente"}), 403
+
         # Utilizamos `dumps` de `bson.json_util` para serializar correctamente los datos de MongoDB
         return dumps(info_permitida), 200, {'Content-Type': 'application/json'}
     except Exception as e:
-        return jsonify({"message": "Error al obtener la información del cliente"}), 500
+        return jsonify({"error": "Error al obtener la información del cliente"}), 500

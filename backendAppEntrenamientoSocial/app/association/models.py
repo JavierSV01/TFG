@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-from flask import current_app
+from flask import current_app, json
+from app.user.helpers import get_one_workout_for_user
 
 class AssociationModel:
     @staticmethod
@@ -46,3 +47,11 @@ class AssociationModel:
         for asociacion in asociaciones:
             datos.append(asociacion)
         return datos
+    
+    @staticmethod
+    def insert_workout(usuario_cliente, usuario_entrenador, entrenamiento, date):
+        db = AssociationModel.get_db()
+        db.asesoramientos.update_one(
+            {"usuarioCliente": usuario_cliente, "usuarioEntrenador": usuario_entrenador},
+            {"$push": {"entrenamientos": {"entrenamiento": entrenamiento, "fecha": date}}}
+        )

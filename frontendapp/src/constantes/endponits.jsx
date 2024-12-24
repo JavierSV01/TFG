@@ -23,5 +23,8 @@ export const ENDPOINTS = {
     MYSOLICITUDE: `${BASE_URL}/sol/mysolicitude`,
     APPLY: `${BASE_URL}/sol/apply`,
     ACCEPT: `${BASE_URL}/sol/accept`
+  },
+  ASSOCIATION: {
+    ADDWORKOUT: `${BASE_URL}/ass/addworkout`
   }
 }

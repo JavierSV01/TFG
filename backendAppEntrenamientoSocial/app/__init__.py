@@ -27,4 +27,7 @@ def create_app(config_object):
     from .solicitude import solicitude_bp as sol_blueprint
     app.register_blueprint(sol_blueprint, url_prefix='/sol')
 
+    from .association import association_bp as ass_blueprint
+    app.register_blueprint(ass_blueprint, url_prefix='/ass')
+
     return app

@@ -19,10 +19,12 @@ export const useClientInfo = (usuario) => {
 
         axios.withCredentials = true
         const response = await axios.post(ENDPOINTS.USER.CLIENT_INFO, data)
-        console.log(response.data.usuario)
-        setUserData(response.data) // Guardar los datos obtenidos
+        if (response.status === 200) {
+          setUserData(response.data) // Guardar los datos obtenidos
+        }
       } catch (err) {
-        setError(err.message || 'Error fetching user data') // Manejar errores
+        console.log(err.response.data.error)
+        setError(err.response.data.error || 'Error fetching user data') // Manejar errores
       } finally {
         setLoading(false) // Desactivar estado de carga
       }
