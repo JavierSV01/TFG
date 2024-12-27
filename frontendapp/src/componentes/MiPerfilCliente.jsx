@@ -8,6 +8,7 @@ import { useUserData } from '../hooks/useUserData'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
+import MisEntrenadores from './MisEntrenadores'
 
 export function MiPerfilCliente () {
   const { username } = useUserNameId()
@@ -93,12 +94,8 @@ export function MiPerfilCliente () {
             </Box>
 
             <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1} display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-              <Heading color={colors.white} size='lg' mb={4}>Mi Evolución Física</Heading>
-              <Flex gap={4} wrap='wrap'>
-                <Box bg={colors.neutral} borderRadius='3xl' width='100px' height='100px' />
-                <Box bg={colors.neutral} borderRadius='3xl' width='100px' height='100px' />
-                <Box bg={colors.neutral} borderRadius='3xl' width='100px' height='100px' />
-              </Flex>
+              <Heading color={colors.white} size='lg' mb={4}>Mis entrenadores</Heading>
+              <MisEntrenadores />
             </Box>
           </Flex>
 

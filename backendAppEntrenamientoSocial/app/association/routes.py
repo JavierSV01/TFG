@@ -4,6 +4,8 @@ from . import association_bp
 from .models import AssociationModel
 from app.user.helpers import get_one_workout_for_user
 from pymongo.errors import DuplicateKeyError
+from bson.json_util import dumps
+
 
 @association_bp.route('/addworkout', methods=['POST'])
 def addworkout():
@@ -32,3 +34,16 @@ def addworkout():
         
     else:
         return jsonify({"mensaje": "Faltan datos"}), 400
+    
+@association_bp.route('/myassociations', methods=['GET'])
+def get_associations():
+    if 'usuario' in session:
+        usuario = session['usuario']
+    else:
+        return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+    associations = AssociationModel.getAssociationByUser(usuario)
+    if associations:
+        return dumps({"associations": associations}), 200
+    else:
+        return jsonify({"mensaje": "No se encontraron asociaciones"}), 404

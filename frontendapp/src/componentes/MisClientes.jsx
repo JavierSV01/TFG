@@ -39,14 +39,14 @@ const MisClientes = () => {
           borderRadius='md'
           p={4}
           boxShadow='md'
-          background={colors.neutral} // Fondo principal
-          color='black' // Texto blanco
-          borderColor='white' // Borde blanco
-          display='flex' // Usamos flexbox para alinear el contenido
-          flexDirection='column' // Aseguramos que el contenido se apile en columna
-          justifyContent='center' // Centrado vertical
-          alignItems='center' // Centrado horizontal
-          textAlign='center' // Aseguramos que el texto esté centrado
+          background={colors.neutral}
+          color='black'
+          borderColor='white'
+          display='flex'
+          flexDirection='column'
+          justifyContent='center'
+          alignItems='center'
+          textAlign='center'
           height='100%'
         >
           <Heading as='h3' size='md' mb={2}>
