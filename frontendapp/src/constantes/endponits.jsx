@@ -25,7 +25,7 @@ export const ENDPOINTS = {
     ACCEPT: `${BASE_URL}/sol/accept`
   },
   ASSOCIATION: {
-    ADDWORKOUT: `${BASE_URL}/ass/getassociations`,
+    ADDWORKOUT: `${BASE_URL}/ass/addworkout`,
     GETASSOCITIONSBYUSER: `${BASE_URL}/ass/myassociations`
   }
 }

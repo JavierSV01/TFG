@@ -14,7 +14,8 @@ import {
   Select,
   Button,
   HStack,
-  useToast
+  useToast,
+  IconButton
 } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
@@ -23,6 +24,7 @@ import { useAuthCheck } from '../hooks/useAuthCheck'
 import { useClientInfo } from '../hooks/useClientInfo'
 import { usePlantillasEntrenamiento } from '../hooks/usePlantillasEntrenamiento'
 import { ENDPOINTS } from '../constantes/endponits'
+import { ViewIcon, DeleteIcon } from '@chakra-ui/icons'
 
 export function PaginaCliente () {
   const cliente = {
@@ -35,7 +37,7 @@ export function PaginaCliente () {
   }
   const { authenticated, message } = useAuthCheck()
   const { usuario } = useParams()
-  const { userData, loading, error } = useClientInfo(usuario)
+  const { userData, loading, error, reload } = useClientInfo(usuario)
 
   const [selectedOption, setSelectedOption] = useState('')
   const { plantillas } = usePlantillasEntrenamiento()
@@ -67,7 +69,10 @@ export function PaginaCliente () {
       }
       axios.defaults.withCredentials = true
       const respuesta = await axios.post(ENDPOINTS.ASSOCIATION.ADDWORKOUT, data)
+
       if (respuesta.status === 201) {
+        reload()
+        setSelectedOption('')
         toast({
           title: 'Entrenamiento agregado',
           description: 'El entrenamiento fue agregado correctamente.',
@@ -111,7 +116,7 @@ export function PaginaCliente () {
               <Image src={cliente.foto} alt='Foto del cliente' boxSize='100%' objectFit='cover' />
             </Box>
           </GridItem>
-          <GridItem margin='0 auto'>
+          <GridItem margin={5}>
             <Stack spacing={5}>
               <Box>
                 <Heading as='h2' size='lg'>Información del Cliente</Heading>
@@ -126,7 +131,57 @@ export function PaginaCliente () {
               <Box>
                 <Heading as='h3' size='md'>Entrenamiento</Heading>
                 <Box p={4}>
-                  <HStack spacing={4}>
+
+                  {userData.asociacion?.map((asociacion, idx) => (
+                    <div key={asociacion._id.$oid} alignItems='center'>
+                      {asociacion.entrenamientos?.map((entrenamiento, entIdx) => {
+                      // Convierte la fecha a formato local
+                        const fecha = new Date(entrenamiento.fecha.$date).toLocaleString()
+                        // Asume que solo quieres mostrar el primer elemento del array "entrenamiento"
+                        const [detalle] = entrenamiento.entrenamiento
+
+                        return (
+                          <div key={entIdx}>
+                            <Box
+                              p={2}
+                              mb={2}
+                              display='flex'
+                              alignItems='center'
+                              textColor={colors.primary}
+                              fontSize={16}
+                            >
+                              <Box width='65%'>
+                                <Text>Entrenamiento: {detalle?.title}</Text>
+                                <Text>Fecha: {fecha}</Text>
+                              </Box>
+                              <Box width='35%' textAlign='end'>
+                                <IconButton
+                                  icon={<ViewIcon />}
+                                  aria-label='Ver'
+                                  bgColor={colors.secondary}
+                                  textColor={colors.white}
+                                  _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                                />
+                                <IconButton
+                                  icon={<DeleteIcon />}
+                                  aria-label='Borrar'
+                                  bgColor={colors.secondary}
+                                  textColor={colors.white}
+                                  _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                                  ml={2}
+                                />
+                              </Box>
+                            </Box>
+                            <Box position='relative'>
+                              <Divider borderColor={colors.white} />
+                            </Box>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ))}
+
+                  <HStack mt={2} spacing={4}>
                     <Select placeholder='Selecciona una opción' onChange={handleChange}>
                       {plantillas.map((plantilla, index) => (
                         <option key={index} value={plantilla.title}>

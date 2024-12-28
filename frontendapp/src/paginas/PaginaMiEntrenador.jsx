@@ -1,9 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
-import { ChakraProvider, Box, Heading, Text } from '@chakra-ui/react'
+import { ChakraProvider, Box, Heading, Text, Button, Divider, AbsoluteCenter } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
+import colors from '../constantes/colores'
 
 export function PaginaMiEntrenador () {
   const { authenticated, message } = useAuthCheck()
@@ -18,24 +19,56 @@ export function PaginaMiEntrenador () {
     return (
       <ChakraProvider>
         <Navbar />
-        <Box w='30%' display='flex' gap={4} p={4}>
-          <Box borderWidth='1px' borderRadius='md' p={4}>
-            <Heading size='md' mb={4}>Lista de Entrenamientos</Heading>
-            {asociacion.entrenamientos?.map((entrenamiento, idx) => (
-              <Box key={idx} mb={2} p={2} borderWidth='1px' borderRadius='md'>
-                <Text fontWeight='bold'>{entrenamiento.entrenamiento.title}</Text>
-                <Text fontSize='sm'>{entrenamiento.entrenamiento.description}</Text>
-              </Box>
-            ))}
+        <Box bg={colors.neutral} color={colors.white} minH='100vh' p={2}>
+
+          <Heading textAlign='center' size='lg' m={4} textColor={colors.primary}>Asesoria de {entrenador}</Heading>
+          <Box position='relative' padding='10'>
+            <Divider borderColor={colors.primary} />
+            <AbsoluteCenter textColor={colors.primary} bg={colors.neutral} px='4' fontSize={24}>Entrenamientos</AbsoluteCenter>
           </Box>
-          <Box flex='1' borderWidth='1px' borderRadius='md' p={4}>
-            <Heading size='md' mb={4}>Detalle de Entrenamiento</Heading>
-            <Text>Aquí va el detalle del entrenamiento seleccionado.</Text>
-          </Box>
+          {asociacion.entrenamientos?.map((entrenamiento, idx) => {
+            // Convierte la fecha a formato local
+            const fecha = new Date(entrenamiento.fecha.$date).toLocaleString()
+            // Asume que solo quieres mostrar el primer elemento del array "entrenamiento"
+            const [detalle] = entrenamiento.entrenamiento
+
+            return (
+              <div key={idx} alignItems='center'>
+                <Box
+                  key={idx}
+                  p={2}
+                  mb={2}
+                  pl={{ base: 0, lg: 20 }}
+                  pr={{ base: 0, lg: 20 }}
+                  ml={10}
+                  mr={10}
+                  display='flex'
+                  alignItems='center'
+                  textColor={colors.primary}
+                >
+                  <Box width='70%' m={2} p={2}>
+                    <Text>Título: {detalle?.title}</Text>
+                    <Text>Descripción: {detalle?.description}</Text>
+                    <Text>Fecha: {fecha}</Text>
+                  </Box>
+                  <Box width='30%' m={2} p={2} textAlign='end'>
+                    <Button
+                      bgColor={colors.secondary} textColor={colors.white}
+                      _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                    >
+                      Ver
+                    </Button>
+                  </Box>
+
+                </Box>
+                <Box position='relative' pl={12} pr={12}>
+                  <Divider borderColor={colors.white} />
+                </Box>
+              </div>
+
+            )
+          })}
         </Box>
-        <div>
-          <h1>Mi Entrenador : {entrenador}</h1>
-        </div>
       </ChakraProvider>
     )
   }

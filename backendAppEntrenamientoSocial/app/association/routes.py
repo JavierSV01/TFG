@@ -11,6 +11,8 @@ from bson.json_util import dumps
 def addworkout():
     if 'usuario' in session: 
         usuario = session['usuario']
+    else:
+        return jsonify({"mensaje": "Usuario no autenticado"}), 401
     data = request.json
 
     id_cliente = data.get('cliente')
