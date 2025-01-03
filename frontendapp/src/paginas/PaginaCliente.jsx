@@ -93,6 +93,32 @@ export function PaginaCliente () {
     }
   }
 
+  const handleDeleteEntrenamiento = async (usuarioCliente, workoutId) => {
+    try {
+      axios.defaults.withCredentials = true
+      await axios.delete(ENDPOINTS.ASSOCIATION.REMOVEWORKOUT, {
+        headers: { 'Content-Type': 'application/json' },
+        data: JSON.stringify({ cliente: usuarioCliente, id_workout: workoutId })
+      })
+      reload()
+      toast({
+        title: 'Entrenamiento borrado',
+        description: 'El entrenamiento fue borrado correctamente.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Hubo un error al borrar el entrenamiento. ' + error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+    }
+  }
+
   if (!authenticated) {
     return <div>{message}</div>
   } else if (loading) {
@@ -169,6 +195,7 @@ export function PaginaCliente () {
                                   textColor={colors.white}
                                   _hover={{ bgColor: colors.primary, color: colors.neutral }}
                                   ml={2}
+                                  onClick={() => handleDeleteEntrenamiento(asociacion.usuarioCliente, entrenamiento._id.$oid)}
                                 />
                               </Box>
                             </Box>

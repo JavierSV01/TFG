@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from flask import current_app, json
 from app.user.helpers import get_one_workout_for_user
+from bson.objectid import ObjectId
 
 class AssociationModel:
     @staticmethod
@@ -49,9 +50,18 @@ class AssociationModel:
         return datos
     
     @staticmethod
-    def insert_workout(usuario_cliente, usuario_entrenador, entrenamiento, date):
+    def insertWorkout(usuario_cliente, usuario_entrenador, entrenamiento, date):
         db = AssociationModel.get_db()
         db.asesoramientos.update_one(
             {"usuarioCliente": usuario_cliente, "usuarioEntrenador": usuario_entrenador},
-            {"$push": {"entrenamientos": {"entrenamiento": entrenamiento, "fecha": date}}}
+            {"$push": {"entrenamientos": {"_id":ObjectId(),"entrenamiento": entrenamiento, "fecha": date}}}
         )
+    
+    @staticmethod
+    def removeWorkout(usuario_cliente, usuario_entrenador, id_workout):
+        db = AssociationModel.get_db()
+        result = db.asesoramientos.update_one(
+            {"usuarioCliente": usuario_cliente, "usuarioEntrenador": usuario_entrenador},
+            {"$pull": {"entrenamientos": {"_id": ObjectId(id_workout)}}}
+        )
+        return result
