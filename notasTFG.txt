@@ -27,6 +27,7 @@ python3 3.13.3
 	
 	
 react 
+	//Tener cuidado con las versiones. Alinstalarlo por primera vez habra versiones mas nuevas que en el repo de github
 	sudo apt install npm
 	npm install axios
 	npm install react-router-dom
