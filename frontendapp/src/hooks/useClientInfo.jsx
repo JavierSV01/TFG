@@ -25,10 +25,24 @@ export const useClientInfo = (usuario) => {
       setLoading(false) // Desactivar estado de carga
     }
   }
+
+  const fetchUserDataReload = async () => {
+    try {
+      const data = { usuario }
+
+      axios.withCredentials = true
+      const response = await axios.post(ENDPOINTS.USER.CLIENT_INFO, data)
+      if (response.status === 200) {
+        setUserData(response.data) // Guardar los datos obtenidos
+      }
+    } catch (err) {
+      console.log(err.response.data.error)
+    }
+  }
   useEffect(() => {
     if (!usuario) return
     fetchUserData()
   }, []) // Ejecutar efecto cuando cambia `userId`
 
-  return { userData, loading, error, reload: fetchUserData } // Retornar datos, estado de carga y errores
+  return { userData, loading, error, reload: fetchUserDataReload } // Retornar datos, estado de carga y errores
 }
