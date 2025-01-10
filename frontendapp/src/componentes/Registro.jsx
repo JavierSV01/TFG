@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text, Radio, RadioGroup } from '@chakra-ui/react'
 import { ENDPOINTS } from '../constantes/endponits'
+import colors from '../constantes/colores'
+
 export function Registro () {
   // Usar refs para capturar valores de los campos
   const usernameRef = useRef('')
@@ -66,17 +68,17 @@ export function Registro () {
             <Text fontSize='xl' mb={4}>Selecciona tu rol:</Text>
             <RadioGroup onChange={handleRoleChange} value={role}>
               <Stack direction='row' spacing={4}>
-                <Radio value='entrenador' colorScheme='blue'>
+                <Radio value='entrenador' colorScheme='blackAlpha'>
                   Entrenador
                 </Radio>
-                <Radio value='cliente' colorScheme='blue'>
+                <Radio value='cliente' colorScheme='blackAlpha'>
                   Cliente
                 </Radio>
               </Stack>
             </RadioGroup>
 
             {message && <Text color='red.500'>{message}</Text>}
-            <Button colorScheme='blue' type='submit' w='100%'>
+            <Button bgColor={colors.primary} _hover={{ bgColor: colors.neutral }} textColor={colors.white} type='submit' w='100%'>
               Registrarme como {role === 'entrenador' ? 'Entrenador' : 'Cliente'}
             </Button>
           </Stack>

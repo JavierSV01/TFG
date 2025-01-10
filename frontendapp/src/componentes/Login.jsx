@@ -4,6 +4,7 @@ import { Box, Button, Input, FormControl, FormLabel, Heading, Stack, Text } from
 import { useNavigate } from 'react-router-dom'
 import { ENDPOINTS } from '../constantes/endponits'
 import { useUserRole } from '../context/useUserRole'
+import colors from '../constantes/colores'
 
 export function Login () {
   // Usar refs para capturar valores de los campos
@@ -57,7 +58,7 @@ export function Login () {
               <Input ref={passwordRef} id='password' type='password' placeholder='Enter your password' />
             </FormControl>
             {message && <Text color='red.500'>{message}</Text>}
-            <Button colorScheme='blue' type='submit' w='100%'>
+            <Button bgColor={colors.primary} _hover={{ bgColor: colors.neutral }} textColor={colors.white} type='submit' w='100%'>
               Login
             </Button>
           </Stack>

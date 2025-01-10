@@ -2,6 +2,7 @@ import { Login } from '../componentes/Login'
 import { ChakraProvider, Box, Button, HStack } from '@chakra-ui/react'
 import { Registro } from '../componentes/Registro'
 import { useState } from 'react'
+import colors from '../constantes/colores'
 
 export function PaginaLogin () {
   const [isLogin, setIsLogin] = useState(true)
@@ -12,7 +13,7 @@ export function PaginaLogin () {
         display='flex'
         alignItems='center'
         justifyContent='center'
-        bg='gray.100'
+        bg={colors.neutral}
       >
         <Box
           bg='white'
@@ -24,14 +25,18 @@ export function PaginaLogin () {
 
           <HStack spacing={4} mb={6}>
             <Button
-              colorScheme={isLogin ? 'blue' : 'gray'}
+              bgColor={isLogin ? colors.primary : colors.neutral}
+              textColor={isLogin ? colors.white : colors.primary}
+              _hover={{ bgColor: colors.white, textColor: colors.primary }}
               onClick={() => setIsLogin(true)}
               width='full'
             >
               Iniciar Sesión
             </Button>
             <Button
-              colorScheme={!isLogin ? 'blue' : 'gray'}
+              bgColor={!isLogin ? colors.primary : colors.neutral}
+              textColor={!isLogin ? colors.white : colors.primary}
+              _hover={{ bgColor: colors.white, textColor: colors.primary }}
               onClick={() => setIsLogin(false)}
               width='full'
             >
