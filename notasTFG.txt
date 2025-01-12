@@ -37,5 +37,6 @@ react
 
 
 	
+to do 
 
-	
+- error al volver ha hacer login sin hacer logout. No recarga nuevo tipo de perfil mantiene el anterior

@@ -5,6 +5,8 @@ import { PaginaMiPerfil } from './paginas/PaginaMiPerfil'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { PaginaCliente } from './paginas/PaginaCliente'
 import { PaginaMiEntrenador } from './paginas/PaginaMiEntrenador'
+import { PaginaMiEntrenamiento } from './paginas/PaginaMiEntrenamiento'
+import { PaginaDiaEntrenamiento } from './paginas/PaginaDiaEntrenamieto'
 
 function App () {
   return (
@@ -16,7 +18,8 @@ function App () {
         <Route path='/perfil' element={<PaginaMiPerfil />} />
         <Route path='/cliente/:usuario' element={<PaginaCliente />} />
         <Route path='/entrenador/:entrenador' element={<PaginaMiEntrenador />} />
-
+        <Route path='/entrenador/:entrenador/:idEntrenamiento' element={<PaginaMiEntrenamiento />} />
+        <Route path='/entrenador/:entrenador/:idEntrenamiento/:semIndex/:dayIndex' element={<PaginaDiaEntrenamiento />} />
       </Routes>
     </Router>
   )

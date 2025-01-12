@@ -35,6 +35,7 @@ export function PaginaCliente () {
       { dia: 'Miércoles', comida: 'Salmón con quinoa' }
     ]
   }
+
   const { authenticated, message } = useAuthCheck()
   const { usuario } = useParams()
   const { userData, loading, error, reload } = useClientInfo(usuario)

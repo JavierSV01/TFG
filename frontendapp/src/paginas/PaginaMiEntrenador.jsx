@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Heading, Text, Button, Divider, AbsoluteCenter } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
@@ -11,6 +11,9 @@ export function PaginaMiEntrenador () {
   const { entrenador } = useParams()
   const asociaciones = useMisAsociaciones()
   const asociacion = asociaciones.find(asociacion => asociacion.usuarioEntrenador === entrenador)
+
+  const navigate = useNavigate()
+
   if (!authenticated) {
     return <div>{message}</div>
   } else if (!asociacion) {
@@ -55,6 +58,7 @@ export function PaginaMiEntrenador () {
                     <Button
                       bgColor={colors.secondary} textColor={colors.white}
                       _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                      onClick={() => navigate(`/entrenador/${entrenador}/${entrenamiento._id.$oid}`)}
                     >
                       Ver
                     </Button>
