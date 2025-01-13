@@ -1,5 +1,5 @@
-import React from 'react'
-import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import { useParams } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
@@ -10,7 +10,18 @@ export function PaginaDiaEntrenamiento () {
   const { authenticated, message } = useAuthCheck()
   const { entrenador, idEntrenamiento, semIndex, dayIndex } = useParams()
   const asociaciones = useMisAsociaciones()
-
+  const [contador, setContador] = useState(0)
+  let handleButtonAddSerie = null
+  const handleInputPesoChange = (exerciseIndex, serieIndex, value, diaEntrenamiento) => {
+    diaEntrenamiento[exerciseIndex].series[serieIndex].weight = value
+    const nuevoValor = contador + 1
+    setContador(nuevoValor)
+  }
+  const handleInputRepsChange = (exerciseIndex, serieIndex, value, diaEntrenamiento) => {
+    diaEntrenamiento[exerciseIndex].series[serieIndex].reps = value
+    const nuevoValor = contador + 1
+    setContador(nuevoValor)
+  }
   if (!authenticated) {
     return <div>{message}</div>
   } else if (asociaciones) {
@@ -21,6 +32,15 @@ export function PaginaDiaEntrenamiento () {
       entrenamientoEncontrado = asociacion.entrenamientos.find(
         ent => ent._id.$oid === idEntrenamiento
       )
+      handleButtonAddSerie = (exerciseIndex) => {
+        const nuevoValor = contador + 1
+        setContador(nuevoValor)
+        if (!diaEntrenamiento[exerciseIndex].series) {
+          diaEntrenamiento[exerciseIndex].series = []
+        }
+        diaEntrenamiento[exerciseIndex].series.push({ reps: 0, weight: 0 })
+        console.log(diaEntrenamiento)
+      }
       diaEntrenamiento = entrenamientoEncontrado.entrenamiento[0].weeks[semIndex].days[dayIndex].exercises
       console.log(diaEntrenamiento.exercises)
     } else {
@@ -44,19 +64,91 @@ export function PaginaDiaEntrenamiento () {
             <Text m={8} fontSize='xl' fontWeight='semibold'>
               Semana: {parseInt(semIndex) + 1} - Día {parseInt(dayIndex) + 1}
             </Text>
-            {diaEntrenamiento && diaEntrenamiento.map((ejercicio, index) => (
-              <Box key={index} m={6}>
-                <Box position='relative'>
-                  <Divider borderColor={colors.primary} />
-                  <AbsoluteCenter textColor={colors.primary} bg={colors.neutral} px='4' fontSize={18}>{ejercicio.name}</AbsoluteCenter>
+            {diaEntrenamiento && diaEntrenamiento.map((ejercicio, index) => {
+              return (
+                <Box key={index} m={6} p={4}>
+                  <Box position='relative' mb={4}>
+                    <Divider borderColor={colors.primary} />
+                    <AbsoluteCenter textColor={colors.primary} bg={colors.neutral} px='4' fontSize={18}>{ejercicio.name}</AbsoluteCenter>
+                  </Box>
+                  <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4}>
+                    <GridItem p={2}>
+                      <Text>Series Base: {ejercicio.sets}</Text>
+                      <Text>Repeticiones Base: {ejercicio.reps}</Text>
+                      <Text>Descanso Base: {ejercicio.rir}</Text>
+                      <Text htmlFor={`additional-info-${index}`}>Información Adicional:</Text>
+                      <Input
+                        id={`additional-info-${index}`}
+                        placeholder='Ingresa detalles adicionales'
+                        size='md'
+                      />
+                    </GridItem>
+                    <GridItem p={2}>
+                      <Button size='sm' onClick={() => handleButtonAddSerie(index)}>
+                        Agregar serie
+                      </Button>
+                      {ejercicio.series?.map((serie, sIndex) => (
+                        <Box key={sIndex} mt={2}>
+
+                          <Text>Serie {sIndex + 1}</Text>
+                          <Grid templateColumns='1fr 1fr' gap={4}>
+                            <GridItem
+                              display='flex'
+                              flexDirection='column'
+                              alignItems='center'
+                              justifyContent='center'
+                              textAlign='center'
+                            >
+                              <Text>Peso: </Text>
+                            </GridItem>
+                            <GridItem>
+                              <NumberInput
+                                value={serie.weight} // Usa el valor de la serie actual
+                                onChange={(value) => handleInputPesoChange(index, sIndex, value, diaEntrenamiento)}
+                                min={0}
+                              >
+                                <NumberInputField />
+                                <NumberInputStepper>
+                                  <NumberIncrementStepper />
+                                  <NumberDecrementStepper />
+                                </NumberInputStepper>
+                              </NumberInput>
+                            </GridItem>
+                          </Grid>
+
+                          <Grid templateColumns='1fr 1fr' gap={4}>
+                            <GridItem
+                              display='flex'
+                              flexDirection='column'
+                              alignItems='center'
+                              justifyContent='center'
+                              textAlign='center'
+                            >
+                              <Text>Reps: </Text>
+                            </GridItem>
+                            <GridItem>
+                              <NumberInput
+                                value={serie.reps} // Usa el valor de la serie actual
+                                onChange={(value) => handleInputRepsChange(index, sIndex, value, diaEntrenamiento)}
+                                min={0}
+                              >
+                                <NumberInputField />
+                                <NumberInputStepper>
+                                  <NumberIncrementStepper />
+                                  <NumberDecrementStepper />
+                                </NumberInputStepper>
+                              </NumberInput>
+                            </GridItem>
+                          </Grid>
+
+                        </Box>
+                      ))}
+                    </GridItem>
+                  </Grid>
+
                 </Box>
-                <Box m={2}>
-                  <Text>Series: {ejercicio.sets}</Text>
-                  <Text>Repeticiones: {ejercicio.reps}</Text>
-                  <Text>Descanso: {ejercicio.rir}</Text>
-                </Box>
-              </Box>
-            ))}
+              )
+            })}
 
             <Box position='fixed' bottom='4' right='4'>
               <button style={{ padding: '10px 20px', backgroundColor: colors.primary, color: colors.white, border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
