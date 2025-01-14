@@ -27,6 +27,7 @@ export const ENDPOINTS = {
   ASSOCIATION: {
     ADDWORKOUT: `${BASE_URL}/ass/addworkout`,
     GETASSOCITIONSBYUSER: `${BASE_URL}/ass/myassociations`,
-    REMOVEWORKOUT: `${BASE_URL}/ass/removeworkout`
+    REMOVEWORKOUT: `${BASE_URL}/ass/removeworkout`,
+    UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`
   }
 }

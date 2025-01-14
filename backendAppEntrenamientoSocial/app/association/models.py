@@ -65,3 +65,12 @@ class AssociationModel:
             {"$pull": {"entrenamientos": {"_id": ObjectId(id_workout)}}}
         )
         return result
+    
+    @staticmethod
+    def updateWorkout(usuario_cliente, usuario_entrenador, id_workout, entrenamiento, estado, semIndex, dayIndex):
+        db = AssociationModel.get_db()
+        result = db.asesoramientos.update_one(
+            {"usuarioCliente": usuario_cliente, "usuarioEntrenador": usuario_entrenador, "entrenamientos._id": ObjectId(id_workout)},
+            {"$set": {f"entrenamientos.$.entrenamiento.0.weeks.{semIndex}.days.{dayIndex}.exercises": entrenamiento, f"entrenamientos.$.entrenamiento.0.weeks.{semIndex}.days.{dayIndex}.estado": estado}}
+        )
+        return result

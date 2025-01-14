@@ -1,16 +1,21 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react'
-import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/react'
+import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import { useParams } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import colors from '../constantes/colores'
 import axios from 'axios'
+import { ENDPOINTS } from '../constantes/endponits'
+import { useUserNameId } from '../hooks/useUserNameId'
 
 export function PaginaDiaEntrenamiento () {
   const { authenticated, message } = useAuthCheck()
+  const { username } = useUserNameId()
   const { entrenador, idEntrenamiento, semIndex, dayIndex } = useParams()
   const asociaciones = useMisAsociaciones()
+  const [estadoEntrenamiento, setEstadoEntrenamiento] = useState('Sin empezar')
+  const toast = useToast()
 
   const asociacion = useMemo(() => {
     return asociaciones?.find(asociacion => asociacion.usuarioEntrenador === entrenador)
@@ -24,6 +29,7 @@ export function PaginaDiaEntrenamiento () {
 
   useEffect(() => {
     if (entrenamientoEncontrado) {
+      setEstadoEntrenamiento(entrenamientoEncontrado.entrenamiento[0].weeks[semIndex].days[dayIndex].estado || 'Sin empezar')
       setDiaEntrenamiento(entrenamientoEncontrado.entrenamiento[0].weeks[semIndex].days[dayIndex].exercises || [])
     } else {
       setDiaEntrenamiento([])
@@ -41,12 +47,39 @@ export function PaginaDiaEntrenamiento () {
     })
   }, [])
 
-  const handlerGuardarDatos = useCallback((diaEntrenamiento) => {
-    axios.post('/api/entrenamiento', { diaEntrenamiento })
+  const handlerGuardarDatos = useCallback((idEntrenamiento, diaEntrenamiento, idEntrenador, idUsuario, estadoEntrenamiento, semIndex, dayIndex) => {
+    console.log('Guardando datos')
+    console.log('Entrenamiento guardado', diaEntrenamiento)
+    console.log('Entrenamineto encontrado', entrenamientoEncontrado)
+    console.log(idEntrenamiento, idEntrenador, idUsuario, diaEntrenamiento, estadoEntrenamiento, semIndex, dayIndex)
+    axios.defaults.withCredentials = true
+    axios.put(ENDPOINTS.ASSOCIATION.UPDATEWORKOUT, { idEntrenamiento, idEntrenador, idUsuario, entrenamiento: diaEntrenamiento, estado: estadoEntrenamiento, semIndex, dayIndex })
       .then((res) => {
+        if (res.status === 200) {
+          toast({
+            title: 'Entrenamiento guardado',
+            description: 'Los datos feron guardados correctamente.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true
+          })
+        } else {
+          toast({
+            title: 'Error al guardar',
+            status: 'error',
+            duration: 5000,
+            isClosable: true
+          })
+        }
         console.log(res.data)
       })
       .catch((err) => {
+        toast({
+          title: 'Error al enviar solicitud',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        })
         console.error(err)
       })
   }, [])
@@ -71,7 +104,20 @@ export function PaginaDiaEntrenamiento () {
     setDiaEntrenamiento((prevDiaEntrenamiento) => {
       const newDiaEntrenamiento = [...prevDiaEntrenamiento]
       newDiaEntrenamiento[index].additionalInfo = value
+      console.log(newDiaEntrenamiento)
       return newDiaEntrenamiento
+    })
+  }, [])
+
+  const handlerButtonEstado = useCallback(() => {
+    setEstadoEntrenamiento((prevEstadoEntrenamiento) => {
+      if (prevEstadoEntrenamiento === 'Sin empezar') {
+        return 'En proceso'
+      } else if (prevEstadoEntrenamiento === 'En proceso') {
+        return 'Acabado'
+      } else {
+        return 'Sin empezar'
+      }
     })
   }, [])
 
@@ -115,8 +161,9 @@ export function PaginaDiaEntrenamiento () {
                   <Input
                     id={`additional-info-${index}`}
                     placeholder='Ingresa detalles adicionales'
-                    onChange={(value) => handlerExeciseText(index, value, diaEntrenamiento)}
+                    onChange={(event) => handlerExeciseText(index, event.target.value, diaEntrenamiento)}
                     size='md'
+                    defaultValue={ejercicio.additionalInfo}
                   />
                 </GridItem>
                 <GridItem p={2}>
@@ -187,9 +234,23 @@ export function PaginaDiaEntrenamiento () {
         })}
 
         <Box position='fixed' bottom='4' right='4'>
-          <Button onClick={handlerGuardarDatos} style={{ padding: '10px 20px', backgroundColor: colors.primary, color: colors.white, border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-            Guardar datos y acabar entrenamiento
+          <Button
+            onClick={handlerButtonEstado}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: colors.primary,
+              color: colors.white,
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer'
+            }}
+          >
+            Estado: {estadoEntrenamiento}
           </Button>
+          <Button onClick={() => (handlerGuardarDatos(entrenamientoEncontrado._id.$oid, diaEntrenamiento, entrenador, username, estadoEntrenamiento, semIndex, dayIndex))} style={{ marginLeft: '10px', padding: '10px 20px', backgroundColor: colors.primary, color: colors.white, border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            Guardar datos
+          </Button>
+
         </Box>
       </Box>
     </ChakraProvider>

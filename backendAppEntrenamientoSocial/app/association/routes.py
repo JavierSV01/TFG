@@ -73,3 +73,21 @@ def removeworkout():
             return jsonify({"mensaje": "El cliente no tiene asignado ese entrenador"}), 400
     else:
         return jsonify({"mensaje": "Faltan datos"}), 400
+    
+@association_bp.route('/updateworkout', methods=['PUT'])
+def update_workout():
+    data = request.json
+    workout_id = data.get('idEntrenamiento')
+    trainer_id = data.get('idEntrenador')
+    user_id = data.get('idUsuario')
+    workout = data.get('entrenamiento')
+    status = data.get('estado')
+    semIndex = data.get('semIndex')
+    dayIndex = data.get('dayIndex')
+    print(data)
+    if not (workout_id, trainer_id and user_id and workout and status):
+        return jsonify({"mensaje": "Datos incompletos"}), 400
+    result = AssociationModel.updateWorkout(user_id, trainer_id, workout_id, workout, status, semIndex, dayIndex)
+    if result.modified_count > 0:
+        return jsonify({"mensaje": "Entrenamiento actualizado con éxito"}), 200
+    return jsonify({"mensaje": "No se pudo actualizar el entrenamiento"}), 400
