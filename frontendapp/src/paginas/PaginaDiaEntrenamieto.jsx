@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react'
-import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast } from '@chakra-ui/react'
+import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast, Stack, IconButton } from '@chakra-ui/react'
 import Navbar from '../componentes/Navbar'
 import { useParams } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
@@ -8,6 +8,7 @@ import colors from '../constantes/colores'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import { useUserNameId } from '../hooks/useUserNameId'
+import { DeleteIcon } from '@chakra-ui/icons'
 
 export function PaginaDiaEntrenamiento () {
   const { authenticated, message } = useAuthCheck()
@@ -173,8 +174,26 @@ export function PaginaDiaEntrenamiento () {
                   {ejercicio.series?.map((serie, sIndex) => (
                     <Box key={sIndex} mt={2}>
 
-                      <Text>Serie {sIndex + 1}</Text>
-                      <Grid templateColumns='1fr 1fr' gap={4}>
+                      <Stack direction='row' spacing={4} align='center'>
+
+                        <Text>Serie {sIndex + 1}</Text>
+                        <IconButton
+                          icon={<DeleteIcon />}
+                          size='sm'
+                          aria-label='Borrar'
+                          bgColor={colors.secondary}
+                          textColor={colors.white}
+                          _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                          ml={2}
+                          onClick={() => {
+                            const updated = [...diaEntrenamiento]
+                            updated[index].series.splice(sIndex, 1)
+                            setDiaEntrenamiento(updated)
+                          }}
+                        />
+
+                      </Stack>
+                      <Grid templateColumns='1fr 2fr' gap={4}>
                         <GridItem
                           display='flex'
                           flexDirection='column'
@@ -199,7 +218,7 @@ export function PaginaDiaEntrenamiento () {
                         </GridItem>
                       </Grid>
 
-                      <Grid templateColumns='1fr 1fr' gap={4}>
+                      <Grid templateColumns='1fr 2fr' gap={4}>
                         <GridItem
                           display='flex'
                           flexDirection='column'
