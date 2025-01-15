@@ -7,6 +7,7 @@ import { PaginaCliente } from './paginas/PaginaCliente'
 import { PaginaMiEntrenador } from './paginas/PaginaMiEntrenador'
 import { PaginaMiEntrenamiento } from './paginas/PaginaMiEntrenamiento'
 import { PaginaDiaEntrenamiento } from './paginas/PaginaDiaEntrenamieto'
+import PaginaUnChat from './paginas/PaginaUnChat'
 
 function App () {
   return (
@@ -20,6 +21,7 @@ function App () {
         <Route path='/entrenador/:entrenador' element={<PaginaMiEntrenador />} />
         <Route path='/entrenador/:entrenador/:idEntrenamiento' element={<PaginaMiEntrenamiento />} />
         <Route path='/entrenador/:entrenador/:idEntrenamiento/:semIndex/:dayIndex' element={<PaginaDiaEntrenamiento />} />
+        <Route path='/chat/:idChat' element={<PaginaUnChat />} />
       </Routes>
     </Router>
   )

@@ -25,6 +25,15 @@ export function PaginaMiEntrenador () {
         <Box bg={colors.neutral} color={colors.white} minH='100vh' p={2}>
 
           <Heading textAlign='center' size='lg' m={4} textColor={colors.primary}>Asesoria de {entrenador}</Heading>
+          <Box display='flex' justifyContent='center' mt={4}>
+            <Button
+              bgColor={colors.secondary} textColor={colors.white}
+              _hover={{ bgColor: colors.primary, color: colors.neutral }}
+              onClick={() => navigate('/chat/:123')}
+            >
+              Botón Centrado
+            </Button>
+          </Box>
           <Box position='relative' padding='10'>
             <Divider borderColor={colors.primary} />
             <AbsoluteCenter textColor={colors.primary} bg={colors.neutral} px='4' fontSize={24}>Entrenamientos</AbsoluteCenter>
