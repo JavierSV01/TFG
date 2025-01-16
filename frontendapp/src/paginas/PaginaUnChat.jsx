@@ -3,12 +3,16 @@ import { Box, Flex, Text, Input, Button, ChakraProvider } from '@chakra-ui/react
 import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
 import axios from 'axios'
+import { ENDPOINTS } from '../constantes/endponits'
+import { useParams } from 'react-router-dom'
 
 function PaginaUnChat () {
+  const { id1, id2 } = useParams()
   useEffect(() => {
     const fetchChatData = async () => {
       try {
-        const response = await axios.get('https://api.example.com/chat')
+        axios.defaults.withCredentials = true
+        const response = await axios.get(ENDPOINTS.CHAT.EXIST + `?id1=${id1}&id2${id2}`)
         console.log(response.data)
       } catch (error) {
         console.error(error)
@@ -16,7 +20,7 @@ function PaginaUnChat () {
     }
 
     fetchChatData()
-  }, [])
+  }, [id1, id2])
   return (
 
     <ChakraProvider>

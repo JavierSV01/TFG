@@ -5,9 +5,11 @@ import { ChakraProvider, Box, Heading, Text, Button, Divider, AbsoluteCenter } f
 import Navbar from '../componentes/Navbar'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import colors from '../constantes/colores'
+import { useUserNameId } from '../hooks/useUserNameId'
 
 export function PaginaMiEntrenador () {
   const { authenticated, message } = useAuthCheck()
+  const username = useUserNameId()
   const { entrenador } = useParams()
   const asociaciones = useMisAsociaciones()
   const asociacion = asociaciones.find(asociacion => asociacion.usuarioEntrenador === entrenador)
@@ -29,7 +31,7 @@ export function PaginaMiEntrenador () {
             <Button
               bgColor={colors.secondary} textColor={colors.white}
               _hover={{ bgColor: colors.primary, color: colors.neutral }}
-              onClick={() => navigate('/chat/:123')}
+              onClick={() => navigate(`/chat/${username}/${entrenador}`)}
             >
               Botón Centrado
             </Button>

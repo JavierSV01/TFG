@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_pymongo import PyMongo  # Si usas PyMongo para MongoDB
 from flask_cors import CORS
+from flask_socketio import SocketIO
 # Inicializar extensiones
 mongo = PyMongo()
+socketio = SocketIO(cors_allowed_origins="*")
 
 def create_app(config_object):
     
@@ -20,6 +22,7 @@ def create_app(config_object):
     app.config["MONGO_URI"] = "mongodb://localhost:27017/appEntrenamiento"
 
     mongo.init_app(app)
+    socketio.init_app(app)
     
     from .user import user_bp as user_blueprint
     app.register_blueprint(user_blueprint, url_prefix='/user')
@@ -29,5 +32,8 @@ def create_app(config_object):
 
     from .association import association_bp as ass_blueprint
     app.register_blueprint(ass_blueprint, url_prefix='/ass')
+    
+    from .chat import chat_bp as chat_blueprint
+    app.register_blueprint(chat_blueprint, url_prefix='/chat')
 
     return app

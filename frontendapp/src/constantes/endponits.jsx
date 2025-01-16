@@ -29,5 +29,8 @@ export const ENDPOINTS = {
     GETASSOCITIONSBYUSER: `${BASE_URL}/ass/myassociations`,
     REMOVEWORKOUT: `${BASE_URL}/ass/removeworkout`,
     UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`
+  },
+  CHAT: {
+    EXIST: `${BASE_URL}/ass/addworkout` // Necesita/user1, user2
   }
 }
