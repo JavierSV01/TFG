@@ -17,16 +17,17 @@ def handle_leave_room(data):
     leave_room(room)
     emit('status', {'msg': f"{data['username']} ha abandonado {room}"}, room=room)
 
-@chat_bp.route('/exist/<id1>/<id2>', methods=['GET'])
+@chat_bp.route('/exist', methods=['GET'])
 def get_chat():
     try:
         
         user_id1 = request.args.get('id1')
         user_id2 = request.args.get('id2')
+        if not user_id1 or not user_id2:
+            return jsonify({"error": "Se requieren ambos IDs de usuario"}), 400
 
         if 'usuario' in session and session['usuario'] == user_id1:
-            if not user_id1 or not user_id2:
-                return jsonify({"error": "Se requieren ambos IDs de usuario"}), 400
+
             chat_id = ChatModel.get_chat_id(user_id1, user_id2)
             if not chat_id:
                 return jsonify({"error": "No se encontró el chat"}), 404
@@ -35,10 +36,28 @@ def get_chat():
         else:
             return "Acceso denegado", 403 # Código de estado 403 Forbidden
         
-
-        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@chat_bp.route('/getchat', methods=['GET'])
+def get_chat_details():
+    try:
+        user_id = session.get('usuario')
+        chat_id = request.args.get('chat_id')
+        if not user_id or not chat_id:
+            return jsonify({"error": "Faltan datos requeridos"}), 400
+
+        chat_data = ChatModel.get_chat_by_id(chat_id)
+        if not chat_data:
+            return jsonify({"error": "No se encontró el chat"}), 404
+
+        if user_id not in chat_data['usuarios']:
+            return "Acceso denegado", 403
+
+        return jsonify(chat_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @chat_bp.route('/send', methods=['POST'])
 def send_message():
     try:

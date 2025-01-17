@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Heading, Text, Button, Divider, AbsoluteCenter } from '@chakra-ui/react'
@@ -6,15 +6,35 @@ import Navbar from '../componentes/Navbar'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import colors from '../constantes/colores'
 import { useUserNameId } from '../hooks/useUserNameId'
+import axios from 'axios'
+import { ENDPOINTS } from '../constantes/endponits'
 
 export function PaginaMiEntrenador () {
   const { authenticated, message } = useAuthCheck()
-  const username = useUserNameId()
+  const { username, loading } = useUserNameId()
   const { entrenador } = useParams()
   const asociaciones = useMisAsociaciones()
   const asociacion = asociaciones.find(asociacion => asociacion.usuarioEntrenador === entrenador)
+  const [chatid, setchatid] = useState('')
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchChatData = async () => {
+      if (!loading) {
+        try {
+          axios.defaults.withCredentials = true
+          const response = await axios.get(ENDPOINTS.CHAT.EXIST + `?id1=${username}&id2=${entrenador}`)
+          setchatid(response.data.chat_id)
+          console.log(response.data)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+
+    fetchChatData()
+  }, [username, entrenador, loading])
 
   if (!authenticated) {
     return <div>{message}</div>
@@ -31,7 +51,7 @@ export function PaginaMiEntrenador () {
             <Button
               bgColor={colors.secondary} textColor={colors.white}
               _hover={{ bgColor: colors.primary, color: colors.neutral }}
-              onClick={() => navigate(`/chat/${username}/${entrenador}`)}
+              onClick={() => navigate(`/chat/${chatid}`)}
             >
               Botón Centrado
             </Button>

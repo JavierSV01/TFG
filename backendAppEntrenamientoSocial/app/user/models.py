@@ -80,3 +80,8 @@ class UserModel:
                 workoutResult.append(workout)
                 return workoutResult
         return None
+    
+    @staticmethod
+    def user_exists(username):
+        db = UserModel.get_db()
+        return True if db["usuarios"].find_one({"usuario": username}) else False

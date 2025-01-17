@@ -31,6 +31,7 @@ export const ENDPOINTS = {
     UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`
   },
   CHAT: {
-    EXIST: `${BASE_URL}/ass/addworkout` // Necesita/user1, user2
+    EXIST: `${BASE_URL}/chat/exist`, // Necesita /id1, /id2
+    GETCHATBYID: `${BASE_URL}/chat/getchat` // Necesita chat_id
   }
 }

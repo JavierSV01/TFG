@@ -21,5 +21,15 @@ class ChatModel:
             new_chat = {"usuarios": [uid1, uid2]}
             result = db.chat.insert_one(new_chat)
             return str(result.inserted_id)
+        
+    @staticmethod
+    def get_chat_by_id(chat_id):
+        db = ChatModel.get_db()
+        chat = db.chat.find({
+            "_id": chatId
+        })
+
+        return chat
+    
     
     

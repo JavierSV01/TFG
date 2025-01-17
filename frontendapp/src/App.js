@@ -21,7 +21,7 @@ function App () {
         <Route path='/entrenador/:entrenador' element={<PaginaMiEntrenador />} />
         <Route path='/entrenador/:entrenador/:idEntrenamiento' element={<PaginaMiEntrenamiento />} />
         <Route path='/entrenador/:entrenador/:idEntrenamiento/:semIndex/:dayIndex' element={<PaginaDiaEntrenamiento />} />
-        <Route path='/chat/:id1/:id2' element={<PaginaUnChat />} />
+        <Route path='/chat/:idChat' element={<PaginaUnChat />} />
       </Routes>
     </Router>
   )

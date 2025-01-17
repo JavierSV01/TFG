@@ -12,7 +12,7 @@ function PaginaUnChat () {
     const fetchChatData = async () => {
       try {
         axios.defaults.withCredentials = true
-        const response = await axios.get(ENDPOINTS.CHAT.EXIST + `?id1=${id1}&id2${id2}`)
+        const response = await axios.get(ENDPOINTS.CHAT.EXIST + `?id1=${id1}&id2=${id2}`)
         console.log(response.data)
       } catch (error) {
         console.error(error)
