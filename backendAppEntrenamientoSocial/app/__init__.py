@@ -11,7 +11,7 @@ def create_app(config_object):
     app = Flask(__name__)
 
     CORS(app, supports_credentials=True, resources={r"/*": {
-        "origins": "*",  # Dominios permitidos
+        "origins": "https://tfg-front-6kkc.onrender.com",  # Dominios permitidos
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Métodos permitidos
         "allow_headers": ["Content-Type", "Authorization"]  # Encabezados permitidos
     }})

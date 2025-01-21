@@ -1,6 +1,7 @@
-const backendHost = process.env.REACT_APP_BACKEND_HOST
-const backendPort = process.env.REACT_APP_BACKEND_PORT
-const BASE_URL = 'http://' + backendHost + ':' + backendPort
+// const backendHost = process.env.REACT_APP_BACKEND_HOST
+// const backendPort = process.env.REACT_APP_BACKEND_PORT
+// const BASE_URL1 = 'http://' + backendHost + ':' + backendPort
+const BASE_URL = 'https://tfg-d344.onrender.com'
 
 export const ENDPOINTS = {
   USER: {
