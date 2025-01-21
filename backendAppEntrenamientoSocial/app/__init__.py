@@ -19,7 +19,7 @@ def create_app(config_object):
     app.config.from_object(config_object)
     app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permite compartir cookies entre sitios
     app.config['SESSION_COOKIE_SECURE'] = True      # Requiere HTTPS; usa False solo para desarrollo en HTTP
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/appEntrenamiento"
+    app.config["MONGO_URI"] = "mongodb+srv://javier:javier@cluster0.i0x30.mongodb.net/appEntrenamiento"
 
     mongo.init_app(app)
     socketio.init_app(app)
