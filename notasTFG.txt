@@ -35,6 +35,7 @@ react
 	npm i @chakra-ui/icons
 	npm install react-chartjs-2 chart.js
 	npm install react-hook-form
+	npm install socket.io-client
 
 
 	

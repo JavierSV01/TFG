@@ -26,7 +26,6 @@ export function PaginaMiEntrenador () {
           axios.defaults.withCredentials = true
           const response = await axios.get(ENDPOINTS.CHAT.EXIST + `?id1=${username}&id2=${entrenador}`)
           setchatid(response.data.chat_id)
-          console.log(response.data)
         } catch (error) {
           console.error(error)
         }

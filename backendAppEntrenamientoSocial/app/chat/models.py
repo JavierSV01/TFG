@@ -25,8 +25,8 @@ class ChatModel:
     @staticmethod
     def get_chat_by_id(chat_id):
         db = ChatModel.get_db()
-        chat = db.chat.find({
-            "_id": chatId
+        chat = db.chat.find_one({
+            "_id": ObjectId(chat_id)
         })
 
         return chat

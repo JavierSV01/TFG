@@ -5,17 +5,50 @@ from flask_socketio import join_room, leave_room, emit
 from . import chat_bp
 from .models import ChatModel
 
-@socketio.on('join_room') # Evento para unirse a una sala (grupo o usuario)
+@socketio.on('join_room')
 def handle_join_room(data):
-    room = data['room']
-    join_room(room)
-    emit('status', {'msg': f"{data['username']} se ha unido a {room}"}, room=room)
+    try:
+        room = str(data['room']) # CONVERTIR A STRING AQUI
+        join_room(room)
+        emit('status', {'msg': "Alguien se ha unido"}, room=room)
+    except Exception as e:
+        print(f"Error en join_room: {e}")
 
-@socketio.on('leave_room') # Evento para salir de una sala
+@socketio.on('leave_room')
 def handle_leave_room(data):
-    room = data['room']
-    leave_room(room)
-    emit('status', {'msg': f"{data['username']} ha abandonado {room}"}, room=room)
+    try:
+      room = str(data['room'])
+      leave_room(room)
+      emit('status', {'msg': "Alguien se ha ido"}, room=room)
+    except Exception as e:
+        print(f"Error en leave_room: {e}")
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    try:
+        sender_id = data.get('username')
+        chat_id = data.get('room')
+        message = data.get('message')
+        timestamp = data.get('timestamp')
+        if not all([sender_id, chat_id, message, timestamp]):
+            return jsonify({"error": "Faltan datos requeridos"}), 400
+
+        message_data = {
+            'sender_id': sender_id,
+            'message': message,
+            'timestamp': timestamp
+        }
+        #Aniadir logica de persistencia de mensjaes en bd
+
+        try:
+            emit('new_message', message_data, room=chat_id) # Emitir a la sala
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+        return jsonify({"message": "Mensaje enviado"}), 200 # Respuesta exitosa
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @chat_bp.route('/exist', methods=['GET'])
 def get_chat():
@@ -46,41 +79,18 @@ def get_chat_details():
         chat_id = request.args.get('chat_id')
         if not user_id or not chat_id:
             return jsonify({"error": "Faltan datos requeridos"}), 400
-
         chat_data = ChatModel.get_chat_by_id(chat_id)
+
         if not chat_data:
             return jsonify({"error": "No se encontró el chat"}), 404
 
         if user_id not in chat_data['usuarios']:
             return "Acceso denegado", 403
 
+        # Convert any ObjectId to strings
+        chat_data = {k: str(v) if isinstance(v, ObjectId) else v for k, v in chat_data.items()}
         return jsonify(chat_data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@chat_bp.route('/send', methods=['POST'])
-def send_message():
-    try:
-        data = request.get_json()
-        sender_id = data.get('sender_id')
-        receiver_id = data.get('receiver_id')
-        message = data.get('message')
-        room = data.get('room')
 
-        if not all([sender_id, receiver_id, message, room]):
-            return jsonify({"error": "Faltan datos requeridos"}), 400
-
-        result = ChatModel.insert_one()
-
-        emit('new_message', { 
-            '_id': str(result.inserted_id),
-            'sender_id': sender_id,
-            'receiver_id': receiver_id,
-            'message': message,
-            'timestamp': chat_message.timestamp.isoformat()
-        }, room=room)
-
-        return jsonify({"message": "Mensaje enviado", "inserted_id": str(result.inserted_id)}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
