@@ -122,12 +122,12 @@ function PaginaUnChat () {
             mb='70px'
           >
             {messages.map((msg, index) => (
-              <Box key={index} mb={2} p={2} border='1px solid' borderColor='gray.200' borderRadius='md'>
+              <Box key={index} mb={2} p={2} border='2px solid' borderColor={colors.neutral} borderRadius='md'>
                 <Flex alignItems='baseline'>
                   <Text fontWeight='bold' mr={2}>{msg.username}</Text>
                   <Text>{msg.mensaje}</Text>
                 </Flex>
-                <Text fontSize='sm' color='gray.500'>{formatearFecha(msg.fecha)}</Text>
+                <Text fontSize='sm' color={colors.neutral}>{formatearFecha(msg.fecha)}</Text>
               </Box>
             ))}
           </Box>

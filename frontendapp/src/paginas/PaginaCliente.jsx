@@ -25,6 +25,8 @@ import { useClientInfo } from '../hooks/useClientInfo'
 import { usePlantillasEntrenamiento } from '../hooks/usePlantillasEntrenamiento'
 import { ENDPOINTS } from '../constantes/endponits'
 import { ViewIcon, DeleteIcon } from '@chakra-ui/icons'
+import { useUserNameId } from '../hooks/useUserNameId'
+import BotonChat from '../componentes/BotonChat'
 
 export function PaginaCliente () {
   const cliente = {
@@ -35,6 +37,8 @@ export function PaginaCliente () {
       { dia: 'Miércoles', comida: 'Salmón con quinoa' }
     ]
   }
+
+  const { username } = useUserNameId()
 
   const { authenticated, message } = useAuthCheck()
   const { usuario } = useParams()
@@ -141,7 +145,9 @@ export function PaginaCliente () {
           <GridItem>
             <Box boxShadow='md' borderRadius='lg' overflow='hidden'>
               <Image src={cliente.foto} alt='Foto del cliente' boxSize='100%' objectFit='cover' />
+
             </Box>
+            <BotonChat user1={username} user2={usuario} />
           </GridItem>
           <GridItem margin={5}>
             <Stack spacing={5}>
