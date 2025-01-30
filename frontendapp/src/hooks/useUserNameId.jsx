@@ -10,7 +10,7 @@ export const useUserNameId = () => {
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        axios.withCredentials = true
+        axios.defaults.withCredentials = true
         const response = await axios.get(ENDPOINTS.USER.NAME)
         setUsername(response.data.usuario)
       } catch (err) {

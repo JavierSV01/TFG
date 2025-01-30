@@ -49,10 +49,6 @@ export function PaginaDiaEntrenamiento () {
   }, [])
 
   const handlerGuardarDatos = useCallback((idEntrenamiento, diaEntrenamiento, idEntrenador, idUsuario, estadoEntrenamiento, semIndex, dayIndex) => {
-    console.log('Guardando datos')
-    console.log('Entrenamiento guardado', diaEntrenamiento)
-    console.log('Entrenamineto encontrado', entrenamientoEncontrado)
-    console.log(idEntrenamiento, idEntrenador, idUsuario, diaEntrenamiento, estadoEntrenamiento, semIndex, dayIndex)
     axios.defaults.withCredentials = true
     axios.put(ENDPOINTS.ASSOCIATION.UPDATEWORKOUT, { idEntrenamiento, idEntrenador, idUsuario, entrenamiento: diaEntrenamiento, estado: estadoEntrenamiento, semIndex, dayIndex })
       .then((res) => {
@@ -155,13 +151,13 @@ export function PaginaDiaEntrenamiento () {
               </Box>
               <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4}>
                 <GridItem p={2}>
-                  <Text>Series Base: {ejercicio.sets}</Text>
-                  <Text>Repeticiones Base: {ejercicio.reps}</Text>
-                  <Text>Descanso Base: {ejercicio.rir}</Text>
-                  <Text htmlFor={`additional-info-${index}`}>Información Adicional:</Text>
+                  <Text>Series: {ejercicio.sets}</Text>
+                  <Text>Repeticiones: {ejercicio.reps}</Text>
+                  <Text>RIR: {ejercicio.rir}</Text>
+                  <Text htmlFor={`additional-info-${index}`}>Anotaciones para el entrenador:</Text>
                   <Input
                     id={`additional-info-${index}`}
-                    placeholder='Ingresa detalles adicionales'
+                    placeholder='Sensaciones, molestias, etc.'
                     onChange={(event) => handlerExeciseText(index, event.target.value, diaEntrenamiento)}
                     size='md'
                     defaultValue={ejercicio.additionalInfo}

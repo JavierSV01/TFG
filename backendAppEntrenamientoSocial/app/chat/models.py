@@ -31,5 +31,19 @@ class ChatModel:
 
         return chat
     
+    @staticmethod
+    def insert_message(room, username, mensaje, fecha):
+        db = ChatModel.get_db()
+        chat_id = ObjectId(room)
+        nuevo_mensaje = {
+            "username": username,
+            "mensaje": mensaje,
+            "fecha": fecha
+        }
+        return db.chat.update_one(
+            {"_id": chat_id},
+            {"$push": {"mensajes": nuevo_mensaje}}
+        )
+    
     
     

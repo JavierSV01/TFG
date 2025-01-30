@@ -34,11 +34,11 @@ def handle_send_message(data):
             return jsonify({"error": "Faltan datos requeridos"}), 400
 
         message_data = {
-            'sender_id': sender_id,
-            'message': message,
-            'timestamp': timestamp
+            'username': sender_id,
+            'mensaje': message,
+            'fecha': timestamp
         }
-        #Aniadir logica de persistencia de mensjaes en bd
+        ChatModel.insert_message(chat_id, sender_id, message, timestamp)
 
         try:
             emit('new_message', message_data, room=chat_id) # Emitir a la sala

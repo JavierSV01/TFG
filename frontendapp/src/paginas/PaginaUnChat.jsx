@@ -9,6 +9,18 @@ import io from 'socket.io-client'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { useUserNameId } from '../hooks/useUserNameId'
 
+function formatearFecha (fechaString) {
+  const fecha = new Date(fechaString) // Convertir string a objeto Date
+
+  const dia = fecha.getDate().toString().padStart(2, '0')
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0')
+  const anio = fecha.getFullYear()
+  const horas = fecha.getHours().toString().padStart(2, '0')
+  const minutos = fecha.getMinutes().toString().padStart(2, '0')
+
+  return `${dia}-${mes}-${anio} ${horas}:${minutos}`
+}
+
 function PaginaUnChat () {
   const socket = io('http://' + process.env.REACT_APP_BACKEND_HOST + ':' + process.env.REACT_APP_BACKEND_PORT)
   const { idChat } = useParams()
@@ -27,6 +39,10 @@ function PaginaUnChat () {
         const response = await axios.get(ENDPOINTS.CHAT.GETCHATBYID + `?chat_id=${idChat}`)
         setChatData(response.data)
         console.log(chatData)
+
+        if (response.data.mensajes) {
+          setMessages(response.data.mensajes)
+        }
         setRoom(response.data._id)
       } catch (error) {
         console.error(error)
@@ -71,12 +87,13 @@ function PaginaUnChat () {
     if (message !== '') {
       if (message && room && username) {
         const timestamp = new Date().toISOString()
-        socket.emit('send_message', { // Emitir evento de Socket.IO
+        socket.emit('send_message', {
           username,
           message,
           room,
           timestamp
         })
+
         inputRef.current.value = ''
       }
     }
@@ -105,7 +122,13 @@ function PaginaUnChat () {
             mb='70px'
           >
             {messages.map((msg, index) => (
-              <Text key={index}>{msg.sender_id + ' ' + msg.message + ' ' + msg.timestamp}</Text>
+              <Box key={index} mb={2} p={2} border='1px solid' borderColor='gray.200' borderRadius='md'>
+                <Flex alignItems='baseline'>
+                  <Text fontWeight='bold' mr={2}>{msg.username}</Text>
+                  <Text>{msg.mensaje}</Text>
+                </Flex>
+                <Text fontSize='sm' color='gray.500'>{formatearFecha(msg.fecha)}</Text>
+              </Box>
             ))}
           </Box>
 
