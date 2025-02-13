@@ -38,16 +38,9 @@ def login():
     if username and password:
         user = UserModel.find_by_username(username)
         if user and check_password_hash(user['contrasenia'], password):
-            # Crea la respuesta antes de usar set_cookie
-            response = jsonify({"mensaje": "Inicio de sesión exitoso"})
-            response.set_cookie(
-                key="session",
-                value=session.get('usuario'),  # Usa el valor correcto
-                httponly=True,
-                secure=True,  # Necesario para HTTPS en móviles
-                samesite="None"  # Para permitir cookies en móviles y peticiones cross-site
-            )
-            return response, 200  # Devuelve la respuesta correctamente
+            session.permanent = True
+            session['usuario'] = username
+            return jsonify({"mensaje": "Inicio de sesión exitoso"}), 200
         else:
             return jsonify({"mensaje": "Credenciales incorrectas"}), 401
     else:
