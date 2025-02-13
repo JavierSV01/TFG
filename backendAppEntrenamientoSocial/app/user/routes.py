@@ -40,6 +40,13 @@ def login():
         if user and check_password_hash(user['contrasenia'], password):
             session.permanent = True
             session['usuario'] = username
+            response.set_cookie(
+                key="session",
+                value=request.cookies.get("session"),  # Asegurar que la cookie se reenvía
+                httponly=True,
+                secure=True,  # Necesario para HTTPS
+                samesite="None"  # Para permitir cookies en móviles y peticiones cross-site
+            )
             return jsonify({"mensaje": "Inicio de sesión exitoso"}), 200
         else:
             return jsonify({"mensaje": "Credenciales incorrectas"}), 401
