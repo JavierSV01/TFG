@@ -99,6 +99,17 @@ function PaginaUnChat () {
     }
   }
 
+  const messagesEndRef = useRef(null)
+  const messagesContainerRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages]) // Dependencia en 'messages' para que se actualice al cambiar los mensajes
+
   if (!authenticated) {
     return <div>{message}</div>
   } else {
@@ -113,6 +124,7 @@ function PaginaUnChat () {
           </Box>
 
           <Box
+            ref={messagesContainerRef}
             flex='1'
             overflowY='auto'
             p={4}
@@ -130,6 +142,7 @@ function PaginaUnChat () {
                 <Text fontSize='sm' color={colors.neutral}>{formatearFecha(msg.fecha)}</Text>
               </Box>
             ))}
+            <div ref={messagesEndRef} />
           </Box>
 
           <Box
