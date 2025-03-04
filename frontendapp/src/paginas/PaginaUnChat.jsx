@@ -134,13 +134,28 @@ function PaginaUnChat () {
             mb='70px'
           >
             {messages.map((msg, index) => (
-              <Box key={index} mb={2} p={2} border='2px solid' borderColor={colors.neutral} borderRadius='md'>
-                <Flex alignItems='baseline'>
-                  <Text fontWeight='bold' mr={2}>{msg.username}</Text>
-                  <Text>{msg.mensaje}</Text>
-                </Flex>
-                <Text fontSize='sm' color={colors.neutral}>{formatearFecha(msg.fecha)}</Text>
-              </Box>
+              <Flex
+                key={index}
+                justifyContent={msg.username === username ? 'flex-end' : 'flex-start'}
+                mb={2}
+              >
+                <Box
+                  maxW='70%' // Ajusta este valor según tus necesidades
+                  minW='40%'
+                  p={2}
+                  border='2px solid'
+                  borderColor={colors.neutral}
+                  borderRadius='md'
+                >
+                  <Flex alignItems='baseline' justifyContent={msg.username === username ? 'flex-end' : 'flex-start'}>
+                    <Text fontWeight='bold' mr={2}>{msg.username}</Text>
+                    <Text>{msg.mensaje}</Text>
+                  </Flex>
+                  <Flex alignItems='baseline' justifyContent={msg.username === username ? 'flex-end' : 'flex-start'}>
+                    <Text fontSize='sm' color={colors.neutral}>{formatearFecha(msg.fecha)}</Text>
+                  </Flex>
+                </Box>
+              </Flex>
             ))}
             <div ref={messagesEndRef} />
           </Box>
