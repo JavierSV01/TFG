@@ -10,6 +10,50 @@ from app.association.helpers import getAssociationByUser
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
 def register():
+    """
+    Registra un nuevo usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del usuario a registrar.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario.
+            contrasenia:
+              type: string
+              description: Contraseña del usuario.
+            rol:
+              type: string
+              description: Rol del usuario (entrenador, cliente, etc.).
+    responses:
+      201:
+        description: Usuario agregado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario agregado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, usuario ya existe).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              examples:
+                - "Faltan datos"
+                - "El nombre de usuario ya existe"
+    """
     data = request.json
     usuario = data.get('usuario')
     password = data.get('contrasenia')
@@ -31,6 +75,53 @@ def register():
 # Ruta para iniciar sesión
 @user_bp.route('/login', methods=['POST'])
 def login():
+    """
+    Inicia sesión de un usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos de inicio de sesión.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario.
+            contrasenia:
+              type: string
+              description: Contraseña del usuario.
+    responses:
+      200:
+        description: Inicio de sesión exitoso.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Inicio de sesión exitoso"
+      401:
+        description: Credenciales incorrectas.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Credenciales incorrectas"
+      400:
+        description: Faltan datos.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+    """
     datos = request.json  # Obtener datos enviados en formato JSON
     username = datos.get('usuario')
     password = datos.get('contrasenia')
@@ -50,6 +141,29 @@ def login():
 # Ruta para comprobar si el usuario está logueado
 @user_bp.route('/status', methods=['GET'])
 def status():
+    """
+    Verifica el estado de la sesión del usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Usuario autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Bienvenido al dashboard, ..."
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Acceso denegado. Inicia sesión primero."
+    """
     if 'usuario' in session: 
         usuario = session['usuario']
         return jsonify({"mensaje": f"Bienvenido al dashboard, {usuario}"}), 200
@@ -59,6 +173,21 @@ def status():
 # Ruta para cerrar sesión
 @user_bp.route('/logout', methods=['POST'])
 def logout():
+    """
+    Cierra la sesión del usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Sesión cerrada.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Sesión cerrada"
+    """
     session.pop('usuario', None)  # Eliminar el usuario de la sesión
     return jsonify({"mensaje": "Sesión cerrada"}), 200
 
@@ -66,6 +195,30 @@ def logout():
 # Endpoint para obtener el rol del usuario autenticado
 @user_bp.route('/role', methods=['GET'])
 def obtener_rol():
+    """
+    Obtiene el rol del usuario autenticado.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Rol del usuario.
+        schema:
+          type: object
+          properties:
+            role:
+              type: string
+      401:
+        description: Usuario no autenticado o rol no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "Usuario no autenticado"
+                - "Rol no encontrado para el usuario"
+    """
     # Verificar si el usuario está autenticado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -84,6 +237,35 @@ def obtener_rol():
 # Endpoint para obtener solo los usuarios con rol "entrenador"
 @user_bp.route('/trainers', methods=['GET'])
 def obtener_entrenadores():
+    """
+    Obtiene la lista de entrenadores.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de entrenadores.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema del entrenador si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener entrenadores"
+    """
     try:
 
         # Verificar si el usuario está autenticado
@@ -106,6 +288,35 @@ def obtener_entrenadores():
 
 @user_bp.route('/workouts', methods=['GET'])
 def get_workouts():
+    """
+    Obtiene los entrenamientos de un usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de entrenamientos del usuario.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema del entrenamiento si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener entrenamientos"
+    """
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
     usuario = session['usuario']
@@ -121,6 +332,61 @@ def get_workouts():
 
 @user_bp.route('/workout', methods=['POST'])
 def save_workout():
+
+    """
+    Guarda un nuevo entrenamiento para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Título del entrenamiento.
+            description:
+              type: string
+              description: Descripción del entrenamiento.
+            weeks:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la semana si fuera necesario.
+              description: Semanas del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento guardado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Entrenamiento guardado exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar el entrenamiento"
+                - "Error interno del servidor"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -151,6 +417,35 @@ def save_workout():
 # Endpoint para obtener todos los clientes del entrenador logueado
 @user_bp.route('/clients', methods=['GET'])
 def obtener_clientes():
+    """
+    Obtiene la lista de clientes del entrenador logueado.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de clientes del entrenador.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema del cliente si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener clientes"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -172,6 +467,46 @@ def obtener_clientes():
 
 @user_bp.route('/allinfo', methods=['POST'])
 def obtener_usuario():
+    """
+    Obtiene la información completa de un usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del usuario a obtener.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario.
+    responses:
+      200:
+        description: Información del usuario.
+        schema:
+          type: object # Se deberia definir el esquema del usuario con asociaciones si fuera necesario.
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no encontrado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener la información del usuario"
+    """
 
     data = request.json
     usuarioCliente = data.get('usuario')
@@ -196,6 +531,29 @@ def obtener_usuario():
 
 @user_bp.route('/username', methods=['GET'])
 def obtener_nombre_usuario():
+
+    """
+    Obtiene el nombre de usuario de la sesión actual.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Nombre de usuario.
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+    """
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
     usuario = session['usuario']
@@ -203,6 +561,48 @@ def obtener_nombre_usuario():
 
 @user_bp.route('/data', methods=['POST'])
 def save_data():
+    """
+    Guarda o actualiza los datos del usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del usuario a guardar o actualizar.
+        required: true
+        schema:
+          type: object # Se deberia definir el esquema de los datos del usuario si fuera necesario.
+    responses:
+      201:
+        description: Datos guardados exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Datos guardados exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar los datos.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar los datos"
+                - "Error al guardar los datos"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -223,6 +623,62 @@ def save_data():
 
 @user_bp.route('/clientinfo', methods=['POST'])
 def obtener_info_cliente():
+    """
+    Obtiene la información de un cliente para un entrenador.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del cliente a obtener.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario del cliente.
+    responses:
+      200:
+        description: Información del cliente.
+        schema:
+          type: object # Se deberia definir el esquema del cliente con la informacion permitida si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      403:
+        description: El entrenador no tiene permiso para ver la información del cliente.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "No tienes permiso para ver la información de este cliente"
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no encontrado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Error al obtener la información del cliente"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401

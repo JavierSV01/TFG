@@ -12,6 +12,34 @@ from app.association.helpers import insertAssociation
 
 @solicitude_bp.route('/mysolicitude', methods=['GET'])
 def solicitude():
+    """
+    Obtiene las solicitudes de asesoramiento de un usuario.
+    ---
+    tags:
+      - Solicitudes
+    responses:
+      200:
+        description: Lista de solicitudes del usuario.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema de la solicitud si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+    """
     try:
         usuario = session.get('usuario')
         if not usuario:
@@ -32,6 +60,55 @@ def solicitude():
 
 @solicitude_bp.route('/apply', methods=['POST'])
 def apply():
+    """
+    Envía una solicitud de asesoramiento a un entrenador.
+    ---
+    tags:
+      - Solicitudes
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos de la solicitud.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuarioEntrenador:
+              type: string
+              description: ID del entrenador.
+            mensaje:
+              type: string
+              description: Mensaje de la solicitud.
+    responses:
+      200:
+        description: Solicitud registrada con éxito o mensajes informativos.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              examples:
+                - "Solicitud registrada con éxito"
+                - "Ya estas siendo asesorado por a ..."
+                - "Ya enviaste una solicitud a este entrenador. Se le ha vuelto a notificar"
+      400:
+        description: No hay sesión activa.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "No hay sesión activa. Por favor, inicia sesión."
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+    """
     try:
         usuarioSolicitante = session.get('usuario') 
         if not usuarioSolicitante:
@@ -76,6 +153,53 @@ def apply():
 # Endpoint para aceptar asesoramiento y crear una asociación
 @solicitude_bp.route('/accept', methods=['POST'])
 def aceptar_asesoramiento():
+    """
+    Acepta una solicitud de asesoramiento y crea una asociación.
+    ---
+    tags:
+      - Solicitudes
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos de la asociación.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuarioCliente:
+              type: string
+              description: ID del cliente.
+            usuarioEntrenador:
+              type: string
+              description: ID del entrenador.
+    responses:
+      201:
+        description: Asociación creada exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Asociación creada exitosamente"
+      200:
+        description: El entrenador ya esta asesorando a este cliente.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Ya estas asesorando a este cliente"
+      400:
+        description: Faltan datos del cliente o entrenador.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Faltan datos del cliente o entrenador"
+    """
     data = request.json
     usuarioCliente = data.get('usuarioCliente')
     usuarioEntrenador = data.get('usuarioEntrenador')

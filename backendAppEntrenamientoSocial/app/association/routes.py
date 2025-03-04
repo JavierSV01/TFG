@@ -9,6 +9,57 @@ from bson.json_util import dumps
 
 @association_bp.route('/addworkout', methods=['POST'])
 def addworkout():
+    """
+    Agrega un entrenamiento a un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a agregar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento agregado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento agregado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, entrenamiento no existe, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              examples:
+                - "Faltan datos"
+                - "El entrenamiento no existe"
+                - "El entrenamiento ya fue agregado"
+                - "El cliente no tiene asignado ese entrenador"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+    """
     if 'usuario' in session: 
         usuario = session['usuario']
     else:
@@ -39,6 +90,38 @@ def addworkout():
     
 @association_bp.route('/myassociations', methods=['GET'])
 def get_associations():
+    """
+    Obtiene las asociaciones de un usuario (entrenador o cliente).
+    ---
+    tags:
+      - Asociaciones
+    responses:
+      200:
+        description: Lista de asociaciones del usuario.
+        schema:
+          type: object
+          properties:
+            associations:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la association si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: No se encontraron asociaciones.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "No se encontraron asociaciones"
+    """
     if 'usuario' in session:
         usuario = session['usuario']
     else:
@@ -52,6 +135,61 @@ def get_associations():
     
 @association_bp.route('/removeworkout', methods=['DELETE'])
 def removeworkout():
+    """
+    Elimina un entrenamiento de un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a eliminar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      200:
+        description: Entrenamiento eliminado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento eliminado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Entrenamiento no encontrado o no asociado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "El entrenamiento no existe o no está asociado"
+    """
     if 'usuario' in session:
         usuario = session['usuario']
     else:
@@ -76,6 +214,62 @@ def removeworkout():
     
 @association_bp.route('/updateworkout', methods=['PUT'])
 def update_workout():
+    """
+    Actualiza un entrenamiento de un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a actualizar.
+        required: true
+        schema:
+          type: object
+          properties:
+            idEntrenamiento:
+              type: string
+              description: ID del entrenamiento a actualizar.
+            idEntrenador:
+              type: string
+              description: ID del entrenador.
+            idUsuario:
+              type: string
+              description: ID del usuario(cliente).
+            entrenamiento:
+              type: object # TODO: definir el esquema de entrenamiento.
+              description: Datos actualizados del entrenamiento.
+            estado:
+              type: string
+              description: Estado del entrenamiento.
+            semIndex:
+              type: integer
+              description: Indice de semana
+            dayIndex:
+              type: integer
+              description: indice de dia
+    responses:
+      200:
+        description: Entrenamiento actualizado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento actualizado con éxito"
+      400:
+        description: Datos incompletos o no se pudo actualizar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              examples:
+                - "Datos incompletos"
+                - "No se pudo actualizar el entrenamiento"
+    """
     data = request.json
     workout_id = data.get('idEntrenamiento')
     trainer_id = data.get('idEntrenador')

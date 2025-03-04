@@ -7,6 +7,12 @@ from .models import ChatModel
 
 @socketio.on('join_room')
 def handle_join_room(data):
+    """
+    Maneja la unión a una sala de chat (websocket).
+    ---
+    tags:
+      - Chats (Websockets)
+    """
     try:
         room = str(data['room']) # CONVERTIR A STRING AQUI
         join_room(room)
@@ -16,6 +22,12 @@ def handle_join_room(data):
 
 @socketio.on('leave_room')
 def handle_leave_room(data):
+    """
+    Maneja la salida de una sala de chat (websocket).
+    ---
+    tags:
+      - Chats (Websockets)
+    """
     try:
       room = str(data['room'])
       leave_room(room)
@@ -25,6 +37,12 @@ def handle_leave_room(data):
 
 @socketio.on('send_message')
 def handle_send_message(data):
+    """
+    Maneja el envío de mensajes en una sala de chat (websocket).
+    ---
+    tags:
+      - Chats (Websockets)
+    """
     try:
         sender_id = data.get('username')
         chat_id = data.get('room')
@@ -52,6 +70,59 @@ def handle_send_message(data):
 
 @chat_bp.route('/exist', methods=['GET'])
 def get_chat():
+    """
+    Verifica la existencia de un chat entre dos usuarios y obtiene el ID del chat.
+    ---
+    tags:
+      - Chats
+    parameters:
+      - in: query
+        name: id1
+        type: string
+        required: true
+        description: ID del primer usuario.
+      - in: query
+        name: id2
+        type: string
+        required: true
+        description: ID del segundo usuario.
+    responses:
+      200:
+        description: ID del chat encontrado.
+        schema:
+          type: object
+          properties:
+            chat_id:
+              type: string
+      400:
+        description: Faltan IDs de usuario.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Se requieren ambos IDs de usuario"
+      403:
+        description: Acceso denegado.
+        schema:
+          type: string
+          example: "Acceso denegado"
+      404:
+        description: Chat no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "No se encontró el chat"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     try:
         
         user_id1 = request.args.get('id1')
@@ -74,6 +145,51 @@ def get_chat():
 
 @chat_bp.route('/getchat', methods=['GET'])
 def get_chat_details():
+    """
+    Obtiene los detalles de un chat por su ID.
+    ---
+    tags:
+      - Chats
+    parameters:
+      - in: query
+        name: chat_id
+        type: string
+        required: true
+        description: ID del chat.
+    responses:
+      200:
+        description: Detalles del chat.
+        schema:
+          type: object # Se deberia definir el esquema del chat si fuera necesario.
+      400:
+        description: Faltan datos requeridos.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Faltan datos requeridos"
+      403:
+        description: Acceso denegado.
+        schema:
+          type: string
+          example: "Acceso denegado"
+      404:
+        description: Chat no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "No se encontró el chat"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     try:
         user_id = session.get('usuario')
         chat_id = request.args.get('chat_id')

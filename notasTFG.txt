@@ -24,6 +24,7 @@ python3 3.13.3
 	Instalar mongodb en el sistema anfitrion
 	pip install python-dotenv
 	pip install Flask-SocketIO
+	pip install flask-swagger-ui flasgger
 
 	
 	
