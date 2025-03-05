@@ -16,7 +16,8 @@ export const ENDPOINTS = {
     INFO: `${BASE_URL}/user/allinfo`,
     NAME: `${BASE_URL}/user/username`,
     UPDATE_DATA: `${BASE_URL}/user/data`,
-    CLIENT_INFO: `${BASE_URL}/user/clientinfo`
+    CLIENT_INFO: `${BASE_URL}/user/clientinfo`,
+    UPDATE_ATTR: `${BASE_URL}/user/attrdinamico`
   },
 
   SOLICITUDE: {

@@ -131,6 +131,20 @@ function PaginaUnChat () {
             bg='white'
             border='1px solid'
             borderColor='gray.200'
+            paddingStart={{
+              base: '10px',
+              sm: '20px',
+              md: '50px',
+              lg: '100px',
+              xl: '150px'
+            }}
+            paddingEnd={{
+              base: '10px',
+              sm: '20px',
+              md: '50px',
+              lg: '100px',
+              xl: '150px'
+            }}
             mb='70px'
           >
             {messages.map((msg, index) => (
@@ -141,7 +155,13 @@ function PaginaUnChat () {
               >
                 <Box
                   maxW='70%' // Ajusta este valor según tus necesidades
-                  minW='40%'
+                  minW={{
+                    base: '90%',
+                    sm: '85%',
+                    md: '75%',
+                    lg: '65%',
+                    xl: '55%'
+                  }}
                   p={2}
                   border='2px solid'
                   borderColor={colors.neutral}

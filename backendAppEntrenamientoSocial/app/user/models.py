@@ -85,3 +85,30 @@ class UserModel:
     def user_exists(username):
         db = UserModel.get_db()
         return True if db["usuarios"].find_one({"usuario": username}) else False
+    
+    @staticmethod
+    def update_dynamic_attribute(usuario, nombre_atributo, valor, fecha, valorTipo):
+
+        db = UserModel.get_db()
+        user = db.usuarios.find_one({"usuario": usuario})
+        if not user:
+            return False  
+
+        atributo_existente = next((attr for attr in user.get("atributosDinamicos", []) if (attr["nombre"] == nombre_atributo) and attr["valorTipo"] == valorTipo), None)
+
+        if atributo_existente:
+            db.usuarios.update_one(
+                {"usuario": usuario, "atributosDinamicos.nombre": nombre_atributo},
+                {"$push": {"atributosDinamicos.$.historial": {"valor": valor, "fecha": fecha}}}
+            )
+        else:
+            nuevo_atributo = {
+                "nombre": nombre_atributo,
+                "valorTipo" : valorTipo,
+                "historial": [{"valor": valor, "fecha": fecha}]
+            }
+            db.usuarios.update_one(
+                {"usuario": usuario},
+                {"$push": {"atributosDinamicos": nuevo_atributo}}
+            )
+        return True

@@ -326,9 +326,6 @@ def get_workouts():
         return dumps(entrenamientos_list), 200, {'Content-Type': 'application/json'}
     except Exception:
         return jsonify({"message": "Error al obtener entrenamientos"}), 500
-    
-
-
 
 @user_bp.route('/workout', methods=['POST'])
 def save_workout():
@@ -715,3 +712,92 @@ def obtener_info_cliente():
         return dumps(info_permitida), 200, {'Content-Type': 'application/json'}
     except Exception as e:
         return jsonify({"error": "Error al obtener la información del cliente"}), 500
+    
+
+@user_bp.route('/attrdinamico', methods=['POST'])
+def update_dynamic_attribute():
+    """
+    Agrega o actualiza un atributo dinámico para un usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos para agregar o actualizar el atributo dinámico.
+        required: true
+        schema:
+          type: object
+          properties:
+            fecha:
+              type: string
+              description: Fecha a la que corresponde el dato.
+            nombre_atributo:
+              type: string
+              description: Nombre del atributo dinámico.
+            valor:
+              type: object
+              description: Valor del atributo dinámico.
+    responses:
+      200:
+        description: Atributo dinámico actualizado correctamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Atributo dinámico actualizado correctamente"
+      400:
+        description: Datos de entrada inválidos.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Datos de entrada inválidos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no encontrado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Error al actualizar el atributo dinamico"
+    """
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    data = request.get_json()
+    if not data or 'nombre_atributo' not in data or 'valor' not in data or 'fecha' not in data or 'valorTipo' not in data:
+        return jsonify({"error": "Datos de entrada inválidos"}), 400
+    usuario = session['usuario']
+    nombre_atributo = data['nombre_atributo']
+    valor = data['valor']
+    fecha = data['fecha']
+    valorTipo = data['valorTipo']
+
+    try:
+        if UserModel.update_dynamic_attribute(usuario, nombre_atributo, valor, fecha, valorTipo):
+            return jsonify({"message": "Atributo dinamico actualizado correctamente"}), 200
+        else:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": f"Error al actualizar el atributo dinamico: {str(e)}"}), 500
