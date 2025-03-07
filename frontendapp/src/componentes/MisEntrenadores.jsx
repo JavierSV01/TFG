@@ -9,7 +9,7 @@ const MisEntrenadores = () => {
   const entrenadores = useMisAsociaciones()
 
   return (
-    <Flex gap={4} wrap='wrap' justify='space-between' width='100%'>
+    <Flex gap={4} wrap='wrap' justify='normal' width='100%'>
       {entrenadores.map((entrenador) => (
         <Box
           key={entrenador._id}

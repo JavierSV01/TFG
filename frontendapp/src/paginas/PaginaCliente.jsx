@@ -27,6 +27,7 @@ import { ENDPOINTS } from '../constantes/endponits'
 import { ViewIcon, DeleteIcon } from '@chakra-ui/icons'
 import { useUserNameId } from '../hooks/useUserNameId'
 import BotonChat from '../componentes/BotonChat'
+import GraficasAtributos from '../componentes/GraficasAtributos'
 
 export function PaginaCliente () {
   const cliente = {
@@ -241,6 +242,13 @@ export function PaginaCliente () {
                     </Text>
                   ))}
                 </VStack>
+              </Box>
+
+              <Divider />
+
+              <Box>
+                <Heading as='h3' size='md'>Gráfica</Heading>
+                <GraficasAtributos atributos={userData.attrDinamicos} />
               </Box>
             </Stack>
           </GridItem>

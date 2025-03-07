@@ -696,7 +696,8 @@ def obtener_info_cliente():
         # Filtrar la información que el entrenador puede ver
         info_permitida = {
             "usuario": cliente_info.get("usuario"),
-            "datos": cliente_info.get("datos")
+            "datos": cliente_info.get("datos"),
+            "attrDinamicos" : cliente_info.get("atributosDinamicos")
         }
 
         asociaciones = getAssociationByUser(usuarioCliente)

@@ -42,6 +42,6 @@ react
 	
 to do 
 
-- error al volver ha hacer login sin hacer logout. No recarga nuevo tipo de perfil mantiene el anterior
-- usar _id para identificar usuarios y no usuario 
-	Agregar endpoint para obtener nombre 
+- Ver entrenamientos de un cliente siendo entrenador.
+- Modificar, borrar plantillas de entrenamiento
+- 

@@ -36,7 +36,7 @@ export function MiPerfilCliente () {
           'Content-Type': 'application/json'
         }
       })
-      if (response.status === 201) {
+      if (response.status === 200) {
         toast({
           title: 'Datos actualizados',
           description: 'Tus datos personales han sido actualizados correctamente.',
