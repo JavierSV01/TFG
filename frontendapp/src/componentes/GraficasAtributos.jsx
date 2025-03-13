@@ -1,5 +1,5 @@
 import { Box, VStack } from '@chakra-ui/react'
-import { Grafica } from './componentes/Grafica'
+import { Grafica } from './Grafica'
 
 const GraficasAtributos = ({ atributos }) => {
   return (
