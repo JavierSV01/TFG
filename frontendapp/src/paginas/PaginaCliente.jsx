@@ -17,9 +17,10 @@ import {
   useToast,
   IconButton
 } from '@chakra-ui/react'
+
 import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { useClientInfo } from '../hooks/useClientInfo'
 import { usePlantillasEntrenamiento } from '../hooks/usePlantillasEntrenamiento'
@@ -49,6 +50,7 @@ export function PaginaCliente () {
   const { plantillas } = usePlantillasEntrenamiento()
 
   const toast = useToast()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setSelectedOption(e.target.value)
@@ -114,6 +116,19 @@ export function PaginaCliente () {
         duration: 5000,
         isClosable: true
       })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Hubo un error al borrar el entrenamiento. ' + error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+    }
+  }
+  const handleViewEntrenamiento = async (usuarioCliente, workoutId) => {
+    try {
+      navigate(`/cliente/${usuarioCliente}/${workoutId}`)
     } catch (error) {
       toast({
         title: 'Error',
@@ -195,6 +210,7 @@ export function PaginaCliente () {
                                   bgColor={colors.secondary}
                                   textColor={colors.white}
                                   _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                                  onClick={() => handleViewEntrenamiento(asociacion.usuarioCliente, entrenamiento._id.$oid)}
                                 />
                                 <IconButton
                                   icon={<DeleteIcon />}

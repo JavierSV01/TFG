@@ -1,4 +1,4 @@
-import { Box, Heading } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from 'chart.js'
 import colors from '../constantes/colores'
@@ -34,8 +34,7 @@ export const Grafica = ({ dataLabels, data, chartLabel }) => {
   }
 
   return (
-    <Box bg={colors.neutral} borderRadius='md' p={6} width='100%' textAlign='center'>
-      <Heading size='lg' mb={4}>{chartLabel}</Heading> {/* Usamos el chartLabel para el Heading */}
+    <Box bg={colors.white} borderRadius='md' p={6} width='100%' textAlign='center'>
       <Line data={chartData} options={chartOptions} />
     </Box>
   )

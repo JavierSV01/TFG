@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from 'react'
 import Navbar from '../componentes/Navbar'
 import { Box, Heading, List, ListItem, Flex, ChakraProvider, Input, Stack, FormLabel, Button, useToast, FormControl, Select, FormErrorMessage } from '@chakra-ui/react'
-import { GraficaPeso } from '../GraficaPeso'
+import GraficasAtributos from './GraficasAtributos'
 import colors from '../constantes/colores'
 import { useUserNameId } from '../hooks/useUserNameId'
 import { useUserData } from '../hooks/useUserData'
@@ -140,7 +140,7 @@ export function MiPerfilCliente () {
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
             <Flex direction={{ base: 'column', md: 'row' }} gap={10}>
 
-              <Box flex={1} display='flex'>
+              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
                 <Stack>
                   <Heading color={colors.white} size='lg' mb={4}>Mis Datos Personales</Heading>
                   <form onSubmit={handleSubmit(onSubmit)}>
@@ -165,7 +165,7 @@ export function MiPerfilCliente () {
                 </Stack>
 
               </Box>
-              <Box flex={1} display='flex'>
+              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
                 <Stack>
                   <Heading color={colors.white} size='lg' mb={4}>Atributos varios a controlar</Heading>
                   <form onSubmit={handleSubmitAttr(onSubmitAttr)}>
@@ -205,7 +205,7 @@ export function MiPerfilCliente () {
                         <Input
                           {...registerAttr('valor', {
                             required: 'Este campo es requerido',
-                            pattern: valorTipo === 'number' ? { value: /^\d*,?\d+$/, message: 'Debe ser un número válido' } : undefined
+                            pattern: valorTipo === 'number' ? { value: /^\d+(\.\d+)?$/, message: 'Debe ser un número válido' } : undefined
                           })}
                           placeholder='Valor'
                           type={valorTipo === 'number' ? 'text' : 'text'}
@@ -223,24 +223,36 @@ export function MiPerfilCliente () {
                       </FormControl>
 
                       <Button colorScheme='blue' type='submit' w='100%'>
-                        Guardar
+                        Guardar atributo
                       </Button>
                     </Stack>
                   </form>
                 </Stack>
 
               </Box>
-
             </Flex>
 
           </Box>
 
           <Flex direction={{ base: 'column', md: 'row' }} gap={margen}>
 
-            <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1} display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-              <Heading color={colors.white} size='lg' mb={4}>Evolución de Peso</Heading>
-              <Box bg={colors.neutral} borderRadius='3xl' p={4}>
-                <GraficaPeso />
+            <Box
+              bg={colors.secondary}
+              borderRadius='3xl'
+              p={margen}
+              flex={1}
+              display='flex'
+              flexDirection='column'
+              alignItems='start'
+              justifyContent='start'
+            >
+              <Heading color={colors.white} size='lg' mb={4}>
+                Graficas
+              </Heading>
+
+              {/* Asegurar que el contenedor de las gráficas ocupe todo el espacio disponible */}
+              <Box flex='1' width='100%' overflow='hidden'>
+                <GraficasAtributos atributos={userData.atributosDinamicos} />
               </Box>
             </Box>
 

@@ -17,6 +17,7 @@ export const useClientInfo = (usuario) => {
       const response = await axios.post(ENDPOINTS.USER.CLIENT_INFO, data)
       if (response.status === 200) {
         setUserData(response.data) // Guardar los datos obtenidos
+        console.log(response.data)
       }
     } catch (err) {
       console.log(err.response.data.error)
