@@ -18,7 +18,6 @@ import {
   IconButton
 } from '@chakra-ui/react'
 
-import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
@@ -141,15 +140,14 @@ export function PaginaCliente () {
   }
 
   if (!authenticated) {
-    return <div>{message}</div>
+    return <Box minH='100vh' bgColor={colors.neutral}>{message}</Box>
   } else if (loading) {
-    return <div>Cargando...</div>
+    return <Box minH='100vh' bgColor={colors.neutral}>Cargando...</Box>
   } else if (error) {
-    return <div>Error: {error}</div>
+    return <Box minH='100vh' bgColor={colors.neutral}>Error: {error}</Box>
   }
   return (
     <ChakraProvider>
-      <Navbar />
       <Box minH='100vh' bg={colors.neutral} p={10}>
         <Grid
           templateColumns={{

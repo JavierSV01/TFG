@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react'
 import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast, Stack, IconButton } from '@chakra-ui/react'
-import Navbar from '../componentes/Navbar'
 import { useParams } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import { useAuthCheck } from '../hooks/useAuthCheck'
@@ -132,7 +131,6 @@ export function PaginaDiaEntrenamiento () {
 
   return (
     <ChakraProvider>
-      <Navbar />
 
       <Box bgColor={colors.neutral} color={colors.primary} minH='100vh' p={4}>
         <Heading textAlign='center' size='lg' m={2} textColor={colors.primary}>

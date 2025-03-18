@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Grid, GridItem, Stack, IconButton } from '@chakra-ui/react'
-import Navbar from '../componentes/Navbar'
 import { useParams } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import colors from '../constantes/colores'
@@ -20,14 +19,12 @@ export function PaginaEntrenamietoCliente () {
       const entrenamiento = userData.asociacion[0].entrenamientos && userData.asociacion[0].entrenamientos.find(
         elemento => {
           if (elemento._id && elemento._id.$oid === idEntrenamiento) {
-            console.log('Siiiii')
-            console.log(elemento)
             return true
           }
-          console.log('Noooo')
           return false
         }
       ).entrenamiento[0]
+      console.log('Entrenamiento: \n' + entrenamiento)
       setEntrenamientoEncontrado(entrenamiento)
     }
   }, [userData, idEntrenamiento])
@@ -51,8 +48,6 @@ export function PaginaEntrenamietoCliente () {
 
   return (
     <ChakraProvider>
-      <Navbar />
-
       <Box bgColor={colors.neutral} color={colors.primary} minH='100vh' p={4}>
         <Heading textAlign='center' size='lg' m={2} textColor={colors.primary}>
           Entrenamiento {entrenamientoEncontrado.title}
@@ -64,6 +59,9 @@ export function PaginaEntrenamietoCliente () {
         {entrenamientoEncontrado?.weeks?.map((ejercicio, index) => {
           return (
             <Box key={index} m={6} p={4}>
+              <Text m={8} fontSize='xl' fontWeight='semibold'>
+                Semana: {index + 1} - Día {parseInt(dayIndex) + 1}
+              </Text>
               <Box position='relative' mb={4}>
                 <Divider borderColor={colors.primary} />
                 <AbsoluteCenter textColor={colors.primary} bg={colors.neutral} px='4' fontSize={18}>{ejercicio.name}</AbsoluteCenter>

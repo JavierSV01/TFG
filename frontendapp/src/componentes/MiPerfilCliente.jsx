@@ -1,5 +1,4 @@
 import { React, useState, useEffect } from 'react'
-import Navbar from '../componentes/Navbar'
 import { Box, Heading, List, ListItem, Flex, ChakraProvider, Input, Stack, FormLabel, Button, useToast, FormControl, Select, FormErrorMessage } from '@chakra-ui/react'
 import GraficasAtributos from './GraficasAtributos'
 import colors from '../constantes/colores'
@@ -134,7 +133,6 @@ export function MiPerfilCliente () {
 
   return (
     <ChakraProvider>
-      <Navbar />
       <Box bg={colors.neutral} color={colors.white} minH='100vh' p={margen}>
         <Flex direction='column' gap={margen}>
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>

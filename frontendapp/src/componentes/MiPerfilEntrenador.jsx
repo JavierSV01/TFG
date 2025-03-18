@@ -1,6 +1,5 @@
 import { React } from 'react'
 import { ChakraProvider, Box, Heading, Flex, List, ListItem } from '@chakra-ui/react'
-import Navbar from './Navbar'
 import MisClientes from '../componentes/MisClientes'
 import SolicitudesAsesoramiento from '../componentes/SolicitudesAsesoramiento'
 import colors from '../constantes/colores'
@@ -10,7 +9,6 @@ export function MiPerfilEntrenador () {
   const margen = 10
   return (
     <ChakraProvider>
-      <Navbar />
       <Box bg={colors.neutral} color={colors.white} minH='100vh' p={margen}>
         {/* Contenedor principal usando Flex */}
         <Flex direction='column' gap={margen}>

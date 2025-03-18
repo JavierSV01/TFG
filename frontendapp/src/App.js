@@ -9,21 +9,24 @@ import { PaginaMiEntrenamiento } from './paginas/PaginaMiEntrenamiento'
 import { PaginaDiaEntrenamiento } from './paginas/PaginaDiaEntrenamieto'
 import PaginaUnChat from './paginas/PaginaUnChat'
 import { PaginaEntrenamietoCliente } from './paginas/PaginaEntrenamientoCliente'
+import { LayoutConNavbar } from './componentes/LayoutConNavbar'
 
 function App () {
   return (
     <Router>
       <Routes>
         <Route path='/' element={<PaginaLogin />} />
-        <Route path='/principal' element={<PaginaPrincipal />} />
-        <Route path='/crearEntrenamiento' element={<PaginaCreacionEntrenamiento />} />
-        <Route path='/perfil' element={<PaginaMiPerfil />} />
-        <Route path='/cliente/:usuario' element={<PaginaCliente />} />
-        <Route path='/entrenador/:entrenador' element={<PaginaMiEntrenador />} />
-        <Route path='/entrenador/:entrenador/:idEntrenamiento' element={<PaginaMiEntrenamiento />} />
-        <Route path='/entrenador/:entrenador/:idEntrenamiento/:semIndex/:dayIndex' element={<PaginaDiaEntrenamiento />} />
-        <Route path='/cliente/:usuario/:idEntrenamiento' element={<PaginaEntrenamietoCliente />} />
-        <Route path='/chat/:idChat' element={<PaginaUnChat />} />
+        <Route element={<LayoutConNavbar />}> {/* Usa LayoutConNavbar como padre */}
+          <Route path='/principal' element={<PaginaPrincipal />} />
+          <Route path='/crearEntrenamiento' element={<PaginaCreacionEntrenamiento />} />
+          <Route path='/perfil' element={<PaginaMiPerfil />} />
+          <Route path='/cliente/:usuario' element={<PaginaCliente />} />
+          <Route path='/entrenador/:entrenador' element={<PaginaMiEntrenador />} />
+          <Route path='/entrenador/:entrenador/:idEntrenamiento' element={<PaginaMiEntrenamiento />} />
+          <Route path='/entrenador/:entrenador/:idEntrenamiento/:semIndex/:dayIndex' element={<PaginaDiaEntrenamiento />} />
+          <Route path='/cliente/:usuario/:idEntrenamiento' element={<PaginaEntrenamietoCliente />} />
+          <Route path='/chat/:idChat' element={<PaginaUnChat />} />
+        </Route>
       </Routes>
     </Router>
   )

@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, useBreakpointValue } from '@chakra-ui/react'
+import { Box, SimpleGrid, useBreakpointValue, Text } from '@chakra-ui/react'
 import { useRef, useEffect, useState } from 'react'
 import { Grafica } from './Grafica'
 
@@ -20,19 +20,23 @@ const GraficasAtributos = ({ atributos }) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  return (
-    <SimpleGrid minChildWidth={minChildWidth} spacing={8}>
-      {atributos.map((atributo, index) => {
-        const dataLabels = atributo.historial.map((item) => item.fecha)
-        const data = atributo.historial.map((item) => item.valor)
-        return (
-          <Box key={index} ref={boxRef} width='100%'>
-            <Grafica chartLabel={atributo.nombre} dataLabels={dataLabels} data={data} width={boxWidth} />
-          </Box>
-        )
-      })}
-    </SimpleGrid>
-  )
+  if (!atributos || atributos.length === 0) {
+    return (<Text>No hay atributos aún.</Text>)
+  } else {
+    return (
+      <SimpleGrid minChildWidth={minChildWidth} spacing={8}>
+        {atributos.map((atributo, index) => {
+          const dataLabels = atributo.historial.map((item) => item.fecha)
+          const data = atributo.historial.map((item) => item.valor)
+          return (
+            <Box key={index} ref={boxRef} width='100%'>
+              <Grafica chartLabel={atributo.nombre} dataLabels={dataLabels} data={data} width={boxWidth} />
+            </Box>
+          )
+        })}
+      </SimpleGrid>
+    )
+  }
 }
 
 export default GraficasAtributos

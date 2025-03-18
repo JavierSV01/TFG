@@ -2,7 +2,6 @@ import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Heading, Text, Button, Divider, AbsoluteCenter } from '@chakra-ui/react'
-import Navbar from '../componentes/Navbar'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import colors from '../constantes/colores'
 import { useUserNameId } from '../hooks/useUserNameId'
@@ -25,7 +24,6 @@ export function PaginaMiEntrenador () {
   } else {
     return (
       <ChakraProvider>
-        <Navbar />
         <Box bg={colors.neutral} color={colors.white} minH='100vh' p={2}>
 
           <Heading textAlign='center' size='lg' m={4} textColor={colors.primary}>Asesoria de {entrenador}</Heading>

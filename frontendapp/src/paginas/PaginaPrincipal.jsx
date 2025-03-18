@@ -1,5 +1,4 @@
 import { React, useState, useEffect } from 'react'
-import Navbar from '../componentes/Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast } from '@chakra-ui/react'
 import axios from 'axios'
@@ -116,7 +115,6 @@ export function PaginaPrincipal () {
 
   return (
     <ChakraProvider>
-      <Navbar />
       <Box bg={colors.neutral} color={colors.white} minH='100vh' p={6}>
 
         <Flex direction='column' gap={6}>

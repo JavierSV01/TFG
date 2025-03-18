@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Box, Flex, Text, Input, Button, ChakraProvider } from '@chakra-ui/react'
-import Navbar from '../componentes/Navbar'
 import colors from '../constantes/colores'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
@@ -116,7 +115,6 @@ function PaginaUnChat () {
     return (
       <ChakraProvider>
         <Flex direction='column' height='100vh'>
-          <Navbar />
           <Box bg={colors.neutral} py={4} textAlign='center'>
             <Text fontSize='2xl' fontWeight='bold'>
               Nombre del Chat
