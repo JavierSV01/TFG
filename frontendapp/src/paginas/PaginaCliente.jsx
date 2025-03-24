@@ -15,7 +15,10 @@ import {
   Button,
   HStack,
   useToast,
-  IconButton
+  IconButton,
+  useDisclosure,
+  Modal, ModalOverlay, ModalContent, ModalHeader,
+  ModalBody, ModalFooter
 } from '@chakra-ui/react'
 
 import colors from '../constantes/colores'
@@ -50,6 +53,9 @@ export function PaginaCliente () {
 
   const toast = useToast()
   const navigate = useNavigate()
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [entrenamientoAEliminar, setEntrenamientoAEliminar] = useState(null)
 
   const handleChange = (e) => {
     setSelectedOption(e.target.value)
@@ -100,12 +106,22 @@ export function PaginaCliente () {
     }
   }
 
-  const handleDeleteEntrenamiento = async (usuarioCliente, workoutId) => {
+  const confirmarEliminacion = (usuarioCliente, workoutId) => {
+    setEntrenamientoAEliminar({ usuarioCliente, workoutId })
+    onOpen() // Abre el modal
+  }
+
+  const handleDeleteEntrenamiento = async () => {
+    if (!entrenamientoAEliminar) return
+
     try {
       axios.defaults.withCredentials = true
       await axios.delete(ENDPOINTS.ASSOCIATION.REMOVEWORKOUT, {
         headers: { 'Content-Type': 'application/json' },
-        data: JSON.stringify({ cliente: usuarioCliente, id_workout: workoutId })
+        data: JSON.stringify({
+          cliente: entrenamientoAEliminar.usuarioCliente,
+          id_workout: entrenamientoAEliminar.workoutId
+        })
       })
       reload()
       toast({
@@ -123,6 +139,9 @@ export function PaginaCliente () {
         duration: 5000,
         isClosable: true
       })
+    } finally {
+      setEntrenamientoAEliminar(null)
+      onClose() // Cierra el modal después de la acción
     }
   }
   const handleViewEntrenamiento = async (usuarioCliente, workoutId) => {
@@ -217,7 +236,7 @@ export function PaginaCliente () {
                                   textColor={colors.white}
                                   _hover={{ bgColor: colors.primary, color: colors.neutral }}
                                   ml={2}
-                                  onClick={() => handleDeleteEntrenamiento(asociacion.usuarioCliente, entrenamiento._id.$oid)}
+                                  onClick={() => confirmarEliminacion(asociacion.usuarioCliente, entrenamiento._id.$oid)}
                                 />
                               </Box>
                             </Box>
@@ -270,6 +289,21 @@ export function PaginaCliente () {
         </Grid>
       </Box>
 
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmar Eliminación</ModalHeader>
+          <ModalBody>
+            <Text>¿Estás seguro de que deseas eliminar este entrenamiento?</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='red' mr={3} onClick={handleDeleteEntrenamiento}>
+              Sí, borrar
+            </Button>
+            <Button variant='ghost' onClick={onClose}>Cancelar</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </ChakraProvider>
   )
 }
