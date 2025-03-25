@@ -9,6 +9,7 @@ import { PaginaMiEntrenamiento } from './paginas/PaginaMiEntrenamiento'
 import { PaginaDiaEntrenamiento } from './paginas/PaginaDiaEntrenamieto'
 import PaginaUnChat from './paginas/PaginaUnChat'
 import { PaginaEntrenamietoCliente } from './paginas/PaginaEntrenamientoCliente'
+import { PaginaCrearDieta } from './paginas/PaginaCrearDieta'
 import { LayoutConNavbar } from './componentes/LayoutConNavbar'
 
 function App () {
@@ -26,6 +27,7 @@ function App () {
           <Route path='/entrenador/:entrenador/:idEntrenamiento/:semIndex/:dayIndex' element={<PaginaDiaEntrenamiento />} />
           <Route path='/cliente/:usuario/:idEntrenamiento' element={<PaginaEntrenamietoCliente />} />
           <Route path='/chat/:idChat' element={<PaginaUnChat />} />
+          <Route path='/crearDieta' element={<PaginaCrearDieta />} />
         </Route>
       </Routes>
     </Router>

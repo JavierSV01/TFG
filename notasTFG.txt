@@ -45,3 +45,4 @@ to do
 - Ver entrenamientos de un cliente siendo entrenador.
 - Modificar, borrar plantillas de entrenamiento
 - 
+
