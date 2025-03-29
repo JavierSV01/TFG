@@ -1,10 +1,16 @@
 import { useState } from 'react'
-import { Button, Input, ChakraProvider, Box, Heading, VStack, HStack, IconButton, SimpleGrid, FormControl, FormLabel } from '@chakra-ui/react'
+import axios from 'axios'
+import { ENDPOINTS } from '../constantes/endponits'
+import { Button, useToast, Input, ChakraProvider, Box, Heading, VStack, HStack, IconButton, SimpleGrid, FormControl, FormLabel } from '@chakra-ui/react'
 import { DeleteIcon } from '@chakra-ui/icons'
 import colors from '../constantes/colores'
 
 export function CrearDieta () {
   const [days, setDays] = useState([])
+
+  const [dietName, setDietName] = useState('')
+
+  const toast = useToast()
 
   const addDay = () => {
     setDays([...days, { name: '', meals: [] }])
@@ -56,11 +62,53 @@ export function CrearDieta () {
     setDays(newDays)
   }
 
+  const saveDiet = async () => {
+    const dietData = {
+      dietName,
+      days
+    }
+    try {
+      await axios.post(ENDPOINTS.USER.DIET, dietData)
+      setDays([])
+      setDietName('')
+      toast({
+        title: 'Dierta guardada correctamente',
+        status: 'success',
+        duration: 5000,
+        isClosable: true
+      })
+    } catch (error) {
+      toast({
+        title: 'Error al guardar la dieta',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+    }
+  }
+
   return (
     <ChakraProvider>
       <Box bg={colors.neutral} minH='100vh' color={colors.white} p={8}>
         <Box bg={colors.secondary} borderRadius='3xl' color='white' minH='100vh' p={6}>
-          <Heading as='h1' mb={8}>Crear Dieta</Heading>
+          <HStack mb={8} justifyContent='space-between' w='100%'>
+            <Heading as='h1'>Crear Dieta</Heading>
+            <Button
+              bgColor={colors.accent} color={colors.white} border={`1px solid ${colors.white}`}
+              _hover={{ bg: colors.neutral, color: colors.primary }}
+              transition='background-color 0.3s, color 0.3s'
+              onClick={saveDiet}
+            >Guardar dieta
+            </Button>
+          </HStack>
+          <FormLabel>Nombre de la dieta</FormLabel>
+          <Input
+            mb={4}
+            type='text'
+            value={dietName}
+            placeholder='Ejemplo: Dieta de volumen para Ruben'
+            onChange={(e) => setDietName(e.target.value)}
+          />
 
           <Button
             mb={4}
@@ -73,7 +121,7 @@ export function CrearDieta () {
 
           <VStack spacing={4} align='stretch'>
             {days.map((day, dayIndex) => (
-              <Box key={dayIndex} border='1px solid' borderRadius='3xl' p={4}>
+              <Box key={dayIndex} border='3px solid' borderRadius='3xl' p={4}>
 
                 <HStack spacing={4} align='stretch'>
                   <FormControl>

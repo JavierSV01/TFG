@@ -9,7 +9,6 @@ import {
   Image,
   Stack,
   Divider,
-  VStack,
   ChakraProvider,
   Select,
   Button,
@@ -31,15 +30,11 @@ import { ViewIcon, DeleteIcon } from '@chakra-ui/icons'
 import { useUserNameId } from '../hooks/useUserNameId'
 import BotonChat from '../componentes/BotonChat'
 import GraficasAtributos from '../componentes/GraficasAtributos'
+import { useDietsPlans } from '../hooks/useDietsPlans'
 
-export function PaginaCliente () {
+export function PaginaMiCliente () {
   const cliente = {
-    foto: 'https://img.decrypt.co/insecure/rs:fit:1920:0:0:0/plain/https://cdn.decrypt.co/wp-content/uploads/2024/11/chillguy-gID_7.jpg@webp', // Reemplaza con la URL de la foto del cliente
-    dieta: [
-      { dia: 'Lunes', comida: 'Pollo con arroz y ensalada' },
-      { dia: 'Martes', comida: 'Pasta con vegetales' },
-      { dia: 'Miércoles', comida: 'Salmón con quinoa' }
-    ]
+    foto: 'https://img.decrypt.co/insecure/rs:fit:1920:0:0:0/plain/https://cdn.decrypt.co/wp-content/uploads/2024/11/chillguy-gID_7.jpg@webp' // Reemplaza con la URL de la foto del cliente
   }
 
   const { username } = useUserNameId()
@@ -48,8 +43,10 @@ export function PaginaCliente () {
   const { usuario } = useParams()
   const { userData, loading, error, reload } = useClientInfo(usuario)
 
-  const [selectedOption, setSelectedOption] = useState('')
+  const [selectedOptionEntrenamieto, setSelectedOptionEntrenamieto] = useState('')
   const { plantillas } = usePlantillasEntrenamiento()
+  const [selectedOptionDieta, setSelectedOptionDieta] = useState('')
+  const { dietas } = useDietsPlans()
 
   const toast = useToast()
   const navigate = useNavigate()
@@ -57,13 +54,17 @@ export function PaginaCliente () {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [entrenamientoAEliminar, setEntrenamientoAEliminar] = useState(null)
 
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value)
+  const handleChangeEntrenamieto = (e) => {
+    setSelectedOptionEntrenamieto(e.target.value)
+  }
+
+  const handleChangeDieta = (e) => {
+    setSelectedOptionDieta(e.target.value)
   }
 
   const handlePostAgregarEntrenamiento = async () => {
-    console.log('Opción seleccionada:', selectedOption)
-    if (!selectedOption) {
+    console.log('Opción seleccionada:', selectedOptionEntrenamieto)
+    if (!selectedOptionEntrenamieto) {
       console.log('No se ha seleccionado una opción')
       toast({
         title: 'Error',
@@ -75,7 +76,7 @@ export function PaginaCliente () {
       return
     }
     try {
-      const idEntrenamiento = selectedOption
+      const idEntrenamiento = selectedOptionEntrenamieto
       const data = {
         cliente: usuario,
         id_workout: idEntrenamiento
@@ -85,7 +86,7 @@ export function PaginaCliente () {
 
       if (respuesta.status === 201) {
         reload()
-        setSelectedOption('')
+        setSelectedOptionEntrenamieto('')
         toast({
           title: 'Entrenamiento agregado',
           description: 'El entrenamiento fue agregado correctamente.',
@@ -98,6 +99,51 @@ export function PaginaCliente () {
       toast({
         title: 'Error',
         description: 'Hubo un error al agregar el entrenamiento.' + error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      console.error('Error en la petición:', error)
+    }
+  }
+
+  const handlePostAgregarDieta = async () => {
+    console.log('Opción seleccionada:', selectedOptionDieta)
+    if (!selectedOptionDieta) {
+      console.log('No se ha seleccionado una opción')
+      toast({
+        title: 'Error',
+        description: 'Selecciona una opción antes de agregar la dieta.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      return
+    }
+    try {
+      const idDieta = selectedOptionDieta
+      const data = {
+        cliente: usuario,
+        id_diet: idDieta
+      }
+      axios.defaults.withCredentials = true
+      const respuesta = await axios.put(ENDPOINTS.ASSOCIATION.PUTDIET, data)
+
+      if (respuesta.status === 201) {
+        reload()
+        setSelectedOptionEntrenamieto('')
+        toast({
+          title: 'Dieta agregada',
+          description: 'La dieta fue agregada correctamente.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        })
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Hubo un error al agregar la dieta.' + error,
         status: 'error',
         duration: 5000,
         isClosable: true
@@ -150,7 +196,7 @@ export function PaginaCliente () {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Hubo un error al borrar el entrenamiento. ' + error,
+        description: 'Hubo un error ver el entrenamiento. ' + error,
         status: 'error',
         duration: 5000,
         isClosable: true
@@ -250,7 +296,7 @@ export function PaginaCliente () {
                   ))}
 
                   <HStack mt={2} spacing={4}>
-                    <Select placeholder='Selecciona una opción' onChange={handleChange}>
+                    <Select placeholder='Selecciona una opción' onChange={handleChangeEntrenamieto}>
                       {plantillas.map((plantilla, index) => (
                         <option key={index} value={plantilla.title}>
                           {plantilla.title}
@@ -267,14 +313,63 @@ export function PaginaCliente () {
               <Divider />
 
               <Box>
-                <Heading as='h3' size='md'>Dieta de esta Semana</Heading>
-                <VStack align='start' spacing={3}>
-                  {cliente.dieta.map((item, index) => (
-                    <Text key={index}>
-                      <strong>{item.dia}:</strong> {item.comida}
-                    </Text>
-                  ))}
-                </VStack>
+                <Heading as='h3' size='md'>Dieta</Heading>
+                <Box p={4}>
+
+                  {userData.asociacion?.map((asociacion, idx) => {
+                    const fecha = new Date(asociacion.dietaData.fecha.$date).toLocaleString()
+                    const [detalle] = asociacion.dietaData.dieta
+                    return (
+                      <div key={asociacion._id.$oid} alignItems='center'>
+
+                        <div key={idx}>
+                          <Box
+                            p={2}
+                            mb={2}
+                            display='flex'
+                            alignItems='center'
+                            textColor={colors.primary}
+                            fontSize={16}
+                          >
+                            <Box width='65%'>
+                              <Text>Dieta: {detalle?.title}</Text>
+                              <Text>Fecha: {fecha}</Text>
+                            </Box>
+                            <Box width='35%' textAlign='end'>
+                              <IconButton
+                                icon={<ViewIcon />}
+                                aria-label='Ver'
+                                bgColor={colors.secondary}
+                                textColor={colors.white}
+                                _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                                onClick={() => { navigate(`/cliente/${usuario}/dieta`) }}
+                              />
+                            </Box>
+                          </Box>
+                          <Box position='relative'>
+                            <Divider borderColor={colors.white} />
+                          </Box>
+                        </div>
+
+                      </div>
+                    )
+                  })}
+
+                  <Divider />
+
+                  <HStack mt={2} spacing={4}>
+                    <Select placeholder='Selecciona una opción' onChange={handleChangeDieta}>
+                      {dietas.map((dieta, index) => (
+                        <option key={index} value={dieta.title}>
+                          {dieta.title}
+                        </option>
+                      ))}
+                    </Select>
+                    <Button colorScheme='blue' onClick={handlePostAgregarDieta}>
+                      Agregar
+                    </Button>
+                  </HStack>
+                </Box>
               </Box>
 
               <Divider />

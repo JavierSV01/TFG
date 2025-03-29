@@ -74,3 +74,11 @@ class AssociationModel:
             {"$set": {f"entrenamientos.$.entrenamiento.0.weeks.{semIndex}.days.{dayIndex}.exercises": entrenamiento, f"entrenamientos.$.entrenamiento.0.weeks.{semIndex}.days.{dayIndex}.estado": estado}}
         )
         return result
+    
+    @staticmethod
+    def putDiet(usuario_cliente, usuario_entrenador, dieta, date):
+        db = AssociationModel.get_db()
+        db.asesoramientos.update_one(
+            {"usuarioCliente": usuario_cliente, "usuarioEntrenador": usuario_entrenador},
+            {"$set": {"dietaData": {"dieta": dieta, "fecha": date}}}
+        )

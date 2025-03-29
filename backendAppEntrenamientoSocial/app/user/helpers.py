@@ -8,3 +8,5 @@ def get_one_workout_for_user(user, workoutTitle):
     return UserModel.get_one_workout_for_user(user, workoutTitle)
 def user_exists(user):
     return UserModel.user_exists(user)
+def get_one_diet_for_user(user, dietTitle):
+    return UserModel.get_one_diet_for_user(user, dietTitle)

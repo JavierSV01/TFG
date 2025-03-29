@@ -802,3 +802,189 @@ def update_dynamic_attribute():
             return jsonify({"error": "Usuario no encontrado"}), 404
     except Exception as e:
         return jsonify({"error": f"Error al actualizar el atributo dinamico: {str(e)}"}), 500
+
+
+
+@user_bp.route('/diet', methods=['POST'])
+def save_diet():
+    """
+    Guarda una nueva dieta para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos de la dieta a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            dietName:
+              type: string
+              description: Nombre de la dieta.
+            days:
+              type: array
+              description: Lista de días de la dieta.
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Nombre del día (ejemplo Lunes).
+                  meals:
+                    type: array
+                    description: Lista de comidas del día.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Nombre de la comida.
+                        foods:
+                          type: array
+                          description: Lista de alimentos de la comida.
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: Nombre del alimento.
+                              grams:
+                                type: number
+                                description: Cantidad en gramos.
+    responses:
+      201:
+        description: Dieta guardada exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Dieta guardada exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar la dieta.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar la dieta"
+                - "Error interno del servidor"
+    """
+    # Verificar que el usuario esté logueado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    data = request.json
+    title = data.get('dietName', 'Entrenamiento sin título')
+    days = data.get('days', [])
+
+    # Crear la dieta
+    diet = {
+        "title": title,
+        "days": days
+    }
+
+    result = UserModel.insert_diet_for_user(usuario, diet)
+
+
+    if result.modified_count > 0:
+        return jsonify({"message": "Dieta guardada exitosamente"}), 201
+    else:
+        return jsonify({"error": "No se pudo guardar la dieta"}), 500
+
+
+@user_bp.route('/diets', methods=['GET'])
+def get_diets():
+
+    """
+    Obtiene las dietas del usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de dietas del usuario.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: ID de la dieta.
+              title:
+                type: string
+                description: Nombre de la dieta.
+              days:
+                type: array
+                description: Lista de días de la dieta.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Nombre del día.
+                    meals:
+                      type: array
+                      description: Lista de comidas del día.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Nombre de la comida.
+                          foods:
+                            type: array
+                            description: Lista de alimentos de la comida.
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  description: Nombre del alimento.
+                                grams:
+                                  type: number
+                                  description: Cantidad en gramos.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener dietas"
+    """
+    
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+    usuario = session['usuario']
+    try:
+        diets = UserModel.get_diets_for_user(usuario)
+        diets_list = list(diets)
+        return dumps(diets_list), 200, {'Content-Type': 'application/json'}
+    except Exception:
+        return jsonify({"message": "Error al obtener entrenamientos"}), 500

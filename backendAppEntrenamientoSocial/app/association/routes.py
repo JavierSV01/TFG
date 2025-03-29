@@ -2,7 +2,7 @@ import datetime
 from flask import jsonify, request, session
 from . import association_bp
 from .models import AssociationModel
-from app.user.helpers import get_one_workout_for_user
+from app.user.helpers import get_one_workout_for_user, get_one_diet_for_user
 from pymongo.errors import DuplicateKeyError
 from bson.json_util import dumps
 
@@ -285,3 +285,86 @@ def update_workout():
     if result.modified_count > 0:
         return jsonify({"mensaje": "Entrenamiento actualizado con éxito"}), 200
     return jsonify({"mensaje": "No se pudo actualizar el entrenamiento"}), 400
+
+
+
+@association_bp.route('/putdiet', methods=['PUT'])
+def adddiet():
+    """
+    Agrega un entrenamiento a un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a agregar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento agregado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento agregado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, entrenamiento no existe, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              examples:
+                - "Faltan datos"
+                - "El entrenamiento no existe"
+                - "El entrenamiento ya fue agregado"
+                - "El cliente no tiene asignado ese entrenador"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+    """
+    if 'usuario' in session: 
+        usuario = session['usuario']
+    else:
+        return jsonify({"mensaje": "Usuario no autenticado"}), 401
+    data = request.json
+
+    id_cliente = data.get('cliente')
+    id_entrenador = session['usuario']
+    id_diet = data.get('id_diet')
+    
+    date = datetime.datetime.now()
+
+    if id_cliente and id_entrenador and id_diet:
+        if(AssociationModel.existAssociation(id_cliente, id_entrenador)):
+            dieta = get_one_diet_for_user(id_entrenador, id_diet)
+            if dieta is None:
+                return jsonify({"mensaje": "La dieta no existe"}), 400
+            try:
+                AssociationModel.putDiet(id_cliente, id_entrenador, dieta, date)
+                return jsonify({"mensaje": "Dieta agregado con éxito"}), 201
+            except DuplicateKeyError:
+                return jsonify({"mensaje": "La dieta ya fue agregado"}), 400
+        else:
+            return jsonify({"mensaje": "El cliente no tiene asignado ese entrenador"}), 400
+        
+    else:
+        return jsonify({"mensaje": "Faltan datos"}), 400

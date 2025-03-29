@@ -17,7 +17,9 @@ export const ENDPOINTS = {
     NAME: `${BASE_URL}/user/username`,
     UPDATE_DATA: `${BASE_URL}/user/data`,
     CLIENT_INFO: `${BASE_URL}/user/clientinfo`,
-    UPDATE_ATTR: `${BASE_URL}/user/attrdinamico`
+    UPDATE_ATTR: `${BASE_URL}/user/attrdinamico`,
+    DIET: `${BASE_URL}/user/diet`,
+    DIETS: `${BASE_URL}/user/diets`
   },
 
   SOLICITUDE: {
@@ -29,7 +31,8 @@ export const ENDPOINTS = {
     ADDWORKOUT: `${BASE_URL}/ass/addworkout`,
     GETASSOCITIONSBYUSER: `${BASE_URL}/ass/myassociations`,
     REMOVEWORKOUT: `${BASE_URL}/ass/removeworkout`,
-    UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`
+    UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`,
+    PUTDIET: `${BASE_URL}/ass/putdiet`
   },
   CHAT: {
     EXIST: `${BASE_URL}/chat/exist`, // Necesita /id1, /id2

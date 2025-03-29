@@ -112,3 +112,31 @@ class UserModel:
                 {"$push": {"atributosDinamicos": nuevo_atributo}}
             )
         return True
+    
+    @staticmethod
+    def insert_diet_for_user(user, diet):
+        db = UserModel().get_db()
+        result = db.usuarios.update_one(
+            {"usuario": user},
+            {"$push": {"dietas": diet}}
+        )
+        return result
+    
+    @staticmethod
+    def get_diets_for_user(user):
+        db = UserModel.get_db()
+        usuario = db["usuarios"].find_one({"usuario": user}, {"dietas": 1})
+        return usuario.get("dietas", [])
+    
+    @staticmethod
+    def get_one_diet_for_user(user, dietTitle):
+        db = UserModel.get_db()
+        usuario = db["usuarios"].find_one({"usuario": user}, {"dietas": 1})
+        diets = usuario.get("dietas", [])
+        dietResult = []
+        for diet in diets:
+            print(diet.get("title"), dietTitle)
+            if diet.get("title") == dietTitle:
+                dietResult.append(diet)
+                return dietResult
+        return None

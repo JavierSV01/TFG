@@ -56,20 +56,26 @@ export function PaginaEntrenamietoCliente () {
               Semana: {semanaIndex + 1}
             </Heading>
             {semana.days?.map((dia, diaIndex) => (
-              <Box key={diaIndex} m={4} p={4} borderWidth='3px' borderColor={colors.secondary} borderRadius='md'>
+              <Box key={diaIndex} m={4} p={4} borderWidth='0px' borderColor={colors.secondary} borderRadius='md'>
                 <Text fontSize='lg' fontWeight='bold'>Semana: {semanaIndex + 1} - Día {diaIndex + 1}</Text>
                 <Divider borderColor={colors.primary} my={2} />
                 {dia.exercises?.map((ejercicio, ejercicioIndex) => (
-                  <Box key={ejercicioIndex} p={4} borderWidth='1px' borderRadius='md' my={2}>
+                  <Box key={ejercicioIndex} p={4} borderWidth='0px' borderRadius='md' my={2}>
                     <Text fontSize='md' fontWeight='semibold'>{ejercicio.name}</Text>
                     <Text>Series: {ejercicio.sets}</Text>
                     <Text>Repeticiones: {ejercicio.reps}</Text>
                     <Text>RIR: {ejercicio.rir}</Text>
                     <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4}>
-                      <GridItem p={2}>
+                      <GridItem
+                        display='flex'
+                        flexDirection='column'
+                        justifyContent='center'
+                        alignItems='center'
+                        textAlign='center'
+                        p={2}
+                      >
                         <Text fontWeight='bold'>Anotaciones para el entrenador: </Text>
                         <Text>{ejercicio.additionalInfo} </Text>
-
                       </GridItem>
 
                       <GridItem p={2}>
