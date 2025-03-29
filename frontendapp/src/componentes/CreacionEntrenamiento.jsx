@@ -1,60 +1,15 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { DeleteIcon } from '@chakra-ui/icons'
-import { Box, Button, Input, FormControl, FormLabel, Textarea, VStack, Heading, ChakraProvider, SimpleGrid, IconButton, HStack } from '@chakra-ui/react'
 import { ENDPOINTS } from '../constantes/endponits'
-import colors from '../constantes/colores'
+import { EntrenamientoModificable } from './EntrenamientoModificable'
+import { useToast } from '@chakra-ui/react'
 
 export function CreacionEntrenamiento () {
   const [weeks, setWeeks] = useState([])
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
 
-  // Función para añadir una nueva semana
-  const addWeek = () => {
-    setWeeks([...weeks, { days: [] }])
-  }
-
-  // Función para añadir un día dentro de una semana
-  const addDay = (weekIndex) => {
-    const newWeeks = [...weeks]
-    newWeeks[weekIndex].days.push({ exercises: [] })
-    setWeeks(newWeeks)
-  }
-
-  // Función para añadir un ejercicio dentro de un día
-  const addExercise = (weekIndex, dayIndex) => {
-    const newWeeks = [...weeks]
-    newWeeks[weekIndex].days[dayIndex].exercises.push({ name: '', sets: '', reps: '', rir: '' })
-    setWeeks(newWeeks)
-  }
-
-  // Función para eliminar una semana
-  const removeWeek = (weekIndex) => {
-    const newWeeks = weeks.filter((_, index) => index !== weekIndex)
-    setWeeks(newWeeks)
-  }
-
-  // Función para eliminar un día dentro de una semana
-  const removeDay = (weekIndex, dayIndex) => {
-    const newWeeks = [...weeks]
-    newWeeks[weekIndex].days = newWeeks[weekIndex].days.filter((_, index) => index !== dayIndex)
-    setWeeks(newWeeks)
-  }
-
-  // Función para eliminar un ejercicio dentro de un día
-  const removeExercise = (weekIndex, dayIndex, exerciseIndex) => {
-    const newWeeks = [...weeks]
-    newWeeks[weekIndex].days[dayIndex].exercises = newWeeks[weekIndex].days[dayIndex].exercises.filter((_, index) => index !== exerciseIndex)
-    setWeeks(newWeeks)
-  }
-
-  // Función para manejar cambios en los ejercicios
-  const handleExerciseChange = (weekIndex, dayIndex, exerciseIndex, field, value) => {
-    const newWeeks = [...weeks]
-    newWeeks[weekIndex].days[dayIndex].exercises[exerciseIndex][field] = value
-    setWeeks(newWeeks)
-  }
+  const toast = useToast()
 
   const saveTraining = async () => {
     const trainingData = {
@@ -62,168 +17,60 @@ export function CreacionEntrenamiento () {
       description,
       weeks // Usa el array de semanas que tienes en el estado
     }
-
     try {
-      const response = await axios.post(ENDPOINTS.USER.WORKOUT, trainingData)
-      console.log(response.data.message) // Mensaje de éxito
+      const response = await axios.post(ENDPOINTS.USER.WORKOUT, trainingData, {
+        validateStatus: function (status) {
+          return status >= 200 && status < 500 // Acepta códigos 2xx y 4xx
+        }
+      })
+
+      if (response.status === 201) {
+        toast({
+          title: 'Entrenamiento guardado correctamente',
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        })
+        setWeeks([])
+        setTitle('')
+        setDescription('')
+        console.log(response.data.message)
+      } else if (response.status === 409) {
+        toast({
+          title: 'Error: Conflicto al guardar el entrenamiento',
+          description: response.data.error || 'Ya existe un entrenamiento con ese título.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        })
+      } else {
+        toast({
+          title: 'Error del servidor',
+          description: response.data.message || 'Ocurrió un error al guardar el entrenamiento.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        })
+      }
     } catch (error) {
+      // Manejar errores de red u otros errores inesperados
+      toast({
+        title: 'Error inesperado',
+        description: error.message || 'No se pudo guardar el entrenamiento.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
       console.error('Error al guardar el entrenamiento:', error)
     }
   }
 
   return (
-    <ChakraProvider>
-
-      <Box bg={colors.neutral} minH='100vh' color={colors.white} p={8}>
-        <Box bg={colors.secondary} borderRadius='3xl' color='white' minH='100vh' p={6}>
-          <Heading as='h1' mb={8}>Crear Entrenamiento</Heading>
-
-          {/* Formulario para título y descripción */}
-          <VStack spacing={4} align='flex-start'>
-            <FormControl id='title'>
-              <FormLabel>Título</FormLabel>
-              <Input type='text' placeholder='Título del entrenamiento' _placeholder={{ color: colors.white }} onChange={(e) => setTitle(e.target.value)} />
-            </FormControl>
-
-            <FormControl id='description'>
-              <FormLabel>Descripción</FormLabel>
-              <Textarea placeholder='Descripción del entrenamiento' _placeholder={{ color: colors.white }} onChange={(e) => setDescription(e.target.value)} />
-            </FormControl>
-          </VStack>
-
-          {/* Botón para añadir una semana */}
-          <Button
-            mt={4} bgColor={colors.accent} color={colors.white} border={`1px solid ${colors.white}`}
-            _hover={{
-              bg: colors.neutral,
-              color: colors.primary
-            }}
-            transition='background-color 0.3s, color 0.3s'
-            onClick={addWeek}
-          >Añadir Semana
-          </Button>
-
-          {/* Renderización de semanas */}
-          {weeks.map((week, weekIndex) => (
-            <Box key={weekIndex} mt={6} border='1px solid' borderRadius='3xl' p={4}>
-              <HStack spacing={4}>
-                <Heading size='md'>Semana {weekIndex + 1}</Heading>
-                {/* Botón para eliminar una semana */}
-                <IconButton icon={<DeleteIcon />} colorScheme='red' size='sm' onClick={() => removeWeek(weekIndex)} />
-              </HStack>
-
-              {/* Botón para añadir un día */}
-              <Button
-                mt={4}
-                bgColor={colors.accent} color={colors.white} border={`1px solid ${colors.white}`}
-                _hover={{
-                  bg: colors.neutral,
-                  color: colors.primary
-                }}
-                transition='background-color 0.3s, color 0.3s'
-                onClick={() => addDay(weekIndex)}
-              >Añadir Día
-              </Button>
-
-              {/* Renderización de días */}
-              {week.days.map((day, dayIndex) => (
-                <Box key={dayIndex} mt={4} pl={4} borderLeft='2px solid green'>
-
-                  <HStack spacing={4}>
-                    <Heading size='sm'>Día {dayIndex + 1}</Heading>
-                    {/* Botón para eliminar una semana */}
-                    <IconButton icon={<DeleteIcon />} colorScheme='red' size='sm' onClick={() => removeDay(weekIndex, dayIndex)} />
-                  </HStack>
-
-                  {/* Botón para añadir un ejercicio */}
-                  <Button
-                    mt={2}
-                    bgColor={colors.accent} color={colors.white} border={`1px solid ${colors.white}`}
-                    _hover={{
-                      bg: colors.neutral,
-                      color: colors.primary
-                    }}
-                    transition='background-color 0.3s, color 0.3s'
-                    onClick={() => addExercise(weekIndex, dayIndex)}
-                  >Añadir Ejercicio
-                  </Button>
-
-                  {/* Renderización de ejercicios */}
-                  <SimpleGrid columns={{ base: 1, sm: 1, md: 2, lg: 3, xl: 4 }} spacing={4} p={4}>
-
-                    {day.exercises.map((exercise, exerciseIndex) => (
-                      <VStack key={exerciseIndex} mt={4} spacing={2} align='flex-start' pl={4} borderLeft='2px solid purple'>
-                        <FormControl>
-
-                          <HStack spacing={4}>
-                            <FormLabel>Nombre del ejercicio</FormLabel>
-                            {/* Botón para eliminar una semana */}
-                            <IconButton margin='2' icon={<DeleteIcon />} colorScheme='red' size='sm' onClick={() => removeExercise(weekIndex, dayIndex, exerciseIndex)} />
-                          </HStack>
-
-                          <Input
-                            type='text'
-                            placeholder='Ejercicio'
-                            _placeholder={{ color: colors.white }}
-                            value={exercise.name}
-                            onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'name', e.target.value)}
-                          />
-                        </FormControl>
-
-                        <FormControl>
-                          <FormLabel>Series</FormLabel>
-                          <Input
-                            type='number'
-                            placeholder='Series'
-                            _placeholder={{ color: colors.white }}
-                            value={exercise.sets}
-                            onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'sets', e.target.value)}
-                          />
-                        </FormControl>
-
-                        <FormControl>
-                          <FormLabel>Repeticiones</FormLabel>
-                          <Input
-                            type='number'
-                            placeholder='Repeticiones'
-                            _placeholder={{ color: colors.white }}
-                            value={exercise.reps}
-                            onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'reps', e.target.value)}
-                          />
-                        </FormControl>
-
-                        <FormControl>
-                          <FormLabel>RIR</FormLabel>
-                          <Input
-                            type='number'
-                            placeholder='RIR'
-                            _placeholder={{ color: colors.white }}
-                            value={exercise.rir}
-                            onChange={(e) => handleExerciseChange(weekIndex, dayIndex, exerciseIndex, 'rir', e.target.value)}
-                          />
-                        </FormControl>
-                      </VStack>
-                    ))}
-                  </SimpleGrid>
-                </Box>
-              ))}
-            </Box>
-          ))}
-
-          {/* Botón para enviar el formulario (entrenamiento completo) */}
-          <Button
-            margin={2} mt={6} bgColor={colors.accent} color={colors.white} border={`1px solid ${colors.white}`}
-            _hover={{
-              bg: colors.neutral,
-              color: colors.primary
-            }}
-            transition='background-color 0.3s, color 0.3s'
-            onClick={() => saveTraining()}
-          >Guardar Entrenamiento
-          </Button>
-        </Box>
-      </Box>
-    </ChakraProvider>
-
+    <EntrenamientoModificable
+      weeks={weeks} setWeeks={setWeeks}
+      title={title} setTitle={setTitle}
+      description={description} setDescription={setDescription}
+      buttonText='Guardar entrenamieto' buttonAction={saveTraining}
+    />
   )
 }

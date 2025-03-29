@@ -140,3 +140,31 @@ class UserModel:
                 dietResult.append(diet)
                 return dietResult
         return None
+    
+    @staticmethod
+    def exist_workout_with_title(user, title):
+        db = UserModel.get_db()
+        documento = db["usuarios"].find_one({
+            'usuario': user,
+            'plantillasDeEntrenamiento': {
+                '$elemMatch': {
+                    'title': title
+                }
+            }
+        })
+        if documento:
+            return True
+        return False
+    
+    @staticmethod
+    def update_workout_for_user(user, titulo_entrenamiento_anterior, workout):
+        db = UserModel().get_db()
+        result = db.usuarios.update_one(
+            {"usuario": user, "plantillasDeEntrenamiento.title": titulo_entrenamiento_anterior},
+            {"$set": {
+                "plantillasDeEntrenamiento.$.title": workout["title"],
+                "plantillasDeEntrenamiento.$.description": workout["description"],
+                "plantillasDeEntrenamiento.$.weeks": workout["weeks"],
+            }}
+        )
+        return result

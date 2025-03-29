@@ -19,7 +19,8 @@ export const ENDPOINTS = {
     CLIENT_INFO: `${BASE_URL}/user/clientinfo`,
     UPDATE_ATTR: `${BASE_URL}/user/attrdinamico`,
     DIET: `${BASE_URL}/user/diet`,
-    DIETS: `${BASE_URL}/user/diets`
+    DIETS: `${BASE_URL}/user/diets`,
+    MODIFYWORKOUT: `${BASE_URL}/user/modworkout`
   },
 
   SOLICITUDE: {

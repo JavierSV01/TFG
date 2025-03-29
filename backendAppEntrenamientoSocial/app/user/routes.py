@@ -398,18 +398,20 @@ def save_workout():
 
     # Crear el entrenamiento con un ID único
     entrenamiento = {
-        "title": title,
-        "description": description,
-        "weeks": weeks
+      "title": title,
+      "description": description,
+      "weeks": weeks
     }
-
+    if(UserModel.exist_workout_with_title(usuario, title)):
+      return jsonify({"error": "Entrenamieto con ese nombre ya creado"}), 409
+        
     result = UserModel.insert_workout_for_user(usuario, entrenamiento)
 
 
     if result.modified_count > 0:
-        return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
+      return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
     else:
-        return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
+      return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
     
 # Endpoint para obtener todos los clientes del entrenador logueado
 @user_bp.route('/clients', methods=['GET'])
@@ -988,3 +990,88 @@ def get_diets():
         return dumps(diets_list), 200, {'Content-Type': 'application/json'}
     except Exception:
         return jsonify({"message": "Error al obtener entrenamientos"}), 500
+    
+
+@user_bp.route('/modworkout', methods=['POST'])
+def modify_workout():
+    """
+    Guarda un nuevo entrenamiento para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Título del entrenamiento.
+            description:
+              type: string
+              description: Descripción del entrenamiento.
+            weeks:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la semana si fuera necesario.
+              description: Semanas del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento guardado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Entrenamiento guardado exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar el entrenamiento"
+                - "Error interno del servidor"
+    """
+    # Verificar que el usuario esté logueado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    data = request.json
+    title = data.get('title', 'Entrenamiento sin título')
+    description = data.get('description', 'Sin descripción')
+    weeks = data.get('weeks', [])
+
+    tituloAnterior = request.args.get('titulo')
+
+    # Crear el entrenamiento con un ID único
+    entrenamiento = {
+      "title": title,
+      "description": description,
+      "weeks": weeks
+    }
+        
+    result = UserModel.update_workout_for_user(usuario, tituloAnterior, entrenamiento)
+
+    if result.modified_count > 0:
+      return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
+    else:
+      return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
