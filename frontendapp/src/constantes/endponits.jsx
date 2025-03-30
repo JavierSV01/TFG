@@ -20,7 +20,11 @@ export const ENDPOINTS = {
     UPDATE_ATTR: `${BASE_URL}/user/attrdinamico`,
     DIET: `${BASE_URL}/user/diet`,
     DIETS: `${BASE_URL}/user/diets`,
-    MODIFYWORKOUT: `${BASE_URL}/user/modworkout`
+    MODIFYWORKOUT: `${BASE_URL}/user/modworkout`,
+    MODIFYDIET: `${BASE_URL}/user/moddiet`,
+    DELETEWORKOUT: `${BASE_URL}/user/delworkout`,
+    DELETEDIET: `${BASE_URL}/user/deldiet`
+
   },
 
   SOLICITUDE: {

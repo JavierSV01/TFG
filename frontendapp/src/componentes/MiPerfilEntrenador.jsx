@@ -1,9 +1,10 @@
 import { React } from 'react'
-import { ChakraProvider, Box, Heading, Flex, List, ListItem } from '@chakra-ui/react'
+import { ChakraProvider, Box, Heading, Flex } from '@chakra-ui/react'
 import MisClientes from '../componentes/MisClientes'
 import SolicitudesAsesoramiento from '../componentes/SolicitudesAsesoramiento'
 import colors from '../constantes/colores'
 import MisPlantillasEntrenamiento from './MisPlantillasEntrenamiento'
+import { MisDietasCreadas } from './MisDietasCreadas'
 
 export function MiPerfilEntrenador () {
   const margen = 10
@@ -24,12 +25,7 @@ export function MiPerfilEntrenador () {
               <MisPlantillasEntrenamiento />
             </Box>
             <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1} display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-              <Heading color={colors.white} size='lg' mb={4}>Mis Dietas</Heading>
-              <List spacing={3}>
-                <ListItem>Dieta para Ganancia Muscular</ListItem>
-                <ListItem>Dieta de Definición</ListItem>
-                <ListItem>Dieta de Mantenimiento</ListItem>
-              </List>
+              <MisDietasCreadas />
             </Box>
           </Flex>
 

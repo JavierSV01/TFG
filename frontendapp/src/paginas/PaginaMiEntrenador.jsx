@@ -23,8 +23,20 @@ export function PaginaMiEntrenador () {
   } else if (!asociacion) {
     return <div>Usted no esta siendo asesorado por {entrenador}</div>
   } else {
-    const fecha = new Date(asociacion.dietaData.fecha.$date).toLocaleString()
-    const [detalle] = asociacion.dietaData.dieta
+    const dietaData = asociacion.dietaData
+    let fecha
+    let [detalle] = []
+    if (dietaData) {
+      [detalle] = asociacion.dietaData.dieta
+      fecha = new Date(asociacion.dietaData.fecha.$date).toLocaleString()
+      console.log('eeeee')
+      console.log(detalle.title)
+    } else {
+      [detalle] = [{ title: '' }]
+
+      console.log('aaaa')
+      console.log(detalle.title)
+    }
 
     return (
       <ChakraProvider>
@@ -39,32 +51,49 @@ export function PaginaMiEntrenador () {
             <AbsoluteCenter textColor={colors.primary} bg={colors.neutral} px='4' fontSize={24}>Dieta</AbsoluteCenter>
           </Box>
 
-          <Box
-            p={2}
-            mb={2}
-            pl={{ base: 0, lg: 20 }}
-            pr={{ base: 0, lg: 20 }}
-            ml={10}
-            mr={10}
-            display='flex'
-            alignItems='center'
-            textColor={colors.primary}
-          >
-            <Box width='70%' m={2} p={2}>
-              <Text>Dieta: {detalle?.title}</Text>
-              <Text>Fecha: {fecha}</Text>
-            </Box>
-            <Box width='30%' m={2} p={2} textAlign='end'>
-              <IconButton
-                icon={<ViewIcon />}
-                aria-label='Ver'
-                bgColor={colors.secondary}
-                textColor={colors.white}
-                _hover={{ bgColor: colors.primary, color: colors.neutral }}
-                onClick={() => navigate(`/entrenador/${entrenador}/dieta`)}
-              />
-            </Box>
-          </Box>
+          {detalle?.title
+            ? (
+              <Box
+                p={2}
+                mb={2}
+                pl={{ base: 0, lg: 20 }}
+                pr={{ base: 0, lg: 20 }}
+                ml={10}
+                mr={10}
+                display='flex'
+                alignItems='center'
+                textColor={colors.primary}
+              >
+                <Box width='70%' m={2} p={2}>
+                  <Text>Dieta: {detalle?.title}</Text>
+                  <Text>Fecha: {fecha}</Text>
+                </Box>
+                <Box width='30%' m={2} p={2} textAlign='end'>
+                  <IconButton
+                    icon={<ViewIcon />}
+                    aria-label='Ver'
+                    bgColor={colors.secondary}
+                    textColor={colors.white}
+                    _hover={{ bgColor: colors.primary, color: colors.neutral }}
+                    onClick={() => navigate(`/entrenador/${entrenador}/dieta`)}
+                  />
+                </Box>
+              </Box>
+              )
+            : (
+              <Text
+                p={2}
+                mb={2}
+                pl={{ base: 0, lg: 20 }}
+                pr={{ base: 0, lg: 20 }}
+                ml={10}
+                mr={10}
+                display='flex'
+                alignItems='center'
+                textColor={colors.primary}
+              >No te han puesto una dieta aún
+              </Text>
+              )}
 
           <Box position='relative' padding='10'>
             <Divider borderColor={colors.primary} />

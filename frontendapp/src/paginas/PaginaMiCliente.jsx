@@ -317,8 +317,12 @@ export function PaginaMiCliente () {
                 <Box p={4}>
 
                   {userData.asociacion?.map((asociacion, idx) => {
-                    const fecha = new Date(asociacion.dietaData.fecha.$date).toLocaleString()
-                    const [detalle] = asociacion.dietaData.dieta
+                    const dietaData = asociacion.dietaData
+                    if (!dietaData) {
+                      return (<div key={asociacion._id.$oid}>Sin dieta</div>)
+                    }
+                    const fecha = new Date(asociacion.dietaData?.fecha.$date).toLocaleString()
+                    const [detalle] = asociacion.dietaData?.dieta
                     return (
                       <div key={asociacion._id.$oid} alignItems='center'>
 
@@ -359,7 +363,7 @@ export function PaginaMiCliente () {
 
                   <HStack mt={2} spacing={4}>
                     <Select placeholder='Selecciona una opción' onChange={handleChangeDieta}>
-                      {dietas.map((dieta, index) => (
+                      {dietas?.map((dieta, index) => (
                         <option key={index} value={dieta.title}>
                           {dieta.title}
                         </option>

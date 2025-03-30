@@ -168,3 +168,24 @@ class UserModel:
             }}
         )
         return result
+    
+    @staticmethod
+    def update_diet_for_user(user, titulo_dieta_anterior, dieta):
+        db = UserModel().get_db()
+        result = db.usuarios.update_one(
+            {"usuario": user, "dietas.title": titulo_dieta_anterior},
+            {"$set": {
+                "dietas.$.title": dieta["dietName"],
+                "dietas.$.days": dieta["days"],
+            }}
+        )
+        return result
+    
+    @staticmethod
+    def remove_workout_for_user(id_usuario, workoutTitle):
+        db = UserModel().get_db()
+        resultado = db.usuarios.update_one(
+            {"usuario": id_usuario},
+            {"$pull": {"plantillasDeEntrenamiento": {"title": workoutTitle}}}
+        )
+        return resultado

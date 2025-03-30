@@ -39,6 +39,17 @@ export function ModificacionEntrenamieto ({ tituloPrevio }) {
       description,
       weeks
     }
+
+    if (title === '') {
+      toast({
+        title: 'El titulo es obligatorio',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true
+      })
+      return
+    }
+
     try {
       const response = await axios.post(`${ENDPOINTS.USER.MODIFYWORKOUT}?titulo=${tituloPrevio}`, trainingData)
       navigate('/perfil')

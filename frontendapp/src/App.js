@@ -14,6 +14,7 @@ import { LayoutConNavbar } from './componentes/LayoutConNavbar'
 import { PaginaMiDieta } from './paginas/PaginaMiDieta'
 import { PaginaDietaCliente } from './paginas/PaginaDietaCliente'
 import { PaginaModificarEntrenamiento } from './paginas/PaginaModificarEntrenamieto'
+import { PaginaModificarDieta } from './paginas/PaginaModificarDieta'
 
 function App () {
   return (
@@ -27,6 +28,7 @@ function App () {
           <Route path='/modificarEntrenamiento/:tituloPrevio' element={<PaginaModificarEntrenamiento />} />
 
           <Route path='/crearDieta' element={<PaginaCrearDieta />} />
+          <Route path='/modificarDieta/:tituloPrevio' element={<PaginaModificarDieta />} />
 
           <Route path='/cliente/:usuario' element={<PaginaMiCliente />} />
           <Route path='/cliente/:usuario/:idEntrenamiento' element={<PaginaEntrenamietoCliente />} />

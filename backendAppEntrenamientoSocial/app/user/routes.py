@@ -1072,6 +1072,161 @@ def modify_workout():
     result = UserModel.update_workout_for_user(usuario, tituloAnterior, entrenamiento)
 
     if result.modified_count > 0:
-      return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
+      return jsonify({"message": "Entrenamiento modificado exitosamente"}), 201
     else:
-      return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
+      return jsonify({"error": "No se pudo modificar el entrenamiento"}), 500
+    
+
+@user_bp.route('/moddiet', methods=['POST'])
+def modify_diet():
+    """
+    Guarda un nuevo entrenamiento para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Título del entrenamiento.
+            description:
+              type: string
+              description: Descripción del entrenamiento.
+            weeks:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la semana si fuera necesario.
+              description: Semanas del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento guardado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Entrenamiento guardado exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar el entrenamiento"
+                - "Error interno del servidor"
+    """
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    usuario = session['usuario']
+
+    data = request.json
+    dietName = data.get('dietName', 'Dieta sin título')
+    days = data.get('days', [])
+
+    tituloAnterior = request.args.get('titulo')
+
+    dieta = {
+      "dietName": dietName,
+      "days": days
+    }
+        
+    result = UserModel.update_diet_for_user(usuario, tituloAnterior, dieta)
+
+    if result.modified_count > 0:
+      return jsonify({"message": "Dieta editada exitosamente"}), 201
+    else:
+      return jsonify({"error": "No se pudo editar la dieta"}), 500
+    
+@user_bp.route('/delworkout', methods=['DELETE'])
+def removeworkout():
+    """
+    Elimina un entrenamiento de un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a eliminar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      200:
+        description: Entrenamiento eliminado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento eliminado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Entrenamiento no encontrado o no asociado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "El entrenamiento no existe o no está asociado"
+    """
+    if 'usuario' in session:
+        usuario = session['usuario']
+    else:
+        return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+    workoutTitle = request.args.get('titulo')
+    id_entrenador = session['usuario']
+
+    if workoutTitle and id_entrenador:
+        result = UserModel.remove_workout_for_user(id_entrenador, workoutTitle)
+        if result.modified_count > 0:
+            return jsonify({"mensaje": "Entrenamiento eliminado con éxito"}), 200
+        else:
+            return jsonify({"mensaje": "El entrenamiento no existe"}), 404
+    else:
+        return jsonify({"mensaje": "Faltan datos"}), 400
+    
