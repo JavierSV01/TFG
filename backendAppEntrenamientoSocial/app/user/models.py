@@ -189,3 +189,27 @@ class UserModel:
             {"$pull": {"plantillasDeEntrenamiento": {"title": workoutTitle}}}
         )
         return resultado
+    
+    @staticmethod
+    def remove_diet_for_user(id_usuario, dietTitle):
+        db = UserModel().get_db()
+        resultado = db.usuarios.update_one(
+            {"usuario": id_usuario},
+            {"$pull": {"dietas": {"title": dietTitle}}}
+        )
+        return resultado
+    
+    @staticmethod
+    def exist_diet_with_title(user, title):
+        db = UserModel.get_db()
+        documento = db["usuarios"].find_one({
+            'usuario': user,
+            'dietas': {
+                '$elemMatch': {
+                    'title': title
+                }
+            }
+        })
+        if documento:
+            return True
+        return False

@@ -5,7 +5,7 @@ import { ENDPOINTS } from '../constantes/endponits'
 export const useDietsPlans = () => {
   const [dietas, setDietas] = useState([])
 
-  useEffect(() => {
+  const fetchDietsData = async () => {
     axios
       .get(ENDPOINTS.USER.DIETS)
       .then((response) => {
@@ -14,6 +14,10 @@ export const useDietsPlans = () => {
       .catch((error) => {
         console.error('Error al obtener las plantillas:', error)
       })
+  }
+
+  useEffect(() => {
+    fetchDietsData()
   }, [])
-  return { dietas }
+  return { dietas, reload: fetchDietsData }
 }

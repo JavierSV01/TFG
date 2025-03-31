@@ -902,6 +902,10 @@ def save_diet():
         "days": days
     }
 
+    if(UserModel.exist_diet_with_title(usuario, title)):
+      return jsonify({"error": "Dieta con ese nombre ya creado"}), 409
+     
+
     result = UserModel.insert_diet_for_user(usuario, diet)
 
 
@@ -1068,6 +1072,9 @@ def modify_workout():
       "description": description,
       "weeks": weeks
     }
+
+    if(UserModel.exist_workout_with_title(usuario, title)):
+      return jsonify({"error": "Entrenamieto con ese nombre ya creado"}), 409
         
     result = UserModel.update_workout_for_user(usuario, tituloAnterior, entrenamiento)
 
@@ -1148,7 +1155,10 @@ def modify_diet():
       "dietName": dietName,
       "days": days
     }
-        
+
+    if(UserModel.exist_diet_with_title(usuario, dietName)):
+      return jsonify({"error": "Dieta con ese nombre ya creado"}), 409
+ 
     result = UserModel.update_diet_for_user(usuario, tituloAnterior, dieta)
 
     if result.modified_count > 0:
@@ -1227,6 +1237,78 @@ def removeworkout():
             return jsonify({"mensaje": "Entrenamiento eliminado con éxito"}), 200
         else:
             return jsonify({"mensaje": "El entrenamiento no existe"}), 404
+    else:
+        return jsonify({"mensaje": "Faltan datos"}), 400
+    
+@user_bp.route('/deldiet', methods=['DELETE'])
+def removediet():
+    """
+    Elimina un entrenamiento de un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a eliminar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      200:
+        description: Entrenamiento eliminado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento eliminado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Entrenamiento no encontrado o no asociado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "El entrenamiento no existe o no está asociado"
+    """
+    if not 'usuario' in session:
+      return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+    dietTitle = request.args.get('titulo')
+    id_entrenador = session['usuario']
+
+    if dietTitle and id_entrenador:
+        result = UserModel.remove_diet_for_user(id_entrenador, dietTitle)
+        if result.modified_count > 0:
+            return jsonify({"mensaje": "Dieta eliminada con éxito"}), 200
+        else:
+            return jsonify({"mensaje": "La dieta no existe"}), 404
     else:
         return jsonify({"mensaje": "Faltan datos"}), 400
     

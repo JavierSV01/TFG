@@ -51,8 +51,29 @@ export function ModificacionEntrenamieto ({ tituloPrevio }) {
     }
 
     try {
-      const response = await axios.post(`${ENDPOINTS.USER.MODIFYWORKOUT}?titulo=${tituloPrevio}`, trainingData)
-      navigate('/perfil')
+      const response = await axios.post(`${ENDPOINTS.USER.MODIFYWORKOUT}?titulo=${tituloPrevio}`, trainingData, {
+        validateStatus: function (status) {
+          return status >= 200 && status < 500 // Acepta códigos 2xx y 4xx
+        }
+      })
+      if (response.status === 409) {
+        toast({
+          title: 'Error: Conflicto al guardar el entrenamiento',
+          description: response.data.error || 'Ya existe un entrenamiento con ese título.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        })
+      } else if (response.status === 201) {
+        navigate('/perfil')
+      } else if (response.status === 401) {
+        toast({
+          title: 'Debes estar autenticado para realizar esta accion',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        })
+      }
       console.log(response.data.message) // Mensaje de éxito
     } catch (error) {
       toast({
