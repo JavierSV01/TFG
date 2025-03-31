@@ -170,10 +170,10 @@ export function MiPerfilCliente () {
                     <Stack spacing={3}>
                       <FormControl isInvalid={errors.atributoNombre}>
                         <FormLabel>Nombre del Atributo:</FormLabel>
-                        <Select onChange={handleAtributoChange} value={atributoNombreWatch} defaultValue=''>
-                          <option key='nuevo' value='nuevo'>Nuevo Atributo</option>
+                        <Select color={colors.primary} textColor={colors.white} onChange={handleAtributoChange} value={atributoNombreWatch} defaultValue=''>
+                          <option style={{ color: 'black', backgroundColor: 'white' }} key='nuevo' value='nuevo'>Nuevo Atributo</option>
                           {atributosOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
+                            <option style={{ color: 'black', backgroundColor: 'white' }} key={option.value} value={option.value}>
                               {option.label}
                             </option>
                           ))}
