@@ -23,10 +23,10 @@ export const ENDPOINTS = {
     MODIFYWORKOUT: `${BASE_URL}/user/modworkout`,
     MODIFYDIET: `${BASE_URL}/user/moddiet`,
     DELETEWORKOUT: `${BASE_URL}/user/delworkout`,
-    DELETEDIET: `${BASE_URL}/user/deldiet`
-
+    DELETEDIET: `${BASE_URL}/user/deldiet`,
+    POSTPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
+    GETPROFILEIMAGE: `${BASE_URL}/user/profileimage`
   },
-
   SOLICITUDE: {
     MYSOLICITUDE: `${BASE_URL}/sol/mysolicitude`,
     APPLY: `${BASE_URL}/sol/apply`,
@@ -42,5 +42,8 @@ export const ENDPOINTS = {
   CHAT: {
     EXIST: `${BASE_URL}/chat/exist`, // Necesita /id1, /id2
     GETCHATBYID: `${BASE_URL}/chat/getchat` // Necesita chat_id
+  },
+  IMAGE: {
+    GETIMAGE: `${BASE_URL}/image/img` // Necesita /id
   }
 }

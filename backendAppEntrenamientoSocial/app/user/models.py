@@ -213,3 +213,19 @@ class UserModel:
         if documento:
             return True
         return False
+    
+    @staticmethod
+    def set_profile_image(usuario, fileId):
+        db = UserModel().get_db()
+        resultado = db.usuarios.update_one(
+            {"usuario": usuario},
+            {"$set": {"imagenDePerfil": fileId}}
+        )
+        return resultado
+    
+    @staticmethod
+    def get_profile_image(usuario):
+        db = UserModel.get_db()
+        usuario = db["usuarios"].find_one({"usuario": usuario}, {"imagenDePerfil": 1})
+        imagen = usuario.get("imagenDePerfil", "")
+        return imagen

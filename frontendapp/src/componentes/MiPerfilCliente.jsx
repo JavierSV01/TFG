@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import MisEntrenadores from './MisEntrenadores'
+import ProfileImageUploader from './ProfileImageUploader'
+import FotoDePerfil from './FotoDePerfil'
 
 export function MiPerfilCliente () {
   const { username } = useUserNameId()
@@ -228,6 +230,14 @@ export function MiPerfilCliente () {
                 </Stack>
 
               </Box>
+
+              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
+
+                <Heading size='lg'>Foto de Perfil</Heading>
+                <FotoDePerfil />
+                <ProfileImageUploader />
+              </Box>
+
             </Flex>
 
           </Box>

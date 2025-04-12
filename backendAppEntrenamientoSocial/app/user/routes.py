@@ -6,6 +6,7 @@ from pymongo.errors import DuplicateKeyError
 from . import user_bp
 from app.association.helpers import getClientsByTrainer
 from app.association.helpers import getAssociationByUser
+from app.image.helpers import saveImage
 
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
@@ -1312,3 +1313,34 @@ def removediet():
     else:
         return jsonify({"mensaje": "Faltan datos"}), 400
     
+
+@user_bp.route('/profileimage', methods=['POST'])
+def putprofileimage():
+    if not 'usuario' in session:
+      return jsonify({"mensaje": "Usuario no autenticado"}), 401
+    
+    username = session['usuario']
+    
+    if 'avatar' not in request.files:
+      return jsonify({"message": "No se encontró el archivo 'avatar' en la petición"}), 400
+
+    file = request.files['avatar']
+    file_id = saveImage(username, file)
+
+    UserModel.set_profile_image(username, file_id)
+
+    return jsonify({"mensaje": "Imagen subida correctamente"}), 200
+
+
+@user_bp.route('/profileimage', methods=['GET'])
+def getprofileimage():
+    if not 'usuario' in session:
+      return jsonify({"mensaje": "Usuario no autenticado"}), 401
+    
+    username = session['usuario']
+    
+    imagenId = UserModel.get_profile_image(username)
+
+    print("ImagenID: " + imagenId)
+
+    return jsonify({"imagenId": imagenId}), 200
