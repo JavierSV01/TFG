@@ -700,7 +700,8 @@ def obtener_info_cliente():
         info_permitida = {
             "usuario": cliente_info.get("usuario"),
             "datos": cliente_info.get("datos"),
-            "attrDinamicos" : cliente_info.get("atributosDinamicos")
+            "attrDinamicos" : cliente_info.get("atributosDinamicos"),
+            "evolucionFisica" : cliente_info.get("evolucionFisica")
         }
 
         asociaciones = getAssociationByUser(usuarioCliente)
@@ -1334,13 +1335,26 @@ def putprofileimage():
 
 @user_bp.route('/profileimage', methods=['GET'])
 def getprofileimage():
+
+    username = request.args.get('username')
+
+    imagenId = UserModel.get_profile_image(username)
+
+    return jsonify({"imagenId": imagenId}), 200
+
+@user_bp.route('/evolutionimage', methods=['POST'])
+def postevolutionimage():
     if not 'usuario' in session:
       return jsonify({"mensaje": "Usuario no autenticado"}), 401
     
     username = session['usuario']
     
-    imagenId = UserModel.get_profile_image(username)
+    if 'foto' not in request.files:
+      return jsonify({"message": "No se encontró el archivo 'avatar' en la petición"}), 400
 
-    print("ImagenID: " + imagenId)
+    file = request.files['foto']
+    file_id = saveImage(username, file)
 
-    return jsonify({"imagenId": imagenId}), 200
+    UserModel.push_evolution_image(username, file_id)
+
+    return jsonify({"mensaje": "Imagen subida correctamente"}), 200

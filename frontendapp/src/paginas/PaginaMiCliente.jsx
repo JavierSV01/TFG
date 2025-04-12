@@ -6,7 +6,6 @@ import {
   GridItem,
   Heading,
   Text,
-  Image,
   Stack,
   Divider,
   ChakraProvider,
@@ -20,6 +19,7 @@ import {
   ModalBody, ModalFooter
 } from '@chakra-ui/react'
 
+import { ImageEvolutionView } from '../componentes/ImageEvolutionView'
 import colors from '../constantes/colores'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
@@ -31,12 +31,9 @@ import { useUserNameId } from '../hooks/useUserNameId'
 import BotonChat from '../componentes/BotonChat'
 import GraficasAtributos from '../componentes/GraficasAtributos'
 import { useDietsPlans } from '../hooks/useDietsPlans'
+import FotoDePerfil from '../componentes/FotoDePerfil'
 
 export function PaginaMiCliente () {
-  const cliente = {
-    foto: 'https://img.decrypt.co/insecure/rs:fit:1920:0:0:0/plain/https://cdn.decrypt.co/wp-content/uploads/2024/11/chillguy-gID_7.jpg@webp' // Reemplaza con la URL de la foto del cliente
-  }
-
   const { username } = useUserNameId()
 
   const { authenticated, message } = useAuthCheck()
@@ -222,11 +219,15 @@ export function PaginaMiCliente () {
           gap={10}
         >
           <GridItem>
-            <Box boxShadow='md' borderRadius='lg' overflow='hidden'>
-              <Image src={cliente.foto} alt='Foto del cliente' boxSize='100%' objectFit='cover' />
-
+            <Box
+              display='flex'
+              flexDirection='column' // Para que los elementos se apilen verticalmente
+              alignItems='center'
+            >
+              <FotoDePerfil username={usuario} />
+              <BotonChat user1={username} user2={usuario} />
             </Box>
-            <BotonChat user1={username} user2={usuario} />
+
           </GridItem>
           <GridItem margin={5}>
             <Stack spacing={5}>
@@ -382,6 +383,14 @@ export function PaginaMiCliente () {
                 <Heading as='h3' size='md'>Gráfica</Heading>
                 <GraficasAtributos atributos={userData.attrDinamicos} />
               </Box>
+
+              <Divider />
+
+              <Box>
+                <Heading as='h3' size='md'>Evolucion fisica</Heading>
+                <ImageEvolutionView imagenes={userData.evolucionFisica} />
+              </Box>
+
             </Stack>
           </GridItem>
 

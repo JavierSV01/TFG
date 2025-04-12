@@ -45,5 +45,52 @@ class ChatModel:
             {"$push": {"mensajes": nuevo_mensaje}}
         )
     
+    @staticmethod
+    def get_chats_by_user(username):
+        db = ChatModel.get_db()
+        chats = db.chat.find({"usuarios": username})
+
+        lista_de_chats = []
+        for objeto in chats:
+            # Los ObjectId no son serializables a JSON por defecto,
+            # necesitamos convertirlos a string
+            objeto['_id'] = str(objeto['_id'])
+            lista_de_chats.append(objeto)
+
+        return lista_de_chats
+    
+    @staticmethod
+    def notify_chat(id):
+        db = ChatModel.get_db()
+        objeto_mongo_id = ObjectId(id)
+        objeto = db.chat.find_one({'_id': objeto_mongo_id})
+
+        usuarios = objeto.get('usuarios')
+        if isinstance(usuarios, list):
+            print(f'Notificando a usuarios del chat {id}: {usuarios}')
+            db.chat.update_one(
+                {'_id': objeto_mongo_id},
+                {'$set': {'notificar': usuarios}}
+            )
+
+    @staticmethod
+    def des_notify_chat(id, username):
+        db = ChatModel.get_db()
+        objeto_mongo_id = ObjectId(id)
+        objeto = db.chat.find_one({'_id': objeto_mongo_id})
+
+        usuarios = objeto.get('usuarios')
+        if isinstance(usuarios, list):
+            print(f'Notificando a usuarios del chat {id}: {usuarios}')
+            db.chat.update_one(
+                {'_id': objeto_mongo_id},
+                {'$pull': {'notificar': username}}
+            )
+
+
+
+        
+
+
     
     

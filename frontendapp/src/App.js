@@ -15,6 +15,7 @@ import { PaginaMiDieta } from './paginas/PaginaMiDieta'
 import { PaginaDietaCliente } from './paginas/PaginaDietaCliente'
 import { PaginaModificarEntrenamiento } from './paginas/PaginaModificarEntrenamieto'
 import { PaginaModificarDieta } from './paginas/PaginaModificarDieta'
+import { PaginaMisChats } from './paginas/PaginaMisChats'
 
 function App () {
   return (
@@ -40,6 +41,8 @@ function App () {
           <Route path='/entrenador/:entrenador/dieta' element={<PaginaMiDieta />} />
 
           <Route path='/chat/:idChat' element={<PaginaUnChat />} />
+
+          <Route path='/chats' element={<PaginaMisChats />} />
         </Route>
       </Routes>
     </Router>

@@ -3,13 +3,13 @@ import axios from 'axios'
 import ImageLoader from './ImageLoader' // Asegúrate de que la ruta sea la correcta
 import { ENDPOINTS } from '../constantes/endponits'
 
-const FotoDePerfil = () => {
+const FotoDePerfil = ({ username }) => {
   const [imageId, setImageId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    axios.get(ENDPOINTS.USER.GETPROFILEIMAGE)
+    axios.get(ENDPOINTS.USER.GETPROFILEIMAGE + `?username=${username}`)
       .then(response => {
         // Ajusta según cómo venga el dato en tu respuesta
         setImageId(response.data.imagenId)

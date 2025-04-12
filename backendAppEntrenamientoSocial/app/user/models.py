@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from flask import current_app
+from datetime import date
 
 class UserModel:
     @staticmethod
@@ -229,3 +230,22 @@ class UserModel:
         usuario = db["usuarios"].find_one({"usuario": usuario}, {"imagenDePerfil": 1})
         imagen = usuario.get("imagenDePerfil", "")
         return imagen
+    
+    @staticmethod
+    def push_evolution_image(usuario, fileId):
+        db = UserModel().get_db()
+
+        fecha_actual = date.today()
+        fecha_formateada = fecha_actual.strftime("%Y-%m-%d")
+
+        nuevo_atributo = {
+            "fileId" : fileId,
+            "fecha": fecha_formateada
+        }
+
+        resultado = db.usuarios.update_one(
+            {"usuario": usuario},
+            {"$push": {"evolucionFisica": nuevo_atributo}}
+        )
+        return resultado
+    

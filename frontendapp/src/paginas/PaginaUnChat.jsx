@@ -75,7 +75,7 @@ function PaginaUnChat () {
         socket.off('new_message', handleNewMessage) // Importante: remover el listener específico
         socket.off('status', handleStatus) // Importante: remover el listener específico
         socket.off('disconnect')
-        socket.emit('leave_room', { room })
+        socket.emit('leave_room', { room, username })
       }
     }
   }, [room])

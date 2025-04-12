@@ -25,7 +25,9 @@ export const ENDPOINTS = {
     DELETEWORKOUT: `${BASE_URL}/user/delworkout`,
     DELETEDIET: `${BASE_URL}/user/deldiet`,
     POSTPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
-    GETPROFILEIMAGE: `${BASE_URL}/user/profileimage`
+    GETPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
+    POSTEVOLUCIONFISICA: `${BASE_URL}/user/evolutionimage`,
+    GETEVOLUTIONFISICA: `${BASE_URL}/user/evolutionimage`
   },
   SOLICITUDE: {
     MYSOLICITUDE: `${BASE_URL}/sol/mysolicitude`,
@@ -41,7 +43,8 @@ export const ENDPOINTS = {
   },
   CHAT: {
     EXIST: `${BASE_URL}/chat/exist`, // Necesita /id1, /id2
-    GETCHATBYID: `${BASE_URL}/chat/getchat` // Necesita chat_id
+    GETCHATBYID: `${BASE_URL}/chat/getchat`, // Necesita chat_id
+    GETCHATS: `${BASE_URL}/chat/getchats`
   },
   IMAGE: {
     GETIMAGE: `${BASE_URL}/image/img` // Necesita /id

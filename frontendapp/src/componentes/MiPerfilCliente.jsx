@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from 'react'
-import { Box, Heading, List, ListItem, Flex, ChakraProvider, Input, Stack, FormLabel, Button, useToast, FormControl, Select, FormErrorMessage } from '@chakra-ui/react'
+import { Box, Heading, Flex, ChakraProvider, Input, Stack, FormLabel, Button, useToast, FormControl, Select, FormErrorMessage } from '@chakra-ui/react'
 import GraficasAtributos from './GraficasAtributos'
 import colors from '../constantes/colores'
 import { useUserNameId } from '../hooks/useUserNameId'
@@ -10,6 +10,8 @@ import { ENDPOINTS } from '../constantes/endponits'
 import MisEntrenadores from './MisEntrenadores'
 import ProfileImageUploader from './ProfileImageUploader'
 import FotoDePerfil from './FotoDePerfil'
+import { ImageEvolucionFisicaUpload } from './ImageEvulocionFisicaUpload'
+import { ImageEvolutionView } from './ImageEvolutionView'
 
 export function MiPerfilCliente () {
   const { username } = useUserNameId()
@@ -139,7 +141,6 @@ export function MiPerfilCliente () {
         <Flex direction='column' gap={margen}>
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
             <Flex direction={{ base: 'column', md: 'row' }} gap={10}>
-
               <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
                 <Stack>
                   <Heading color={colors.white} size='lg' mb={4}>Mis Datos Personales</Heading>
@@ -232,9 +233,8 @@ export function MiPerfilCliente () {
               </Box>
 
               <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
-
                 <Heading size='lg'>Foto de Perfil</Heading>
-                <FotoDePerfil />
+                <FotoDePerfil username={username} />
                 <ProfileImageUploader />
               </Box>
 
@@ -271,12 +271,16 @@ export function MiPerfilCliente () {
           </Flex>
 
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-            <Heading color={colors.white} size='lg' mb={4}>Mis Notificaciones</Heading>
-            <List spacing={3}>
-              <ListItem>Nueva recomendación de ejercicio</ListItem>
-              <ListItem>Actualización de dieta sugerida</ListItem>
-              <ListItem>Recordatorio: Próxima sesión programada</ListItem>
-            </List>
+            <Flex direction={{ base: 'column', md: 'row' }} gap={10}>
+              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
+                <Heading color={colors.white} size='lg' mb={4}>Evolucion física</Heading>
+                <ImageEvolucionFisicaUpload />
+              </Box>
+              <Box flex={{ base: 3, md: 3 }} width={{ base: '100%', md: '25%' }}>
+                <ImageEvolutionView imagenes={userData.evolucionFisica} />
+              </Box>
+            </Flex>
+
           </Box>
         </Flex>
       </Box>

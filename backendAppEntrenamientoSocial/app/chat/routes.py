@@ -30,6 +30,9 @@ def handle_leave_room(data):
     """
     try:
       room = str(data['room'])
+      username = str(data['username'])
+      print('LEAVEEEEEEN ' + str(data))
+      ChatModel.des_notify_chat(room, username)
       leave_room(room)
       emit('status', {'msg': "Alguien se ha ido"}, room=room)
     except Exception as e:
@@ -56,6 +59,7 @@ def handle_send_message(data):
             'mensaje': message,
             'fecha': timestamp
         }
+        ChatModel.notify_chat(chat_id)
         ChatModel.insert_message(chat_id, sender_id, message, timestamp)
 
         try:
@@ -210,3 +214,16 @@ def get_chat_details():
         return jsonify({"error": str(e)}), 500
 
 
+@chat_bp.route('/getchats', methods=['GET'])
+def get_chats():    
+    try:
+        if not 'usuario' in session:
+          return jsonify({"mensaje": "Usuario no autenticado"}), 401
+        
+        username = session['usuario']
+
+        chat_data = ChatModel.get_chats_by_user(username)
+
+        return jsonify(chat_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
