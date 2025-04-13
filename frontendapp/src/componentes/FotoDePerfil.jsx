@@ -24,7 +24,7 @@ const FotoDePerfil = ({ username }) => {
 
   if (loading) return <p>Cargando imagen...</p>
   if (error) return <p>{error}</p>
-  if (!imageId) return <p>No se encontró imagen</p>
+  if (!imageId) return <p>Sin imagen</p>
 
   return <ImageLoader imageId={imageId} />
 }

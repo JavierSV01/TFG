@@ -1,5 +1,5 @@
 from flask import current_app
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING
 
 class PublicPostModel:
     @staticmethod
@@ -24,3 +24,17 @@ class PublicPostModel:
         db = PublicPostModel.get_db()
         result = db["publicaciones"].insert_one(post_data)
         return result
+
+    @staticmethod
+    def get_total_post():
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].count_documents({})
+        return result
+    
+    @staticmethod
+    def get_paginated_posts(limit, skip):
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].find({}).sort('fecha', DESCENDING).skip(skip).limit(limit)
+        return result
+    
+    

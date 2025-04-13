@@ -26,10 +26,10 @@ export function PaginaDietaCliente () {
 
       {userData.asociacion?.map((asociacion, idx) => {
         const [detalle] = asociacion.dietaData.dieta
+        const usuarioEntrenador = asociacion.usuarioEntrenador
         return (
           <div key={asociacion._id.$oid} alignItems='center'>
-
-            <DietaEstatica detalle={detalle} />
+            <DietaEstatica detalle={detalle} entrenador={usuarioEntrenador} />
           </div>
         )
       })}

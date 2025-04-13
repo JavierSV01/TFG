@@ -50,6 +50,7 @@ export const ENDPOINTS = {
     GETIMAGE: `${BASE_URL}/image/img` // Necesita /id
   },
   PUBLICACION: {
-    POSTPUBLICACION1: `${BASE_URL}/publicpost/publish`
+    POSTPUBLICACION1: `${BASE_URL}/publicpost/publish`,
+    GETPUBLICACIONES: `${BASE_URL}/publicpost/posts`
   }
 }

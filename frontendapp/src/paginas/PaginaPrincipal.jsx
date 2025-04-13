@@ -5,6 +5,7 @@ import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import colors from '../constantes/colores'
 import { useNavigate } from 'react-router-dom'
+import { Publicaciones } from '../componentes/Publicaciones'
 
 const Card = ({ key, nombre, presentacion }) => {
   const toast = useToast() // Utilizamos el Toast de Chakra UI para mostrar notificaciones
@@ -131,6 +132,10 @@ export function PaginaPrincipal () {
           <Box bg={colors.secondary} borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
             <Heading as='h1' size='md' mb={2}>Entrenadores</Heading>
             <CardList />
+          </Box>
+          <Box bg={colors.secondary} borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
+            <Heading as='h1' size='md' mb={2}>Publicaciones</Heading>
+            <Publicaciones />
           </Box>
         </Flex>
 

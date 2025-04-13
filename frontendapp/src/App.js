@@ -17,6 +17,7 @@ import { PaginaModificarEntrenamiento } from './paginas/PaginaModificarEntrenami
 import { PaginaModificarDieta } from './paginas/PaginaModificarDieta'
 import { PaginaMisChats } from './paginas/PaginaMisChats'
 import { PaginaPublicar } from './paginas/PaginaPublicar'
+import { PaginaPublicarComida } from './paginas/PaginaPublicarComida'
 
 function App () {
   return (
@@ -46,6 +47,8 @@ function App () {
           <Route path='/chats' element={<PaginaMisChats />} />
 
           <Route path='/publicar' element={<PaginaPublicar />} />
+          <Route path='/publicarcomida/:entrenador/:dia/:comida' element={<PaginaPublicarComida />} />
+
         </Route>
       </Routes>
     </Router>

@@ -9,7 +9,6 @@ export function PaginaMiDieta () {
   const { entrenador } = useParams()
   const asociaciones = useMisAsociaciones()
   const asociacion = asociaciones.find(asociacion => asociacion.usuarioEntrenador === entrenador)
-
   if (!authenticated) {
     return <div>{message}</div>
   } else if (!asociacion) {
@@ -17,9 +16,10 @@ export function PaginaMiDieta () {
   } else {
     // const fecha = new Date(asociacion.dietaData.fecha.$date).toLocaleString()
     const [detalle] = asociacion.dietaData.dieta
+    const usuarioEntrenador = asociacion.usuarioEntrenador
     return (
       <ChakraProvider>
-        <DietaEstatica detalle={detalle} />
+        <DietaEstatica detalle={detalle} entrenador={usuarioEntrenador} />
       </ChakraProvider>
     )
   }

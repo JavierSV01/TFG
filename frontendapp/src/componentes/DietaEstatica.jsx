@@ -1,7 +1,9 @@
-import { Box, Heading, Divider, Grid, Text } from '@chakra-ui/react'
+import { Box, Heading, Divider, Grid, Text, Button } from '@chakra-ui/react'
 import colors from '../constantes/colores'
+import { useNavigate } from 'react-router-dom'
 
-export const DietaEstatica = ({ detalle }) => {
+export const DietaEstatica = ({ detalle, entrenador }) => {
+  const navigate = useNavigate()
   return (
     <Box bgColor={colors.neutral} color={colors.primary} minH='100vh' p={4}>
       <Heading textAlign='center' size='xl' m={2} textColor={colors.primary}>
@@ -25,6 +27,11 @@ export const DietaEstatica = ({ detalle }) => {
                   </Box>
                 ))}
               </Grid>
+              <Box mt={4} display='flex' justifyContent='end'>
+                <Button colorScheme='blue' onClick={() => navigate(`/publicarcomida/${entrenador}/${dayIndex}/${mealIndex}`)}>
+                  Compartir
+                </Button>
+              </Box>
             </Box>
           ))}
         </Box>
