@@ -63,7 +63,7 @@ function ImageSelector ({
 
       {/* Previsualización */}
       {previewUrl && (
-        <Box mt={4} borderWidth='1px' borderRadius='md' p={2} maxW='200px'>
+        <Box mt={4} borderWidth='1px' borderRadius='md' p={2} maxW='400px'>
           <Text fontSize='sm' mb={2} color='gray.500'>Previsualización:</Text>
           <Image
             src={previewUrl}

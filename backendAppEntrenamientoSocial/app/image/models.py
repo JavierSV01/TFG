@@ -1,12 +1,10 @@
 from pymongo import MongoClient
-from flask import current_app, json
+from flask import current_app
 
 import os
 import uuid
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify, make_response
 from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure, OperationFailure
 from werkzeug.utils import secure_filename # Aunque no usemos el nombre, sí el objeto file
 
 class ImageModel:

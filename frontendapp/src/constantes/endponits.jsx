@@ -48,5 +48,8 @@ export const ENDPOINTS = {
   },
   IMAGE: {
     GETIMAGE: `${BASE_URL}/image/img` // Necesita /id
+  },
+  PUBLICACION: {
+    POSTPUBLICACION1: `${BASE_URL}/publicpost/publish`
   }
 }

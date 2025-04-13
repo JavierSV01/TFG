@@ -16,6 +16,7 @@ import { PaginaDietaCliente } from './paginas/PaginaDietaCliente'
 import { PaginaModificarEntrenamiento } from './paginas/PaginaModificarEntrenamieto'
 import { PaginaModificarDieta } from './paginas/PaginaModificarDieta'
 import { PaginaMisChats } from './paginas/PaginaMisChats'
+import { PaginaPublicar } from './paginas/PaginaPublicar'
 
 function App () {
   return (
@@ -43,6 +44,8 @@ function App () {
           <Route path='/chat/:idChat' element={<PaginaUnChat />} />
 
           <Route path='/chats' element={<PaginaMisChats />} />
+
+          <Route path='/publicar' element={<PaginaPublicar />} />
         </Route>
       </Routes>
     </Router>

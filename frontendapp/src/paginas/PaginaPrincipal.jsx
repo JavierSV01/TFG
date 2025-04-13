@@ -4,6 +4,7 @@ import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleG
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import colors from '../constantes/colores'
+import { useNavigate } from 'react-router-dom'
 
 const Card = ({ key, nombre, presentacion }) => {
   const toast = useToast() // Utilizamos el Toast de Chakra UI para mostrar notificaciones
@@ -109,6 +110,13 @@ const CardList = () => {
 export function PaginaPrincipal () {
   const { authenticated, message } = useAuthCheck()
 
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    const rutaDestino = '/publicar'
+    navigate(rutaDestino)
+  }
+
   if (!authenticated) {
     return <div>{message}</div>
   }
@@ -125,6 +133,17 @@ export function PaginaPrincipal () {
             <CardList />
           </Box>
         </Flex>
+
+        <Box
+          position='fixed'
+          bottom='10'
+          right='10'
+          zIndex='sticky'
+        >
+          <Button size='lg' colorScheme='teal' onClick={handleClick}>
+            Publicar
+          </Button>
+        </Box>
       </Box>
     </ChakraProvider>
   )
