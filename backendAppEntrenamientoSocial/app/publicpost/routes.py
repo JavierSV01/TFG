@@ -3,6 +3,7 @@ from flask import send_from_directory, session, jsonify, request
 import datetime
 from app.image.helpers import saveImage
 from .models import PublicPostModel
+import json
 
 from pymongo import DESCENDING
 from bson import ObjectId # Para manejar el _id de MongoDB
@@ -25,19 +26,28 @@ def publish():
             return jsonify({"mensaje": "Usuario no autenticado"}), 401
             
         usuario = session['usuario']
-
-        
         
         foto = request.files['foto']
         texto = request.form.get('text')
         tipo = request.form.get('tipo')
+        print('tipo' + tipo)
+        if tipo == '1':
 
-        imageId = saveImage(usuario, foto)
-        date = datetime.datetime.now()
+            print('entremos en tipo 1' + tipo)
+            imageId = saveImage(usuario, foto)
+            date = datetime.datetime.now()
 
-        PublicPostModel.public_post(usuario, imageId, texto, tipo, date)
+            PublicPostModel.public_post(usuario, imageId, texto, tipo, date)
+            
+        elif tipo == '2':
+            imageId = saveImage(usuario, foto)
+            date = datetime.datetime.now()
+            meal_data = json.loads(request.form['meal'])
+            PublicPostModel.public_post_type2(usuario, imageId, texto, tipo, meal_data, date)
 
-        return jsonify({"mensaje": "Dieta agregado con éxito"}), 201
+            print(meal_data)
+
+        return jsonify({"mensaje": "Publicacion agregado con éxito"}), 201
     
     except Exception as e:
         print(f"Error al publicar: {e}")

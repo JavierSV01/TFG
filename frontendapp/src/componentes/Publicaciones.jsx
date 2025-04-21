@@ -19,8 +19,8 @@ import FotoDePerfil from './FotoDePerfil'
 const POSTS_PER_PAGE = 2
 // ------------------------------------------
 
-function FormatearFecha ({ fechaString }) {
-  const fecha = new Date('Sun, 13 Apr 2025 17:36:58 GMT')
+function FormatearFecha (fechaString) {
+  const fecha = new Date(fechaString)
 
   const fechaFormateada = fecha.toLocaleDateString('es-ES') // "13/4/2025"
 
@@ -126,6 +126,17 @@ export function Publicaciones () {
                   {post.texto || 'Contenido no disponible.'}
                 </Text>
               </Box>
+              {post.tipo === '2' && (
+                <Box m={2}>
+                  {post.meal.name}
+                  {post.meal.foods?.map((food, foodIndex) => (
+                    <Box key={foodIndex} mt={2} p={2} borderWidth='1px' borderRadius='md'>
+                      <Text fontWeight='semibold'>{food.name}</Text>
+                      <Text>Cantidad: {food.quantity}</Text>
+                    </Box>
+                  ))}
+                </Box>
+              )}
 
               <Box textAlign='right'>
                 <Text>

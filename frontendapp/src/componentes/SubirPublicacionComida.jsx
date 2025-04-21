@@ -3,6 +3,7 @@ import axios from 'axios' // Importa axios
 import { useImageSelection } from '../hooks/useImageSelection'
 import ImageSelector from './ImageSelector'
 import {
+  Grid,
   Input,
   Box,
   Button,
@@ -43,7 +44,8 @@ export function SubirPublicacionComida ({ meal }) {
     const formData = new FormData()
     formData.append('foto', selectedFile)
     formData.append('text', inputText)
-    formData.append('tipo', '1')
+    formData.append('tipo', 2)
+    formData.append('meal', JSON.stringify(meal))
     // Configuración para axios, incluyendo onUploadProgress
     const config = {
       headers: {
@@ -93,6 +95,9 @@ export function SubirPublicacionComida ({ meal }) {
     }
   }, [selectedFile, clearSelection, inputText])
 
+  if (!meal) {
+    return <div>Cargando...</div>
+  }
   return (
 
     <Box display='flex' flexDirection={{ base: 'column', md: 'column' }}>
@@ -132,6 +137,19 @@ export function SubirPublicacionComida ({ meal }) {
             onChange={handleInputChange}
             size='md'
           />
+
+          <Box m={4} p={4}>
+            <Text fontSize='lg' fontWeight='bold'>Comida: {meal.name}</Text>
+            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={4}>
+              {meal.foods?.map((food, foodIndex) => (
+                <Box key={foodIndex} mt={2} p={2} borderWidth='1px' borderRadius='md'>
+                  <Text fontWeight='semibold'>{food.name}</Text>
+                  <Text>Cantidad: {food.quantity}</Text>
+                </Box>
+              ))}
+            </Grid>
+          </Box>
+
         </Box>
       </Box>
 

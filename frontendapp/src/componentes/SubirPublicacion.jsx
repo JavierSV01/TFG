@@ -43,7 +43,7 @@ export function SubirPublicacion () {
     const formData = new FormData()
     formData.append('foto', selectedFile)
     formData.append('text', inputText)
-    formData.append('tipo', '1')
+    formData.append('tipo', 1)
     // Configuración para axios, incluyendo onUploadProgress
     const config = {
       headers: {

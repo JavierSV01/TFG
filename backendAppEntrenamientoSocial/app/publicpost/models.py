@@ -24,6 +24,23 @@ class PublicPostModel:
         db = PublicPostModel.get_db()
         result = db["publicaciones"].insert_one(post_data)
         return result
+    
+    @staticmethod
+    def public_post_type2(usuario, imageId, texto, tipo, meal, fecha):
+        post_data = {
+            "usuario": usuario,
+            "imagenId": imageId,
+            "texto": texto,
+            "fecha": fecha,
+            "tipo": tipo,
+            "meal": meal,
+            
+            
+        }
+
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].insert_one(post_data)
+        return result
 
     @staticmethod
     def get_total_post():
