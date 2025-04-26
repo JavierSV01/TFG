@@ -96,6 +96,7 @@ const NavigationMenu = ({ handleLogout }) => {
       {role === 'entrenador' && <NavLink href='/crearEntrenamiento' label='Nuevo Entrenamiento' />}
       {role === 'entrenador' && <NavLink href='/crearDieta' label='Nueva Dieta' />}
       <NavLink href='/chats' label='Mis Chats' />
+      <NavLink href='/postfavoritos' label='Post Favoritos' />
       <NavLink href='/perfil' label='Mi Perfil' />
       <Button onClick={handleLogout} bg={colors.accent} variant='solid' color={colors.white} _hover={{ bg: colors.neutral }}>
         Logout

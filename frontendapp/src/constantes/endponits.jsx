@@ -27,7 +27,10 @@ export const ENDPOINTS = {
     POSTPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
     GETPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
     POSTEVOLUCIONFISICA: `${BASE_URL}/user/evolutionimage`,
-    GETEVOLUTIONFISICA: `${BASE_URL}/user/evolutionimage`
+    GETEVOLUTIONFISICA: `${BASE_URL}/user/evolutionimage`,
+    TOGGLEFAVORITEPOST: `${BASE_URL}/user/togglefavoritepost`,
+    GETFAVORITEPOSTSIDS: `${BASE_URL}/user/getfavoriteposts`,
+    GETFAVORITEPOSTS: `${BASE_URL}/user/getfavoritepublications`
   },
   SOLICITUDE: {
     MYSOLICITUDE: `${BASE_URL}/sol/mysolicitude`,

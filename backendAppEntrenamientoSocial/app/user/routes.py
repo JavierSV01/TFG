@@ -6,7 +6,9 @@ from pymongo.errors import DuplicateKeyError
 from . import user_bp
 from app.association.helpers import getClientsByTrainer
 from app.association.helpers import getAssociationByUser
+from app.publicpost.helpers import get_posts_by_ids
 from app.image.helpers import saveImage
+from bson import ObjectId
 
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
@@ -1074,9 +1076,6 @@ def modify_workout():
       "description": description,
       "weeks": weeks
     }
-
-    if(UserModel.exist_workout_with_title(usuario, title)):
-      return jsonify({"error": "Entrenamieto con ese nombre ya creado"}), 409
         
     result = UserModel.update_workout_for_user(usuario, tituloAnterior, entrenamiento)
 
@@ -1358,3 +1357,84 @@ def postevolutionimage():
     UserModel.push_evolution_image(username, file_id)
 
     return jsonify({"mensaje": "Imagen subida correctamente"}), 200
+
+
+@user_bp.route('/togglefavoritepost', methods=['POST'])
+def toggle_favorite_post():
+    try:
+        if 'usuario' not in session:
+            return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+        username = session['usuario']
+        data = request.get_json()
+        post_id = data.get('postId')
+
+        if not post_id:
+            return jsonify({"error": "Falta el ID de la publicación."}), 400
+
+        try:
+            post_object_id = ObjectId(post_id)
+        except Exception:
+            return jsonify({"error": "ID de publicación inválido."}), 400
+
+        favoritos = UserModel.get_favourite_post(username)
+
+        db = UserModel.get_db()
+
+        if post_object_id in favoritos:
+            # Si ya existe → quitarlo
+            UserModel.del_favourite_post(username, post_object_id)
+            return jsonify({"message": "Publicación eliminada de favoritos."}), 200
+        else:
+            # Si no existe → añadirlo
+            UserModel.add_favourite_post(username, post_object_id)
+            return jsonify({"message": "Publicación añadida a favoritos."}), 200
+
+    except Exception as e:
+        print(f"Error en toggle_favorite_post: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500
+
+    
+@user_bp.route('/getfavoriteposts', methods=['GET'])
+def get_favorite_posts():
+    try:
+        if 'usuario' not in session:
+            return jsonify({"error": "Usuario no autenticado"}), 401
+
+        username = session['usuario']
+        favoritos = UserModel.get_favourite_post(username)
+
+        # Convertimos ObjectId a string para enviar al frontend
+        favoritos_str = [str(fav) for fav in favoritos]
+
+        return jsonify({"favoritos": favoritos_str}), 200
+
+    except Exception as e:
+        print(f"Error en get_favorite_posts: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500
+
+
+@user_bp.route('/getfavoritepublications', methods=['GET'])
+def get_favorite_publications():
+    try:
+        if 'usuario' not in session:
+            return jsonify({"error": "Usuario no autenticado"}), 401
+
+        username = session['usuario']
+        
+        favoritos = UserModel.get_favourite_post(username)
+
+        if not favoritos:
+            return jsonify({"publicaciones": []}), 200
+
+        publicaciones = get_posts_by_ids(favoritos)
+
+        # Convertir ObjectId a string para el frontend
+        for pub in publicaciones:
+            pub['_id'] = str(pub['_id'])
+
+        return jsonify({"publicaciones": publicaciones}), 200
+
+    except Exception as e:
+        print(f"Error en get_favorite_publications: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500

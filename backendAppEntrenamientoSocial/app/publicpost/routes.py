@@ -33,7 +33,6 @@ def publish():
         print('tipo' + tipo)
         if tipo == '1':
 
-            print('entremos en tipo 1' + tipo)
             imageId = saveImage(usuario, foto)
             date = datetime.datetime.now()
 
@@ -45,7 +44,12 @@ def publish():
             meal_data = json.loads(request.form['meal'])
             PublicPostModel.public_post_type2(usuario, imageId, texto, tipo, meal_data, date)
 
-            print(meal_data)
+        elif tipo == '3':
+            imageId = saveImage(usuario, foto)
+            date = datetime.datetime.now()
+            day_data = json.loads(request.form['day'])
+            PublicPostModel.public_post_type3(usuario, imageId, texto, tipo, day_data, date)
+            
 
         return jsonify({"mensaje": "Publicacion agregado con éxito"}), 201
     

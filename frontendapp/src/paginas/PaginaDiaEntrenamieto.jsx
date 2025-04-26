@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react'
 import { ChakraProvider, Box, Text, Heading, Divider, AbsoluteCenter, Input, Grid, GridItem, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast, Stack, IconButton } from '@chakra-ui/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import colors from '../constantes/colores'
@@ -16,6 +16,8 @@ export function PaginaDiaEntrenamiento () {
   const asociaciones = useMisAsociaciones()
   const [estadoEntrenamiento, setEstadoEntrenamiento] = useState('Sin empezar')
   const toast = useToast()
+
+  const navigate = useNavigate()
 
   const asociacion = useMemo(() => {
     return asociaciones?.find(asociacion => asociacion.usuarioEntrenador === entrenador)
@@ -135,10 +137,14 @@ export function PaginaDiaEntrenamiento () {
       <Box bgColor={colors.neutral} color={colors.primary} minH='100vh' p={4}>
         <Heading textAlign='center' size='lg' m={2} textColor={colors.primary}>
           Entrenamiento {entrenamientoEncontrado.entrenamiento[0].title}
+
         </Heading>
 
         <Text m={8} fontSize='xl' fontWeight='semibold'>
           Semana: {parseInt(semIndex) + 1} - Día {parseInt(dayIndex) + 1}
+          <Button colorScheme='blue' onClick={() => navigate(`/publicarentrenamieto/${entrenador}/${entrenamientoEncontrado.entrenamiento[0].title}/${semIndex}/${dayIndex}`)} ml={4}>
+            Compartir
+          </Button>
         </Text>
         {diaEntrenamiento && diaEntrenamiento.map((ejercicio, index) => {
           return (

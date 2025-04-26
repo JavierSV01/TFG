@@ -1,34 +1,50 @@
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { ChakraProvider, Box, Heading, Text } from '@chakra-ui/react'
 import colors from '../constantes/colores'
-import { SubirPublicacionComida } from '../componentes/SubirPublicacionComida'
 import { useParams } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
+import { SubirPublicacionEntrenamieto } from '../componentes/SubirPublicacionEntrenamieto'
 
-export function obtenerComida (data, entrenador, diaIndex, comidaIndex) {
+export function obtenerEntrenamiento (data, entrenador, titulo, semIndex, diaIndex) {
   if (!data || !data.associations) {
     console.error('La estructura de datos principal no es válida.')
     return null
   }
+
   const asociacion = data.associations.find(assoc => assoc.usuarioEntrenador === entrenador)
   if (!asociacion) {
     console.log(`No se encontró asociación para el entrenador: ${entrenador}`)
     return null
   }
-  // Asume que siempre quieres la primera dieta (índice [0])
-  const comida = asociacion.dietaData?.dieta?.[0]?.days?.[diaIndex]?.meals?.[comidaIndex]
-  if (comida) {
-    return comida
+
+  // const entrenamiento = asociacion.entrenamientos?.entrenamiento?.find(ent => ent.title === titulo)
+  const entrenamiento = asociacion.entrenamientos
+    ?.flatMap(e => e.entrenamiento) // aplana todos los arrays de entrenamiento
+    ?.find(ent => ent.title === titulo)
+  if (!entrenamiento) {
+    console.log(`No se encontró entrenamiento con el título: ${titulo} para el entrenador ${entrenador}`)
+    return null
+  }
+
+  const semana = entrenamiento.weeks?.[semIndex]
+  if (!semana) {
+    console.log(`No se encontró la semana con índice ${semIndex} en el entrenamiento ${titulo}`)
+    return null
+  }
+
+  const dia = semana.days?.[diaIndex]
+  if (dia) {
+    return dia
   } else {
-    console.log(`No se pudo encontrar la comida para el entrenador ${entrenador}, día ${diaIndex}, comida ${comidaIndex}.`)
+    console.log(`No se encontró el día con índice ${diaIndex} en la semana ${semIndex} del entrenamiento ${titulo}`)
     return null
   }
 }
 
-export function PaginaPublicarComida () {
+export function PaginaPublicarEntrenamieto () {
   const { authenticated, message } = useAuthCheck()
   const entrenadores = useMisAsociaciones() // Asumimos que esto devuelve el array [...]
-  const { entrenador, dia, comida } = useParams()
+  const { entrenador, titulo, semana, dia } = useParams()
 
   if (!authenticated) {
     return <div>{message}</div>
@@ -44,13 +60,12 @@ export function PaginaPublicarComida () {
   // --- Parsear parámetros de useParams ---
   // useParams devuelve strings, necesitas números para los índices
   const diaIndex = parseInt(dia, 10)
-  const comidaIndex = parseInt(comida, 10)
+  const semIndex = parseInt(semana, 10)
 
   // --- Validar que los índices son números válidos ---
-  if (isNaN(diaIndex) || isNaN(comidaIndex)) {
-    console.error("Los parámetros 'dia' o 'comida' no son números válidos:", dia, comida)
-    // Puedes mostrar un mensaje de error al usuario aquí
-    return <ChakraProvider><Box>Error: Los parámetros de día o comida en la URL no son válidos.</Box></ChakraProvider>
+  if (isNaN(diaIndex) || isNaN(semIndex)) {
+    console.error("Los parámetros 'dia' o 'semana' no son números válidos:", dia, semana)
+    return <ChakraProvider><Box>Error: Los parámetros de día o semana en la URL no son válidos.</Box></ChakraProvider>
   }
 
   // --- Modificación Clave ---
@@ -58,7 +73,7 @@ export function PaginaPublicarComida () {
   const datosParaFuncion = { associations: entrenadores }
 
   // Llama a la función con la estructura correcta y los índices parseados
-  const comidaParaSubir = obtenerComida(datosParaFuncion, entrenador, diaIndex, comidaIndex)
+  const diaEntrenamietoParaSubir = obtenerEntrenamiento(datosParaFuncion, entrenador, titulo, semIndex, diaIndex)
 
   return (
     <ChakraProvider>
@@ -66,11 +81,12 @@ export function PaginaPublicarComida () {
         <Box bg={colors.secondary} borderRadius='3xl' p={10} width='100%'>
           <Heading mb={10}>Nueva publicación de comida</Heading>
           {/* Pasa el resultado de la función */}
-          <SubirPublicacionComida meal={comidaParaSubir} />
+          <SubirPublicacionEntrenamieto day={diaEntrenamietoParaSubir} />
           {/* Muestra un mensaje si no se encontró la comida */}
-          {!comidaParaSubir && (
-            <Text color='yellow.400' mt={4}>No se encontró la información de la comida especificada.</Text>
+          {!diaEntrenamietoParaSubir && (
+            <Text color='yellow.400' mt={4}>No se encontró la información del dia de entrenamieto especificado.</Text>
           )}
+          <Text mt={4}>Debug: Entrenador={entrenador}, DíaIdx={diaIndex}, ComidaIdx={semIndex}</Text>
         </Box>
       </Box>
     </ChakraProvider>

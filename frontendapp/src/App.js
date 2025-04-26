@@ -18,6 +18,8 @@ import { PaginaModificarDieta } from './paginas/PaginaModificarDieta'
 import { PaginaMisChats } from './paginas/PaginaMisChats'
 import { PaginaPublicar } from './paginas/PaginaPublicar'
 import { PaginaPublicarComida } from './paginas/PaginaPublicarComida'
+import { PaginaPublicarEntrenamieto } from './paginas/PaginaPublicarEntrenamieto'
+import { PaginaPostFavoritos } from './paginas/PaginaPostFavoritos'
 
 function App () {
   return (
@@ -48,6 +50,10 @@ function App () {
 
           <Route path='/publicar' element={<PaginaPublicar />} />
           <Route path='/publicarcomida/:entrenador/:dia/:comida' element={<PaginaPublicarComida />} />
+          <Route path='/publicarentrenamieto/:entrenador/:titulo/:semana/:dia' element={<PaginaPublicarEntrenamieto />} />
+          <Route path='/postfavoritos' element={<PaginaPostFavoritos />} />
+
+          postfavoritos
 
         </Route>
       </Routes>

@@ -1,5 +1,6 @@
 from flask import current_app
 from pymongo import MongoClient, DESCENDING
+from bson import ObjectId
 
 class PublicPostModel:
     @staticmethod
@@ -41,6 +42,22 @@ class PublicPostModel:
         db = PublicPostModel.get_db()
         result = db["publicaciones"].insert_one(post_data)
         return result
+    @staticmethod
+    def public_post_type3(usuario, imageId, texto, tipo, day, fecha):
+        post_data = {
+            "usuario": usuario,
+            "imagenId": imageId,
+            "texto": texto,
+            "fecha": fecha,
+            "tipo": tipo,
+            "day": day,
+            
+            
+        }
+
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].insert_one(post_data)
+        return result
 
     @staticmethod
     def get_total_post():
@@ -54,4 +71,9 @@ class PublicPostModel:
         result = db["publicaciones"].find({}).sort('fecha', DESCENDING).skip(skip).limit(limit)
         return result
     
-    
+    @staticmethod
+    def get_posts_by_ids(post_ids):
+        db = PublicPostModel.get_db()
+        object_ids = [ObjectId(post_id) for post_id in post_ids]
+        result = db["publicaciones"].find({"_id": {"$in": object_ids}})
+        return list(result)

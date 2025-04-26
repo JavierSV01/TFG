@@ -249,3 +249,31 @@ class UserModel:
         )
         return resultado
     
+    @staticmethod
+    def get_favourite_post(usuario):
+        db = UserModel.get_db()
+        usuario = db.usuarios.find_one({"usuario": usuario}, {"postFavoritos": 1})
+        post = usuario.get("postFavoritos", [])
+        return post
+    
+    @staticmethod
+    def add_favourite_post(usuario, post_object_id):
+        db = UserModel.get_db()
+        result = db.usuarios.update_one(
+            {"usuario": usuario},
+            {"$push": {"postFavoritos": post_object_id}}
+        )
+        return result
+    
+    @staticmethod
+    def del_favourite_post(usuario, post_object_id):
+        print("del")
+        db = UserModel.get_db()
+        result = db.usuarios.update_one(
+            {"usuario": usuario},
+            {"$pull": {"postFavoritos": post_object_id}}
+        )
+        return result
+
+
+    
