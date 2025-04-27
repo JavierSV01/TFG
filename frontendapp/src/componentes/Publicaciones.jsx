@@ -13,7 +13,7 @@ import {
 import { ENDPOINTS } from '../constantes/endponits'
 import { ListaDePublicaciones } from './ListaDePublicaciones'
 import { useFavoritos } from '../hooks/useFavoritos'
-const POSTS_PER_PAGE = 4
+const POSTS_PER_PAGE = 3
 
 export function Publicaciones () {
   const [posts, setPosts] = useState([])

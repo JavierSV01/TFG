@@ -1,12 +1,11 @@
-import { Box, Button, Heading, Stack, IconButton, useDisclosure, useToast, Modal, ModalContent, ModalOverlay, ModalHeader, ModalBody, ModalFooter, Text } from '@chakra-ui/react'
+import { Box, Button, Heading, Stack, IconButton, useDisclosure, useToast, Modal, ModalContent, ModalOverlay, ModalHeader, ModalBody, ModalFooter, Text, Flex, HStack } from '@chakra-ui/react'
 import { usePlantillasEntrenamiento } from '../hooks/usePlantillasEntrenamiento'
 import { useNavigate } from 'react-router-dom'
 import colors from '../constantes/colores'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
-
 function MisPlantillasEntrenamiento () {
   const { plantillas, reload } = usePlantillasEntrenamiento()
   const navigate = useNavigate()
@@ -54,29 +53,45 @@ function MisPlantillasEntrenamiento () {
       <Heading as='h1' mb={6}>
         Mis Plantillas de Entrenamiento
       </Heading>
-      <Stack spacing={6}>
+      <Stack spacing={4}> {/* Ajusta el espaciado vertical entre elementos si es necesario */}
         {plantillas.map((plantilla, index) => (
-          <li key={index}>
-            <h2>{plantilla.title}
+          <Flex
+            key={index}
+            justifyContent='space-between' // Empuja el título a la izquierda y los botones a la derecha
+            alignItems='center' // Alinea verticalmente los elementos en el centro
+            p={3} // Añade algo de padding interno
+            borderWidth='1px' // Opcional: añade un borde para separar visualmente
+            borderRadius='md' // Opcional: bordes redondeados
+            w='100%'
+          >
+            {/* Título a la izquierda */}
+            <Heading as='h3' size='md' mr={4}> {/* Usa Heading y añade margen derecho */}
+              {plantilla.title}
+            </Heading>
+
+            {/* Grupo de botones a la derecha */}
+            <HStack spacing={2}> {/* HStack agrupa los botones horizontalmente con espaciado */}
               <Button
-                margin='2' bgColor={colors.primary}
-                textColor={colors.white}
-                _hover={{ bgColor: colors.secondary }}
-                onClick={() => { navigate(`/modificarEntrenamiento/${plantilla.title}`) }}
-              >Modificar
-              </Button>
-              <IconButton
-                icon={<DeleteIcon />}
-                aria-label='Borrar'
+                leftIcon={<EditIcon />} // Añade el icono de edición
                 bgColor={colors.primary}
                 textColor={colors.white}
                 _hover={{ bgColor: colors.secondary }}
-                ml={2}
+                onClick={() => navigate(`/modificarEntrenamiento/${plantilla.title}`)}
+                size='sm'
+              >
+                Modificar
+              </Button>
+              <IconButton
+                icon={<DeleteIcon />}
+                aria-label={`Borrar plantilla ${plantilla.title}`} // Mejora la accesibilidad
+                bgColor={colors.primary}
+                textColor={colors.white}
+                _hover={{ bgColor: colors.secondary }}
                 onClick={() => confirmarEliminacion(plantilla.title)}
+                size='sm'
               />
-            </h2>
-
-          </li>
+            </HStack>
+          </Flex>
         ))}
       </Stack>
 

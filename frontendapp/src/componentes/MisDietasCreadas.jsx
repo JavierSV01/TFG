@@ -1,9 +1,9 @@
-import { Text, Box, Button, Heading, Stack, Modal, ModalHeader, ModalFooter, ModalBody, ModalOverlay, ModalContent, useDisclosure, IconButton, useToast } from '@chakra-ui/react'
+import { Text, Box, Button, Heading, Stack, Modal, ModalHeader, ModalFooter, ModalBody, ModalOverlay, ModalContent, useDisclosure, IconButton, useToast, HStack, Flex } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { useDietsPlans } from '../hooks/useDietsPlans'
 import { useState } from 'react'
 import colors from '../constantes/colores'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 
@@ -53,29 +53,45 @@ export function MisDietasCreadas () {
       <Heading as='h1' mb={6}>
         Mis Dietas
       </Heading>
-      <Stack spacing={6}>
+      <Stack spacing={4}> {/* Espaciado vertical entre elementos */}
         {dietas.map((dieta, index) => (
-          <li key={index}>
-            <h2>{dieta.title}
+          <Flex
+            key={index}
+            justifyContent='space-between' // Título a la izq., botones a la der.
+            alignItems='center' // Alineación vertical centrada
+            p={3} // Padding interno
+            borderWidth='1px' // Opcional: Borde
+            borderRadius='md' // Opcional: Bordes redondeados
+            w='100%'
+          >
+            {/* Título a la izquierda */}
+            <Heading as='h3' size='md' mr={4}> {/* Heading con margen derecho */}
+              {dieta.title}
+            </Heading>
+
+            {/* Grupo de botones a la derecha */}
+            <HStack spacing={2}> {/* Agrupación horizontal con espaciado */}
               <Button
-                margin='2' bgColor={colors.primary}
-                textColor={colors.white}
-                _hover={{ bgColor: colors.secondary }}
-                onClick={() => { navigate(`/modificarDieta/${dieta.title}`) }}
-              >Modificar
-              </Button>
-              <IconButton
-                icon={<DeleteIcon />}
-                aria-label='Borrar'
+                leftIcon={<EditIcon />} // Icono de edición
                 bgColor={colors.primary}
                 textColor={colors.white}
                 _hover={{ bgColor: colors.secondary }}
-                ml={2}
-                onClick={() => confirmarEliminacion(dieta.title)}
+                onClick={() => navigate(`/modificarDieta/${dieta.title}`)} // Acción de modificar
+                size='sm'
+              >
+                Modificar
+              </Button>
+              <IconButton
+                icon={<DeleteIcon />}
+                aria-label={`Borrar dieta ${dieta.title}`} // Etiqueta accesible
+                bgColor={colors.primary}
+                textColor={colors.white}
+                _hover={{ bgColor: colors.secondary }}
+                onClick={() => confirmarEliminacion(dieta.title)} // Acción de eliminar
+                size='sm'
               />
-            </h2>
-
-          </li>
+            </HStack>
+          </Flex>
         ))}
       </Stack>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>

@@ -38,11 +38,6 @@ react
 	npm install react-hook-form
 	npm install socket.io-client
 
+	npm install keen-slider
 
-	
-to do 
-
-- Ver entrenamientos de un cliente siendo entrenador.
-- Modificar, borrar plantillas de entrenamiento
-- 
 

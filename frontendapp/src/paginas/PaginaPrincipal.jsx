@@ -1,11 +1,12 @@
 import { React, useState, useEffect } from 'react'
 import { useAuthCheck } from '../hooks/useAuthCheck'
-import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast } from '@chakra-ui/react'
+import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast, HStack } from '@chakra-ui/react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import colors from '../constantes/colores'
 import { useNavigate } from 'react-router-dom'
 import { Publicaciones } from '../componentes/Publicaciones'
+import FotoDePerfil from '../componentes/FotoDePerfil'
 
 const Card = ({ key, nombre, presentacion }) => {
   const toast = useToast() // Utilizamos el Toast de Chakra UI para mostrar notificaciones
@@ -39,11 +40,28 @@ const Card = ({ key, nombre, presentacion }) => {
   }
 
   return (
-    <Box borderWidth='1px' borderRadius='lg' p={4} boxShadow='md' background={colors.neutral} color={colors.primary}>
-      <Heading as='h3' size='md' mb={2}>
-        {nombre}
-      </Heading>
-      <Text>{presentacion || 'Entrenador sin presentación'}</Text>
+    <Box
+      borderWidth='1px'
+      borderRadius='lg'
+      p={4}
+      boxShadow='md'
+      background={colors.neutral}
+      color={colors.primary}
+      display='flex'
+      flexDirection='column'
+      height='100%'
+    >
+      <Box flexGrow={1}>
+        <HStack spacing={4}>
+          <Box width={{ base: '60px', md: '80px' }} flexShrink={0}>
+            <FotoDePerfil username={nombre} />
+          </Box>
+          <Heading as='h3' size='md'>
+            {nombre}
+          </Heading>
+        </HStack>
+      </Box>
+
       <Button
         mt={4}
         color={colors.white}
@@ -53,6 +71,7 @@ const Card = ({ key, nombre, presentacion }) => {
         width='100%'
         _hover={{ bgColor: colors.primary, color: colors.neutral }}
         size={{ base: 'sm', md: 'md' }}
+        flexShrink={0}
       >
         Solicitar
       </Button>

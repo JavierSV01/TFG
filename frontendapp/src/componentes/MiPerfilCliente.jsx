@@ -140,7 +140,12 @@ export function MiPerfilCliente () {
       <Box bg={colors.neutral} color={colors.white} minH='100vh' p={margen}>
         <Flex direction='column' gap={margen}>
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-            <Flex direction={{ base: 'column', md: 'row' }} gap={10}>
+            <Flex direction={{ base: 'column', md: 'row' }} justifyContent='space-between' width='100%' gap={10}>
+              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
+                <Heading size='lg'>Foto de Perfil</Heading>
+                <FotoDePerfil username={username} />
+                <ProfileImageUploader />
+              </Box>
               <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
                 <Stack>
                   <Heading color={colors.white} size='lg' mb={4}>Mis Datos Personales</Heading>
@@ -232,12 +237,6 @@ export function MiPerfilCliente () {
 
               </Box>
 
-              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
-                <Heading size='lg'>Foto de Perfil</Heading>
-                <FotoDePerfil username={username} />
-                <ProfileImageUploader />
-              </Box>
-
             </Flex>
 
           </Box>
@@ -271,13 +270,14 @@ export function MiPerfilCliente () {
           </Flex>
 
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
-            <Flex direction={{ base: 'column', md: 'row' }} gap={10}>
-              <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
-                <Heading color={colors.white} size='lg' mb={4}>Evolucion física</Heading>
-                <ImageEvolucionFisicaUpload />
-              </Box>
-              <Box flex={{ base: 3, md: 3 }} width={{ base: '100%', md: '25%' }}>
+            <Heading color={colors.white} size='lg' mb={4}>Evolucion física</Heading>
+            <Flex direction={{ base: 'column', md: 'column' }} justifyContent='space-between' width='100%' gap={10}>
+
+              <Box width='100%'>
                 <ImageEvolutionView imagenes={userData.evolucionFisica} />
+              </Box>
+              <Box width='100%' display='flex' justifyContent='center' alignItems='center'>
+                <ImageEvolucionFisicaUpload />
               </Box>
             </Flex>
 

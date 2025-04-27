@@ -1,21 +1,31 @@
-// ListaDePublicaciones.js
 import React from 'react'
 import {
   Box,
   VStack,
   Heading,
   Text,
-  HStack,
-  Button
+  Button,
+  Flex,
+  Icon
 } from '@chakra-ui/react'
+import colors from '../constantes/colores'
 import ImageLoader from './ImageLoader'
 import FotoDePerfil from './FotoDePerfil'
 import { StarIcon } from '@chakra-ui/icons'
 
 function FormatearFecha (fechaString) {
-  const fecha = new Date(fechaString)
-  const fechaFormateada = fecha.toLocaleDateString('es-ES')
-  return fechaFormateada
+  try {
+    const fecha = new Date(fechaString)
+    if (isNaN(fecha.getTime())) {
+      return fechaString || 'Fecha inválida'
+    }
+    const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    })
+    return fechaFormateada
+  } catch (e) {
+    return fechaString || 'Error al formatear fecha'
+  }
 }
 
 export function ListaDePublicaciones ({ publicaciones, onGuardar, favoritos }) {
@@ -27,73 +37,132 @@ export function ListaDePublicaciones ({ publicaciones, onGuardar, favoritos }) {
     )
   }
   return (
-    <VStack spacing={4} align='stretch'>
+    <VStack spacing={6} align='stretch' px={2}>
       {publicaciones.map((post, index) => {
-        const isFavorito = favoritos.includes(post._id)
+        const safePost = {
+          _id: 'defaultId' + index,
+          usuario: 'Usuario Anónimo',
+          imagenId: null,
+          texto: '',
+          tipo: '1',
+          meal: { name: '', foods: [] },
+          day: { exercises: [] },
+          fecha: new Date().toISOString(),
+          ...post
+        }
+
+        const isFavorito = favoritos?.includes(safePost._id)
+
         return (
-          <React.Fragment key={post._id || index}>
+          <React.Fragment key={safePost._id}>
             <Box
               p={4}
               shadow='md'
-              borderWidth='1px'
-              borderRadius='md'
+              borderWidth='2px'
+              borderRadius='xl'
+              borderColor={colors.neutral}
               w='100%'
             >
-
-              <HStack m={2} justifyContent='space-between'>
-                <HStack>
-                  <Box width='100px'><FotoDePerfil username={post.usuario} /></Box>
-                  <Heading as='h3' size='md' mb={2}>
-                    {post.usuario || `Publicación ${post._id}`}
+              <Flex mb={4} justifyContent='space-between' alignItems='center'>
+                <Flex alignItems='center' flexShrink={1} overflow='hidden'>
+                  <Box width={{ base: '60px', md: '80px' }} flexShrink={0}>
+                    <FotoDePerfil username={safePost.usuario} />
+                  </Box>
+                  <Heading
+                    as='h3'
+                    size='md'
+                    ml={3}
+                    isTruncated
+                  >
+                    {safePost.usuario || `Publicación ${safePost._id}`}
                   </Heading>
-                </HStack>
+                </Flex>
+
                 <Button
                   variant='ghost'
-                  onClick={() => onGuardar(post._id)}
+                  onClick={() => onGuardar(safePost._id)}
+                  aria-label={isFavorito ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                  ml={2}
                 >
-                  <StarIcon color={isFavorito ? 'yellow.400' : 'gray.400'} />
+                  <Icon as={StarIcon} color={isFavorito ? 'yellow.400' : 'gray.400'} boxSize={6} />
                 </Button>
-              </HStack>
+              </Flex>
 
-              <Box textAlign='right' mt={2} />
+              <Flex
+                mb={4}
+                gap={4}
+                direction={{ base: 'column', md: 'row' }}
+                alignItems={{ base: 'stretch', md: 'flex-start' }}
+              >
 
-              <Box m={2} display='flex' justifyContent='center'>
-                <ImageLoader imageId={post.imagenId} />
-              </Box>
+                <Box
+                  width={{ base: '100%', md: 'auto' }}
+                  flex={{ md: '1' }}
+                  display='flex'
+                  justifyContent='center'
+                  alignItems='center'
+                  mb={{ base: 4, md: 0 }}
+                >
+                  {safePost.imagenId && <ImageLoader imageId={safePost.imagenId} />}
+                  {!safePost.imagenId && (
+                    <Box h='100px' display='flex' alignItems='center' justifyContent='center' color='gray.400'>
+                      <Text fontSize='sm'>(Sin imagen)</Text>
+                    </Box>
+                  )}
+                </Box>
 
-              <Box m={2} display='flex' justifyContent='center'>
-                <Text>
-                  {post.texto || 'Contenido no disponible.'}
+                <Flex
+                  width={{ base: '100%', md: 'auto' }}
+                  flex={{ md: '2' }}
+                  direction='column'
+                  gap={3}
+                >
+                  {safePost.texto && (
+                    <Box>
+                      <Text>
+                        {safePost.texto}
+                      </Text>
+                    </Box>
+                  )}
+
+                  {safePost.tipo === '2' && (
+                    <Box borderRadius='md' p={3}>
+                      <Text fontWeight='bold' mb={2}>{safePost.meal?.name ? `Comida: ${safePost.meal.name}` : 'Detalle de comida'}</Text>
+                      {safePost.meal?.foods?.map((food, foodIndex) => (
+                        <Box key={foodIndex} mt={2} p={2} borderWidth='1px' borderRadius='md'>
+                          <Text fontWeight='semibold'>{food.name}</Text>
+                          <Text fontSize='sm'>Cantidad: {food.quantity}</Text>
+                        </Box>
+                      ))}
+                      {(!safePost.meal?.foods || safePost.meal.foods.length === 0) && (
+                        <Text fontSize='sm' color='gray.500'>No hay alimentos detallados.</Text>
+                      )}
+                    </Box>
+                  )}
+                  {safePost.tipo === '3' && (
+                    <Box borderRadius='md' p={3}>
+                      <Text fontWeight='bold' mb={2}>Rutina de Ejercicio:</Text>
+                      {safePost.day?.exercises?.map((exercise, exerciseIndex) => (
+                        <Box key={exerciseIndex} mt={2} p={2} borderWidth='1px' borderRadius='md'>
+                          <Text fontWeight='semibold'>{exercise.name}</Text>
+                          <Text fontSize='sm'>Series: {exercise.sets}</Text>
+                          <Text fontSize='sm'>Repeticiones: {exercise.reps}</Text>
+                          <Text fontSize='sm'>RIR: {exercise.rir}</Text>
+                        </Box>
+                      ))}
+                      {(!safePost.day?.exercises || safePost.day.exercises.length === 0) && (
+                        <Text fontSize='sm' color='gray.500'>No hay ejercicios detallados.</Text>
+                      )}
+                    </Box>
+                  )}
+                </Flex>
+
+              </Flex>
+
+              <Box textAlign='right'>
+                <Text fontSize='xs'>
+                  {FormatearFecha(safePost.fecha) || 'Fecha no disponible.'}
                 </Text>
-              </Box>
-
-              {post.tipo === '2' && (
-                <Box m={2}>
-                  {post.meal.name}
-                  {post.meal.foods?.map((food, foodIndex) => (
-                    <Box key={foodIndex} mt={2} p={2} borderWidth='1px' borderRadius='md'>
-                      <Text fontWeight='semibold'>{food.name}</Text>
-                      <Text>Cantidad: {food.quantity}</Text>
-                    </Box>
-                  ))}
-                </Box>
-              )}
-
-              {post.tipo === '3' && (
-                <Box m={2}>
-                  {post.day.exercises?.map((exercise, exerciseIndex) => (
-                    <Box key={exerciseIndex} mt={2} p={2} borderWidth='1px' borderRadius='md'>
-                      <Text fontWeight='semibold'>{exercise.name}</Text>
-                      <Text>Series: {exercise.sets}</Text>
-                      <Text>Repeticiones: {exercise.reps}</Text>
-                      <Text>RIR: {exercise.rir}</Text>
-                    </Box>
-                  ))}
-                </Box>
-              )}
-
-              <Box m={2} textAlign='right'>
-                <Text>{FormatearFecha(post.fecha) || 'Contenido no disponible.'}</Text>
               </Box>
 
             </Box>

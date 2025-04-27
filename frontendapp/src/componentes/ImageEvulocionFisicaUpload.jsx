@@ -114,6 +114,7 @@ export function ImageEvolucionFisicaUpload () {
         isLoading={isUploading}
         loadingText='Guardando...' // loadingText se muestra mientras isLoading es true
         isDisabled={!selectedFile || isUploading}
+        width='250px' // Full width on mobile, auto on larger screens
       >
         Guardar nueva foto
       </Button>

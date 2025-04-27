@@ -1,12 +1,12 @@
 import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthCheck } from '../hooks/useAuthCheck'
-import { ChakraProvider, Box, Heading, Text, Divider, AbsoluteCenter, IconButton } from '@chakra-ui/react'
+import { ChakraProvider, Box, Heading, Text, Divider, AbsoluteCenter, IconButton, VStack } from '@chakra-ui/react'
 import { ViewIcon } from '@chakra-ui/icons'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import colors from '../constantes/colores'
 import { useUserNameId } from '../hooks/useUserNameId'
-
+import FotoDePerfil from '../componentes/FotoDePerfil'
 import BotonChat from '../componentes/BotonChat'
 
 export function PaginaMiEntrenador () {
@@ -43,8 +43,15 @@ export function PaginaMiEntrenador () {
         <Box bg={colors.neutral} color={colors.white} minH='100vh' p={2}>
 
           <Heading textAlign='center' size='lg' m={4} textColor={colors.primary}>Asesoria de {entrenador}</Heading>
+
           <Box display='flex' justifyContent='center' mt={4}>
-            <BotonChat user1={username} user2={entrenador} />
+            <VStack>
+              <Box width={{ base: '350px', md: '350px' }} flexShrink={0}>
+                <FotoDePerfil username={entrenador} />
+              </Box>
+
+              <BotonChat user1={username} user2={entrenador} />
+            </VStack>
           </Box>
           <Box position='relative' padding='10'>
             <Divider borderColor={colors.primary} />
