@@ -12,19 +12,29 @@ import colors from '../constantes/colores'
 import ImageLoader from './ImageLoader'
 import FotoDePerfil from './FotoDePerfil'
 import { StarIcon } from '@chakra-ui/icons'
+function FormatearFecha (fechaInput) {
+  let fechaStringParaProcesar = fechaInput
+  if (typeof fechaInput === 'object' && fechaInput !== null && '$date' in fechaInput) {
+    fechaStringParaProcesar = fechaInput.$date // Usar el valor de $date como el string de fecha
+  }
+  if (fechaStringParaProcesar === null || typeof fechaStringParaProcesar === 'undefined') {
+    return 'Fecha no proporcionada' // O cualquier placeholder que prefieras
+  }
 
-function FormatearFecha (fechaString) {
   try {
-    const fecha = new Date(fechaString)
+    const fecha = new Date(String(fechaStringParaProcesar))
+
     if (isNaN(fecha.getTime())) {
-      return fechaString || 'Fecha inválida'
+      return (typeof fechaStringParaProcesar === 'string' ? fechaStringParaProcesar : 'Fecha inválida (formato original no string)')
     }
+
     const fechaFormateada = fecha.toLocaleDateString('es-ES', {
       year: 'numeric', month: 'long', day: 'numeric'
     })
     return fechaFormateada
   } catch (e) {
-    return fechaString || 'Error al formatear fecha'
+    console.error('Error en FormatearFecha:', e, 'Input original:', fechaInput)
+    return (typeof fechaInput === 'string' ? fechaInput : 'Error al formatear fecha')
   }
 }
 
