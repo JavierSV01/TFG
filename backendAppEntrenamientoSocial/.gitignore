@@ -4,4 +4,4 @@ venv/
 # Ignorar carpetas __pycache__ en cualquier nivel
 **/__pycache__/
 
-backendAppEntrenamientoSocial/uploads/
+uploads/
