@@ -55,7 +55,7 @@ export function EntrenamientoModificable ({ weeks, setWeeks, title, setTitle, de
 
       <Box bg={colors.neutral} minH='100vh' color={colors.white} p={8}>
         <Box bg={colors.secondary} borderRadius='3xl' color='white' minH='100vh' p={6}>
-          <Heading as='h1' mb={8}>Crear Entrenamiento</Heading>
+          <Heading as='h1' mb={8}>Modificar Entrenamiento</Heading>
 
           {/* Formulario para título y descripción */}
           <VStack spacing={4} align='flex-start'>

@@ -3,12 +3,12 @@ import axios from 'axios'
 import ImageLoader from './ImageLoader' // Asegúrate de que la ruta sea la correcta
 import { ENDPOINTS } from '../constantes/endponits'
 
-const FotoDePerfil = ({ username }) => {
+const FotoDePerfil = ({ username, triggerRecarga }) => {
   const [imageId, setImageId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
+  const cargarImagen = async () => {
     axios.get(ENDPOINTS.USER.GETPROFILEIMAGE + `?username=${username}`)
       .then(response => {
         // Ajusta según cómo venga el dato en tu respuesta
@@ -20,7 +20,11 @@ const FotoDePerfil = ({ username }) => {
         setError('No se pudo cargar la imagen')
         setLoading(false)
       })
-  }, [])
+  }
+
+  useEffect(() => {
+    cargarImagen()
+  }, [triggerRecarga])
 
   if (loading) return <p>Cargando imagen...</p>
   if (error) return <p>{error}</p>

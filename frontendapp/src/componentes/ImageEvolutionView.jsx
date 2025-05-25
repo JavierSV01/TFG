@@ -61,6 +61,7 @@ export const ImageEvolutionView = ({ imagenes }) => {
     <Box width='100%' display='flex' flexDirection='column' alignItems='center' gap={4}>
       {/* Slider principal */}
       <Box
+        key={imagenes.map(img => img.fileId).join('-')}
         ref={sliderRef}
         className='keen-slider'
         width='100%'
@@ -93,6 +94,7 @@ export const ImageEvolutionView = ({ imagenes }) => {
 
       {/* Thumbnails */}
       <Box
+        key={'thumb-' + imagenes.map(img => img.fileId).join('-')}
         ref={thumbnailRef}
         className='keen-slider'
         width='100%'

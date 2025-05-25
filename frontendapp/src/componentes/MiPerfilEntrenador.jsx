@@ -1,4 +1,4 @@
-import { React } from 'react'
+import { React, useState } from 'react'
 import { ChakraProvider, Box, Heading, Flex } from '@chakra-ui/react'
 import MisClientes from '../componentes/MisClientes'
 import SolicitudesAsesoramiento from '../componentes/SolicitudesAsesoramiento'
@@ -12,6 +12,21 @@ import { useUserNameId } from '../hooks/useUserNameId'
 export function MiPerfilEntrenador () {
   const { username } = useUserNameId()
   const margen = 10
+
+  const [recargarClientes, setRecargarClientes] = useState(false)
+
+  const manejarAceptacionSolicitud = () => {
+    // Cambia el estado para disparar un efecto en MisClientes
+    setRecargarClientes(prev => !prev)
+  }
+
+  const [recargarImagen, setRecargarImagen] = useState(false)
+
+  const manejarSubidaExitosa = () => {
+    // Activa la recarga de la imagen
+    setRecargarImagen(prev => !prev)
+  }
+
   if (!username) {
     return <div>Cargando...</div>
   }
@@ -25,12 +40,12 @@ export function MiPerfilEntrenador () {
           <Flex direction={{ base: 'column', md: 'row' }} gap={margen}>
             <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1}>
               <Heading color={colors.white} size='lg' mb={4}>Mis Clientes</Heading>
-              <MisClientes />
+              <MisClientes triggerRecarga={recargarClientes} />
             </Box>
             <Box bg={colors.secondary} borderRadius='3xl' p={margen} flex={1}>
               <Heading size='lg'>Foto de Perfil</Heading>
-              <FotoDePerfil username={username} />
-              <ProfileImageUploader />
+              <FotoDePerfil username={username} triggerRecarga={recargarImagen} />
+              <ProfileImageUploader onUploadSuccess={manejarSubidaExitosa} />
             </Box>
           </Flex>
 
@@ -46,7 +61,7 @@ export function MiPerfilEntrenador () {
 
           <Box bg={colors.secondary} borderRadius='3xl' p={margen} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
             <Heading color={colors.white} size='lg' mb={4}>Solicutudes asesoramiento</Heading>
-            <SolicitudesAsesoramiento />
+            <SolicitudesAsesoramiento onSolicitudAceptada={manejarAceptacionSolicitud} />
           </Box>
 
         </Flex>

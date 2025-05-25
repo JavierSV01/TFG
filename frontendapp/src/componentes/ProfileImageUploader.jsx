@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { ENDPOINTS } from '../constantes/endponits'
 
-function ProfileImageUploader () {
+function ProfileImageUploader ({ onUploadSuccess }) {
   const { selectedFile, previewUrl, selectionError, getInputProps, clearSelection } = useImageSelection()
   const [uploadStatus, setUploadStatus] = useState({ message: '', type: null })
   const [isUploading, setIsUploading] = useState(false)
@@ -53,6 +53,7 @@ function ProfileImageUploader () {
       // response.data ya contiene el cuerpo de la respuesta parseado (si es JSON)
       setUploadStatus({ message: `Foto de perfil actualizada! ${response.data.message || ''}`, type: 'success' })
       clearSelection()
+      onUploadSuccess?.()
       setUploadProgress(0) // Resetear progreso al finalizar con éxito
     } catch (error) {
       // Axios lanza un error para respuestas no 2xx

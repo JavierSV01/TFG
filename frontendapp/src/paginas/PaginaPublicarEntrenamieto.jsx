@@ -86,7 +86,6 @@ export function PaginaPublicarEntrenamieto () {
           {!diaEntrenamietoParaSubir && (
             <Text color='yellow.400' mt={4}>No se encontró la información del dia de entrenamieto especificado.</Text>
           )}
-          <Text mt={4}>Debug: Entrenador={entrenador}, DíaIdx={diaIndex}, ComidaIdx={semIndex}</Text>
         </Box>
       </Box>
     </ChakraProvider>

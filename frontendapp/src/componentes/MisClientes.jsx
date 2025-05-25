@@ -5,26 +5,25 @@ import { SimpleGrid, Box, Button, Heading } from '@chakra-ui/react'
 import colors from '../constantes/colores'
 import { useNavigate } from 'react-router-dom'
 
-const MisClientes = () => {
+const MisClientes = ({ triggerRecarga }) => {
   const [clientes, setClientes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchClientes = async () => {
-      try {
-        const response = await axios.get(ENDPOINTS.USER.CLIENTS)
-        setClientes(response.data)
-      } catch (err) {
-        setError(err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchClientes = async () => {
+    try {
+      const response = await axios.get(ENDPOINTS.USER.CLIENTS)
+      setClientes(response.data)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setLoading(false)
     }
-
+  }
+  useEffect(() => {
     fetchClientes()
-  }, [])
+  }, [triggerRecarga])
 
   if (loading) return <p>Cargando...</p>
   if (error) return <p>Error: {error.message}</p>

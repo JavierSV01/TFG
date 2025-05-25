@@ -42,7 +42,7 @@ function Navbar () {
           <Box fontWeight='bold' color='white'>
             <HStack spacing={2} alignItems='center'>
               <Image src={miLogo} alt='Logo' boxSize='50px' />
-              <Box fontWeight='bold' color='white'>FitNetwork</Box>
+              <Box fontWeight='bold' color='white'>FitNet</Box>
             </HStack>
           </Box>
           {/* Menu para pantallas grandes */}

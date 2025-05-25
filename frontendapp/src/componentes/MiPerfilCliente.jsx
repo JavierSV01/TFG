@@ -15,7 +15,7 @@ import { ImageEvolutionView } from './ImageEvolutionView'
 
 export function MiPerfilCliente () {
   const { username } = useUserNameId()
-  const { userData } = useUserData(username)
+  const { userData, fetchUserData } = useUserData(username)
   const { register, handleSubmit } = useForm()
   const {
     register: registerAttr,
@@ -24,6 +24,13 @@ export function MiPerfilCliente () {
     setValue,
     watch
   } = useForm()
+
+  const [recargarImagen, setRecargarImagen] = useState(false)
+
+  const manejarSubidaExitosa = () => {
+    // Activa la recarga de la imagen
+    setRecargarImagen(prev => !prev)
+  }
 
   const [valorTipo, setValorTipo] = useState('string')
   const [atributosOptions, setAtributosOptions] = useState([])
@@ -40,6 +47,7 @@ export function MiPerfilCliente () {
         }
       })
       if (response.status === 200) {
+        fetchUserData()
         toast({
           title: 'Datos actualizados',
           description: 'Tus datos personales han sido actualizados correctamente.',
@@ -143,8 +151,8 @@ export function MiPerfilCliente () {
             <Flex direction={{ base: 'column', md: 'row' }} justifyContent='space-between' width='100%' gap={10}>
               <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
                 <Heading size='lg'>Foto de Perfil</Heading>
-                <FotoDePerfil username={username} />
-                <ProfileImageUploader />
+                <FotoDePerfil username={username} triggerRecarga={recargarImagen} />
+                <ProfileImageUploader onUploadSuccess={manejarSubidaExitosa} />
               </Box>
               <Box flex={{ base: 1, md: 1 }} width={{ base: '100%', md: '25%' }}>
                 <Stack>
@@ -277,7 +285,7 @@ export function MiPerfilCliente () {
                 <ImageEvolutionView imagenes={userData.evolucionFisica} />
               </Box>
               <Box width='100%' display='flex' justifyContent='center' alignItems='center'>
-                <ImageEvolucionFisicaUpload />
+                <ImageEvolucionFisicaUpload onUploadSuccess={fetchUserData} />
               </Box>
             </Flex>
 

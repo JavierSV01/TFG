@@ -5,7 +5,7 @@ import { ENDPOINTS } from '../constantes/endponits'
 import colors from '../constantes/colores'
 
 // Componente principal que obtiene las sol
-const SolicitudesAsesoramiento = () => {
+const SolicitudesAsesoramiento = ({ onSolicitudAceptada }) => {
   const [solicitudes, setSolicitudes] = useState([])
   const toast = useToast()
 
@@ -36,6 +36,9 @@ const SolicitudesAsesoramiento = () => {
 
       if (response.status === 201) {
         obtenerSolicitudes()
+        if (onSolicitudAceptada) {
+          onSolicitudAceptada()
+        }
         toast({
           title: 'Asesoramiento aceptado',
           description: 'Se ha creado la asociación correctamente.',
