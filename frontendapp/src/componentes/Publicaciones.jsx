@@ -9,11 +9,12 @@ import {
   Alert,
   AlertIcon,
   Text
+  , useToast
 } from '@chakra-ui/react'
 import { ENDPOINTS } from '../constantes/endponits'
 import { ListaDePublicaciones } from './ListaDePublicaciones'
 import { useFavoritos } from '../hooks/useFavoritos'
-const POSTS_PER_PAGE = 3
+const POSTS_PER_PAGE = 2
 
 export function Publicaciones () {
   const [posts, setPosts] = useState([])
@@ -22,7 +23,9 @@ export function Publicaciones () {
   const [hasMore, setHasMore] = useState(true)
   const [error, setError] = useState(null)
 
-  const fetchPosts = useCallback(async (pageToFetch) => {
+  const toast = useToast()
+
+  const fetchPosts = useCallback(async (pageToFetch, pagePerPage, recargaComentarios) => {
     setLoading(true)
     setError(null)
 
@@ -30,19 +33,23 @@ export function Publicaciones () {
       const response = await axios.get(ENDPOINTS.PUBLICACION.GETPUBLICACIONES, {
         params: {
           page: pageToFetch,
-          limit: POSTS_PER_PAGE
+          limit: pagePerPage
         }
       })
 
       const data = response.data
       const newPosts = data.posts || data.data || []
-      const apiHasMore = data.hasNextPage ?? (newPosts.length === POSTS_PER_PAGE)
 
-      setPosts(prevPosts => [...prevPosts, ...newPosts])
-      setHasMore(apiHasMore)
+      if (recargaComentarios) {
+        setPosts(newPosts)
+      } else {
+        const apiHasMore = data.hasNextPage ?? (newPosts.length === pagePerPage)
+        setPosts(prevPosts => [...prevPosts, ...newPosts])
+        setHasMore(apiHasMore)
 
-      if (newPosts.length < POSTS_PER_PAGE) {
-        setHasMore(false)
+        if (newPosts.length < pagePerPage) {
+          setHasMore(false)
+        }
       }
     } catch (err) {
       console.error('Error fetching posts with axios:', err)
@@ -59,7 +66,7 @@ export function Publicaciones () {
   }, [])
 
   useEffect(() => {
-    fetchPosts(currentPage)
+    fetchPosts(currentPage, POSTS_PER_PAGE, false)
   }, [currentPage, fetchPosts])
 
   const handleLoadMore = () => {
@@ -86,6 +93,57 @@ export function Publicaciones () {
     }
   }
 
+  const handleMeGusta = async (postId) => {
+    try {
+      await axios.post(ENDPOINTS.PUBLICACION.TOGGLELIKEDPOST, { postId })
+      console.log('Me gusta dado correctamente')
+      fetchPosts(1, currentPage * POSTS_PER_PAGE, true)
+      // Más adelante actualizaremos el estado local para cambiar el botón
+    } catch (err) {
+      console.error('Error dando me gusta a la publicación:', err)
+    }
+  }
+
+  const handleSend = async ({ comentario, publicacionId }) => {
+    console.log(publicacionId, publicacionId)
+    if (!comentario.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Agrega un texto al comentario.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      return
+    }
+
+    try {
+      console.log(publicacionId, publicacionId)
+      await axios.post(ENDPOINTS.PUBLICACION.POSTCOMENTARIO, {
+        postId: publicacionId,
+        comentario
+      })
+
+      toast({
+        title: 'Comentario enviado',
+        description: 'Tu comentario se ha enviado correctamente.',
+        status: 'success',
+        duration: 4000,
+        isClosable: true
+      })
+      fetchPosts(1, currentPage * POSTS_PER_PAGE, true)
+    } catch (error) {
+      toast({
+        title: 'Error al enviar',
+        description: 'Hubo un problema al enviar tu comentario.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      console.error(error)
+    }
+  }
+
   return (
     <Box p={5} minH='100vh' mx='auto'>
       {error && (
@@ -95,7 +153,7 @@ export function Publicaciones () {
         </Alert>
       )}
 
-      <ListaDePublicaciones publicaciones={posts} onGuardar={handleGuardar} favoritos={favoritos} />
+      <ListaDePublicaciones publicaciones={posts} onComentar={handleSend} onGuardar={handleGuardar} onLike={handleMeGusta} favoritos={favoritos} />
 
       {loading && (
         <Center mt={4}>

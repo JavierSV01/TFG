@@ -54,6 +54,8 @@ export const ENDPOINTS = {
   },
   PUBLICACION: {
     POSTPUBLICACION1: `${BASE_URL}/publicpost/publish`,
-    GETPUBLICACIONES: `${BASE_URL}/publicpost/posts`
+    GETPUBLICACIONES: `${BASE_URL}/publicpost/posts`,
+    POSTCOMENTARIO: `${BASE_URL}/publicpost/comment`,
+    TOGGLELIKEDPOST: `${BASE_URL}/publicpost/togglelike`
   }
 }

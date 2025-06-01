@@ -39,5 +39,7 @@ react
 	npm install socket.io-client
 
 	npm install keen-slider
+	
+	npm install react-icons
 
 

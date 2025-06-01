@@ -44,7 +44,7 @@ function ImageLoader ({ imageId }) {
         </Box>
       )}
       {imageSrc && !loading && !error && (
-        <Image src={imageSrc} alt='Imagen cargada' maxW='100%' maxHeight='500px' />
+        <Image borderRadius='3xl' src={imageSrc} alt='Imagen cargada' maxW='100%' maxHeight='500px' />
       )}
       {!imageId && (
         <Box color='gray.500'>

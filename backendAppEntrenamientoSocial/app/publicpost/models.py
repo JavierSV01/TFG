@@ -77,3 +77,46 @@ class PublicPostModel:
         object_ids = [ObjectId(post_id) for post_id in post_ids]
         result = db["publicaciones"].find({"_id": {"$in": object_ids}})
         return list(result)
+    
+    @staticmethod
+    def do_comment(usuario, postId, comentario, fecha):
+        comentario_dict = {
+            "usuario": usuario,
+            "comentario": comentario,
+            "fecha": fecha
+        }
+
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].update_one(
+            {"_id": ObjectId(postId)},
+            {"$push": {"comentarios": comentario_dict}}
+        )
+
+        return result.modified_count > 0
+    
+    @staticmethod
+    def get_likes(post_object_id):
+        db = PublicPostModel.get_db()
+        publicacion = db["publicaciones"].find_one({"_id": ObjectId(post_object_id)}, {"likes": 1})
+        post = publicacion.get("likes", [])
+        return post
+
+    @staticmethod
+    def add_like_post(usuario, post_object_id):
+        print("add")
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].update_one(
+            {"_id": ObjectId(post_object_id)},
+            {"$push": {"likes": usuario}}
+        )
+        return result
+    
+    @staticmethod
+    def del_like_post(usuario, post_object_id):
+        print("del")
+        db = PublicPostModel.get_db()
+        result = db["publicaciones"].update_one(
+            {"_id": ObjectId(post_object_id)},
+            {"$pull": {"likes": usuario}}
+        )
+        return result

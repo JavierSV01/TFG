@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   VStack,
@@ -6,12 +6,21 @@ import {
   Text,
   Button,
   Flex,
-  Icon
+  Icon,
+  Textarea,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon
 } from '@chakra-ui/react'
 import colors from '../constantes/colores'
 import ImageLoader from './ImageLoader'
 import FotoDePerfil from './FotoDePerfil'
 import { StarIcon } from '@chakra-ui/icons'
+import { FaHeart } from 'react-icons/fa'
+import { useUserNameId } from '../hooks/useUserNameId'
+
 function FormatearFecha (fechaInput) {
   let fechaStringParaProcesar = fechaInput
   if (typeof fechaInput === 'object' && fechaInput !== null && '$date' in fechaInput) {
@@ -38,7 +47,10 @@ function FormatearFecha (fechaInput) {
   }
 }
 
-export function ListaDePublicaciones ({ publicaciones, onGuardar, favoritos }) {
+export function ListaDePublicaciones ({ publicaciones, onComentar, onGuardar, onLike, favoritos }) {
+  const [comment, setComment] = useState('')
+  const { username } = useUserNameId()
+
   if (!publicaciones || publicaciones.length === 0) {
     return (
       <Box p={4} textAlign='center'>
@@ -62,7 +74,7 @@ export function ListaDePublicaciones ({ publicaciones, onGuardar, favoritos }) {
         }
 
         const isFavorito = favoritos?.includes(safePost._id)
-
+        const isLiked = safePost.likes?.includes(username)
         return (
           <React.Fragment key={safePost._id}>
             <Box
@@ -88,14 +100,27 @@ export function ListaDePublicaciones ({ publicaciones, onGuardar, favoritos }) {
                   </Heading>
                 </Flex>
 
-                <Button
-                  variant='ghost'
-                  onClick={() => onGuardar(safePost._id)}
-                  aria-label={isFavorito ? 'Quitar de favoritos' : 'Añadir a favoritos'}
-                  ml={2}
-                >
-                  <Icon as={StarIcon} color={isFavorito ? 'yellow.400' : 'gray.400'} boxSize={6} />
-                </Button>
+                <Flex alignItems='center' flexShrink={1} overflow='hidden'>
+
+                  <Button
+                    variant='ghost'
+                    onClick={() => onLike(safePost._id)}
+                    aria-label={isLiked ? 'Quitar me gusta' : 'Dar me gusta'}
+                    ml={2}
+                  >
+                    <Text color={colors.white}>{safePost.likes?.length || 0}</Text><Icon ml={2} as={FaHeart} color={isLiked ? 'red.400' : 'gray.400'} boxSize={6} />
+                  </Button>
+
+                  <Button
+                    variant='ghost'
+                    onClick={() => onGuardar(safePost._id)}
+                    aria-label={isFavorito ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                    ml={2}
+                  >
+                    <Icon as={StarIcon} color={isFavorito ? 'yellow.400' : 'gray.400'} boxSize={6} />
+                  </Button>
+                </Flex>
+
               </Flex>
 
               <Flex
@@ -165,9 +190,60 @@ export function ListaDePublicaciones ({ publicaciones, onGuardar, favoritos }) {
                       )}
                     </Box>
                   )}
-                </Flex>
 
+                </Flex>
               </Flex>
+              <Accordion defaultIndex={[]} allowMultiple>
+                <AccordionItem>
+                  <h2>
+                    <AccordionButton>
+                      <Box as='span' flex='1' textAlign='left'>
+                        Comentarios ({safePost.comentarios?.length || 0})
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    <Box p={4} borderRadius='lg' w='100%'>
+                      <VStack spacing={4}>
+                        <Textarea
+                          placeholder='Escribe tu comentario...'
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                          resize='vertical'
+                        />
+                        <Button
+                          colorScheme='blue'
+                          alignSelf='flex-end'
+                          onClick={() =>
+                            onComentar({
+                              comentario: comment,
+                              publicacionId: safePost._id
+                            })}
+                        >
+                          Enviar
+                        </Button>
+                      </VStack>
+                      {safePost.comentarios?.slice().reverse().map((comentario, index) => (
+                        <Flex key={index} mb={4}>
+                          <Box width={{ base: '60px', md: '80px' }} flexShrink={0}>
+                            <FotoDePerfil username={comentario.usuario} />
+                          </Box>
+                          <Box ml='3'>
+                            <Text fontWeight='bold'>
+                              {comentario.usuario}
+                            </Text>
+                            <Text fontSize='md'>{comentario.comentario}</Text>
+                            <Text fontSize='2xs' color={colors.white}>
+                              {new Date(comentario.fecha).toLocaleString()}
+                            </Text>
+                          </Box>
+                        </Flex>
+                      ))}
+                    </Box>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
 
               <Box textAlign='right'>
                 <Text fontSize='xs'>
