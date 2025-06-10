@@ -7,6 +7,7 @@ import colors from '../constantes/colores'
 import { useUserNameId } from '../hooks/useUserNameId'
 import BotonChat from '../componentes/BotonChat'
 import { BellIcon } from '@chakra-ui/icons'
+import FotoDePerfil from '../componentes/FotoDePerfil'
 
 const obtenerOtroUsuario = (listaUsuarios, miNombreUsuario) => {
   if (listaUsuarios[0] === miNombreUsuario) {
@@ -50,13 +51,18 @@ export function PaginaMisChats () {
               <Divider mb={2} />
               <Box ml={8} mr={8}>
                 <HStack justifyContent='space-between'>
+                  <HStack>
+                    <Box width={{ base: '50px', md: '90px' }}>
+                      <FotoDePerfil username={obtenerOtroUsuario(chat.usuarios, username)} />
+                    </Box>
+                    <Text fontWeight='bold'>
+                      {chat.notificar && chat.notificar.includes(username) && (
+                        <Icon as={BellIcon} color={colors.accent} ml={2} />
+                      )}
+                      {obtenerOtroUsuario(chat.usuarios, username)}
+                    </Text>
+                  </HStack>
 
-                  <Text fontWeight='bold'>
-                    {chat.notificar && chat.notificar.includes(username) && (
-                      <Icon as={BellIcon} color={colors.accent} ml={2} />
-                    )}
-                    {obtenerOtroUsuario(chat.usuarios, username)}
-                  </Text>
                   <BotonChat user1={username} user2={obtenerOtroUsuario(chat.usuarios, username)} />
                 </HStack>
               </Box>

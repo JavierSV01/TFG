@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Box, Flex, Text, Input, Button, ChakraProvider } from '@chakra-ui/react'
+import { Box, Flex, Text, Input, Button, ChakraProvider, HStack } from '@chakra-ui/react'
 import colors from '../constantes/colores'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import io from 'socket.io-client'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { useUserNameId } from '../hooks/useUserNameId'
+import FotoDePerfil from '../componentes/FotoDePerfil'
 
 function formatearFecha (fechaString) {
   const fecha = new Date(fechaString) // Convertir string a objeto Date
@@ -25,31 +26,34 @@ function PaginaUnChat () {
   const { idChat } = useParams()
   const { authenticated, message } = useAuthCheck()
   const { username } = useUserNameId()
+  const otherUsername = useRef('') // No se usa en este código, pero se puede usar si es necesario
 
   const [chatData, setChatData] = useState(null)
   const [room, setRoom] = useState(null)
   const [messages, setMessages] = useState([])
   const inputRef = useRef(null)
-
-  useEffect(() => {
-    const fetchChatData = async () => {
-      try {
-        axios.defaults.withCredentials = true
-        const response = await axios.get(ENDPOINTS.CHAT.GETCHATBYID + `?chat_id=${idChat}`)
-        setChatData(response.data)
-        console.log(chatData)
-
-        if (response.data.mensajes) {
-          setMessages(response.data.mensajes)
+  const fetchChatData = async () => {
+    try {
+      axios.defaults.withCredentials = true
+      const response = await axios.get(ENDPOINTS.CHAT.GETCHATBYID + `?chat_id=${idChat}`)
+      setChatData(response.data)
+      response.data.usuarios.forEach(user => {
+        if (user !== username) {
+          otherUsername.current = user
         }
-        setRoom(response.data._id)
-      } catch (error) {
-        console.error(error)
+      })
+      console.log(otherUsername.current)
+      if (response.data.mensajes) {
+        setMessages(response.data.mensajes)
       }
+      setRoom(response.data._id)
+    } catch (error) {
+      console.error(error)
     }
-
+  }
+  useEffect(() => {
     fetchChatData()
-  }, [idChat])
+  }, [idChat, username])
 
   useEffect(() => {
     if (room) { // Esperar a que se carguen username, room y chatData
@@ -78,7 +82,7 @@ function PaginaUnChat () {
         socket.emit('leave_room', { room, username })
       }
     }
-  }, [room])
+  }, [room, username, socket, chatData]) // Dependencias para que se ejecute cuando room o username cambien
 
   const handlerSendMsg = async () => {
     console.log(inputRef.current.value)
@@ -111,14 +115,27 @@ function PaginaUnChat () {
 
   if (!authenticated) {
     return <div>{message}</div>
+  } if (!chatData || !username) {
+    return (
+      <ChakraProvider>
+        <Flex direction='column' height='100vh' justifyContent='center' alignItems='center'>
+          <Text fontSize='2xl' fontWeight='bold'>Cargando...</Text>
+        </Flex>
+      </ChakraProvider>
+    )
   } else {
     return (
       <ChakraProvider>
         <Flex direction='column' height='100vh'>
-          <Box bg={colors.neutral} py={4} textAlign='center'>
-            <Text fontSize='2xl' fontWeight='bold'>
-              Nombre del Chat
-            </Text>
+          <Box bg={colors.neutral} py={4} display='flex' justifyContent='center'>
+            <HStack>
+              <Box width={{ base: '60px', md: '90px' }}>
+                <FotoDePerfil username={otherUsername.current} />
+              </Box>
+              <Text fontSize='2xl' fontWeight='bold'>
+                {otherUsername.current}
+              </Text>
+            </HStack>
           </Box>
 
           <Box

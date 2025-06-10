@@ -24,7 +24,7 @@ const FotoDePerfil = ({ username, triggerRecarga }) => {
 
   useEffect(() => {
     cargarImagen()
-  }, [triggerRecarga])
+  }, [triggerRecarga, username])
 
   if (loading) return <p>Cargando imagen...</p>
   if (error) return <p>{error}</p>

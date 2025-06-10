@@ -1156,9 +1156,6 @@ def modify_diet():
       "dietName": dietName,
       "days": days
     }
-
-    if(UserModel.exist_diet_with_title(usuario, dietName)):
-      return jsonify({"error": "Dieta con ese nombre ya creado"}), 409
  
     result = UserModel.update_diet_for_user(usuario, tituloAnterior, dieta)
 
