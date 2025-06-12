@@ -1,6 +1,3 @@
-import eventlet
-eventlet.monkey_patch() # Asegúrate de que esto esté SIEMPRE en la primera línea ejecutable
-
 from app import create_app, socketio # Asumo que 'create_app' crea la instancia de Flask y 'socketio' está ya asociada a ella.
 from app.config import Config
 from flask import jsonify # Importamos jsonify para el health check
