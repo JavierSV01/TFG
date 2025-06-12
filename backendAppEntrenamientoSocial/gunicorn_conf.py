@@ -15,7 +15,7 @@ timeout = 120 # El valor por defecto de Gunicorn es 30 segundos, 120 es más seg
 def post_fork(server, worker):
     try:
         from gevent import monkey
-        monkey.patch_all()
+        monkey.patch_all(ssl=False)
         worker.log.info("Gevent monkey patched en worker (post_fork hook)")
     except ImportError:
         worker.log.warning("gevent no encontrado, monkey patching omitido en post_fork.")
