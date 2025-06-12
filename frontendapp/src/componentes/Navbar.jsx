@@ -1,4 +1,5 @@
 import React from 'react'
+import miLogo from '../media/logo.jpg'
 import {
   ChakraProvider,
   Box,
@@ -8,7 +9,8 @@ import {
   HStack,
   useDisclosure,
   Stack,
-  Button
+  Button,
+  Image
 } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -37,8 +39,12 @@ function Navbar () {
     <ChakraProvider>
       <Box bg={colors.primary} px={3}>
         <Flex h={16} alignItems='center' justifyContent='space-between'>
-          <Box fontWeight='bold' color='white'>MiLogo</Box>
-
+          <Box fontWeight='bold' color='white'>
+            <HStack spacing={2} alignItems='center'>
+              <Image src={miLogo} alt='Logo' boxSize='50px' />
+              <Box fontWeight='bold' color='white'>FitNet</Box>
+            </HStack>
+          </Box>
           {/* Menu para pantallas grandes */}
           <HStack as='nav' spacing={4} display={{ base: 'none', md: 'flex' }}>
             <NavigationMenu handleLogout={handleLogout} />
@@ -94,7 +100,10 @@ const NavigationMenu = ({ handleLogout }) => {
     <>
       <NavLink href='/principal' label='Inicio' />
       {role === 'entrenador' && <NavLink href='/crearEntrenamiento' label='Nuevo Entrenamiento' />}
-      <NavLink href='/perfil' label='Mi perfil' />
+      {role === 'entrenador' && <NavLink href='/crearDieta' label='Nueva Dieta' />}
+      <NavLink href='/chats' label='Mis Chats' />
+      <NavLink href='/postfavoritos' label='Post Favoritos' />
+      <NavLink href='/perfil' label='Mi Perfil' />
       <Button onClick={handleLogout} bg={colors.accent} variant='solid' color={colors.white} _hover={{ bg: colors.neutral }}>
         Logout
       </Button>

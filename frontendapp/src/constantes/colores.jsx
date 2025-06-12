@@ -14,8 +14,16 @@ const colors = {
   secondary: '#333333',
   accent: '#004492',
   neutral: '#AFAFAF',
+  // neutral: '#B2DAFA',
   white: '#FFFFFF'
 
+  /*
+  primary: '#005F73',
+  secondary: '#0A9396',
+  accent: '#EE9B00',
+  neutral: '#9E9E9E',
+  white: '#FFFFFF'
+  */
 }
 
 export default colors

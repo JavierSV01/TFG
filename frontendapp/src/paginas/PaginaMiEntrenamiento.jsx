@@ -1,6 +1,5 @@
 import React from 'react'
 import { ChakraProvider, Box, SimpleGrid, Text, Heading, Button, Divider, AbsoluteCenter } from '@chakra-ui/react'
-import Navbar from '../componentes/Navbar'
 import { useParams, useNavigate } from 'react-router-dom'
 import useMisAsociaciones from '../hooks/useMisAsociaciones'
 import { useAuthCheck } from '../hooks/useAuthCheck'
@@ -29,8 +28,6 @@ export function PaginaMiEntrenamiento () {
   } else {
     return (
       <ChakraProvider>
-        <Navbar />
-
         <Box bgColor={colors.neutral} color={colors.primary} minH='100vh' p={2}>
           <Heading textAlign='center' size='lg' m={4} textColor={colors.primary}>
             Entrenamiento {entrenamientoEncontrado.entrenamiento[0].title}

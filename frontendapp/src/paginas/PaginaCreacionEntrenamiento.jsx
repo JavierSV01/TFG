@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from '../componentes/Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import { CreacionEntrenamiento } from '../componentes/CreacionEntrenamiento'
 
@@ -11,10 +10,6 @@ export function PaginaCreacionEntrenamiento () {
   }
 
   return (
-    <div>
-      <Navbar />
-      <CreacionEntrenamiento />
-
-    </div>
+    <CreacionEntrenamiento />
   )
 }

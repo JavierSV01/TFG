@@ -36,4 +36,10 @@ def create_app(config_object):
     from .chat import chat_bp as chat_blueprint
     app.register_blueprint(chat_blueprint, url_prefix='/chat')
 
+    from .image import image_bp as image_blueprint
+    app.register_blueprint(image_blueprint, url_prefix='/image')
+
+    from .publicpost import post_bp as post_blueprint
+    app.register_blueprint(post_blueprint, url_prefix='/publicpost')
+
     return app

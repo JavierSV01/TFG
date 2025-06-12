@@ -5,7 +5,7 @@ import { ENDPOINTS } from '../constantes/endponits'
 export const usePlantillasEntrenamiento = () => {
   const [plantillas, setPlantillas] = useState([])
 
-  useEffect(() => {
+  const fetchPlantillasData = async () => {
     axios
       .get(ENDPOINTS.USER.WORKOUTS)
       .then((response) => {
@@ -14,6 +14,10 @@ export const usePlantillasEntrenamiento = () => {
       .catch((error) => {
         console.error('Error al obtener las plantillas:', error)
       })
+  }
+
+  useEffect(() => {
+    fetchPlantillasData()
   }, [])
-  return { plantillas }
+  return { plantillas, reload: fetchPlantillasData }
 }

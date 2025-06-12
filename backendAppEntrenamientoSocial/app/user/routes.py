@@ -6,10 +6,57 @@ from pymongo.errors import DuplicateKeyError
 from . import user_bp
 from app.association.helpers import getClientsByTrainer
 from app.association.helpers import getAssociationByUser
+from app.publicpost.helpers import get_posts_by_ids
+from app.image.helpers import saveImage
+from bson import ObjectId
 
 # Ruta para registrar un nuevo usuario
 @user_bp.route('/register', methods=['POST'])
 def register():
+    """
+    Registra un nuevo usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del usuario a registrar.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario.
+            contrasenia:
+              type: string
+              description: Contraseña del usuario.
+            rol:
+              type: string
+              description: Rol del usuario (entrenador, cliente, etc.).
+    responses:
+      201:
+        description: Usuario agregado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario agregado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, usuario ya existe).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              examples:
+                - "Faltan datos"
+                - "El nombre de usuario ya existe"
+    """
     data = request.json
     usuario = data.get('usuario')
     password = data.get('contrasenia')
@@ -31,6 +78,53 @@ def register():
 # Ruta para iniciar sesión
 @user_bp.route('/login', methods=['POST'])
 def login():
+    """
+    Inicia sesión de un usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos de inicio de sesión.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario.
+            contrasenia:
+              type: string
+              description: Contraseña del usuario.
+    responses:
+      200:
+        description: Inicio de sesión exitoso.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Inicio de sesión exitoso"
+      401:
+        description: Credenciales incorrectas.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Credenciales incorrectas"
+      400:
+        description: Faltan datos.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+    """
     datos = request.json  # Obtener datos enviados en formato JSON
     username = datos.get('usuario')
     password = datos.get('contrasenia')
@@ -50,6 +144,29 @@ def login():
 # Ruta para comprobar si el usuario está logueado
 @user_bp.route('/status', methods=['GET'])
 def status():
+    """
+    Verifica el estado de la sesión del usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Usuario autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Bienvenido al dashboard, ..."
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Acceso denegado. Inicia sesión primero."
+    """
     if 'usuario' in session: 
         usuario = session['usuario']
         return jsonify({"mensaje": f"Bienvenido al dashboard, {usuario}"}), 200
@@ -59,6 +176,21 @@ def status():
 # Ruta para cerrar sesión
 @user_bp.route('/logout', methods=['POST'])
 def logout():
+    """
+    Cierra la sesión del usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Sesión cerrada.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Sesión cerrada"
+    """
     session.pop('usuario', None)  # Eliminar el usuario de la sesión
     return jsonify({"mensaje": "Sesión cerrada"}), 200
 
@@ -66,6 +198,30 @@ def logout():
 # Endpoint para obtener el rol del usuario autenticado
 @user_bp.route('/role', methods=['GET'])
 def obtener_rol():
+    """
+    Obtiene el rol del usuario autenticado.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Rol del usuario.
+        schema:
+          type: object
+          properties:
+            role:
+              type: string
+      401:
+        description: Usuario no autenticado o rol no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "Usuario no autenticado"
+                - "Rol no encontrado para el usuario"
+    """
     # Verificar si el usuario está autenticado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -84,6 +240,35 @@ def obtener_rol():
 # Endpoint para obtener solo los usuarios con rol "entrenador"
 @user_bp.route('/trainers', methods=['GET'])
 def obtener_entrenadores():
+    """
+    Obtiene la lista de entrenadores.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de entrenadores.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema del entrenador si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener entrenadores"
+    """
     try:
 
         # Verificar si el usuario está autenticado
@@ -106,6 +291,35 @@ def obtener_entrenadores():
 
 @user_bp.route('/workouts', methods=['GET'])
 def get_workouts():
+    """
+    Obtiene los entrenamientos de un usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de entrenamientos del usuario.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema del entrenamiento si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener entrenamientos"
+    """
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
     usuario = session['usuario']
@@ -115,12 +329,64 @@ def get_workouts():
         return dumps(entrenamientos_list), 200, {'Content-Type': 'application/json'}
     except Exception:
         return jsonify({"message": "Error al obtener entrenamientos"}), 500
-    
-
-
 
 @user_bp.route('/workout', methods=['POST'])
 def save_workout():
+
+    """
+    Guarda un nuevo entrenamiento para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Título del entrenamiento.
+            description:
+              type: string
+              description: Descripción del entrenamiento.
+            weeks:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la semana si fuera necesario.
+              description: Semanas del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento guardado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Entrenamiento guardado exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar el entrenamiento"
+                - "Error interno del servidor"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -135,22 +401,53 @@ def save_workout():
 
     # Crear el entrenamiento con un ID único
     entrenamiento = {
-        "title": title,
-        "description": description,
-        "weeks": weeks
+      "title": title,
+      "description": description,
+      "weeks": weeks
     }
-
+    if(UserModel.exist_workout_with_title(usuario, title)):
+      return jsonify({"error": "Entrenamieto con ese nombre ya creado"}), 409
+        
     result = UserModel.insert_workout_for_user(usuario, entrenamiento)
 
 
     if result.modified_count > 0:
-        return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
+      return jsonify({"message": "Entrenamiento guardado exitosamente"}), 201
     else:
-        return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
+      return jsonify({"error": "No se pudo guardar el entrenamiento"}), 500
     
 # Endpoint para obtener todos los clientes del entrenador logueado
 @user_bp.route('/clients', methods=['GET'])
 def obtener_clientes():
+    """
+    Obtiene la lista de clientes del entrenador logueado.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de clientes del entrenador.
+        schema:
+          type: array
+          items:
+            type: object # Se deberia definir el esquema del cliente si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener clientes"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -172,6 +469,46 @@ def obtener_clientes():
 
 @user_bp.route('/allinfo', methods=['POST'])
 def obtener_usuario():
+    """
+    Obtiene la información completa de un usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del usuario a obtener.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario.
+    responses:
+      200:
+        description: Información del usuario.
+        schema:
+          type: object # Se deberia definir el esquema del usuario con asociaciones si fuera necesario.
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no encontrado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener la información del usuario"
+    """
 
     data = request.json
     usuarioCliente = data.get('usuario')
@@ -196,6 +533,29 @@ def obtener_usuario():
 
 @user_bp.route('/username', methods=['GET'])
 def obtener_nombre_usuario():
+
+    """
+    Obtiene el nombre de usuario de la sesión actual.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Nombre de usuario.
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+    """
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
     usuario = session['usuario']
@@ -203,6 +563,48 @@ def obtener_nombre_usuario():
 
 @user_bp.route('/data', methods=['POST'])
 def save_data():
+    """
+    Guarda o actualiza los datos del usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del usuario a guardar o actualizar.
+        required: true
+        schema:
+          type: object # Se deberia definir el esquema de los datos del usuario si fuera necesario.
+    responses:
+      201:
+        description: Datos guardados exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Datos guardados exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar los datos.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar los datos"
+                - "Error al guardar los datos"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -223,6 +625,62 @@ def save_data():
 
 @user_bp.route('/clientinfo', methods=['POST'])
 def obtener_info_cliente():
+    """
+    Obtiene la información de un cliente para un entrenador.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del cliente a obtener.
+        required: true
+        schema:
+          type: object
+          properties:
+            usuario:
+              type: string
+              description: Nombre de usuario del cliente.
+    responses:
+      200:
+        description: Información del cliente.
+        schema:
+          type: object # Se deberia definir el esquema del cliente con la informacion permitida si fuera necesario.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      403:
+        description: El entrenador no tiene permiso para ver la información del cliente.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "No tienes permiso para ver la información de este cliente"
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no encontrado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Error al obtener la información del cliente"
+    """
     # Verificar que el usuario esté logueado
     if 'usuario' not in session:
         return jsonify({"error": "Usuario no autenticado"}), 401
@@ -243,7 +701,9 @@ def obtener_info_cliente():
         # Filtrar la información que el entrenador puede ver
         info_permitida = {
             "usuario": cliente_info.get("usuario"),
-            "datos": cliente_info.get("datos")
+            "datos": cliente_info.get("datos"),
+            "attrDinamicos" : cliente_info.get("atributosDinamicos"),
+            "evolucionFisica" : cliente_info.get("evolucionFisica")
         }
 
         asociaciones = getAssociationByUser(usuarioCliente)
@@ -259,3 +719,719 @@ def obtener_info_cliente():
         return dumps(info_permitida), 200, {'Content-Type': 'application/json'}
     except Exception as e:
         return jsonify({"error": "Error al obtener la información del cliente"}), 500
+    
+
+@user_bp.route('/attrdinamico', methods=['POST'])
+def update_dynamic_attribute():
+    """
+    Agrega o actualiza un atributo dinámico para un usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos para agregar o actualizar el atributo dinámico.
+        required: true
+        schema:
+          type: object
+          properties:
+            fecha:
+              type: string
+              description: Fecha a la que corresponde el dato.
+            nombre_atributo:
+              type: string
+              description: Nombre del atributo dinámico.
+            valor:
+              type: object
+              description: Valor del atributo dinámico.
+    responses:
+      200:
+        description: Atributo dinámico actualizado correctamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Atributo dinámico actualizado correctamente"
+      400:
+        description: Datos de entrada inválidos.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Datos de entrada inválidos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Usuario no encontrado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no encontrado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Error al actualizar el atributo dinamico"
+    """
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    data = request.get_json()
+    if not data or 'nombre_atributo' not in data or 'valor' not in data or 'fecha' not in data or 'valorTipo' not in data:
+        return jsonify({"error": "Datos de entrada inválidos"}), 400
+    usuario = session['usuario']
+    nombre_atributo = data['nombre_atributo']
+    valor = data['valor']
+    fecha = data['fecha']
+    valorTipo = data['valorTipo']
+
+    try:
+        if UserModel.update_dynamic_attribute(usuario, nombre_atributo, valor, fecha, valorTipo):
+            return jsonify({"message": "Atributo dinamico actualizado correctamente"}), 200
+        else:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": f"Error al actualizar el atributo dinamico: {str(e)}"}), 500
+
+
+
+@user_bp.route('/diet', methods=['POST'])
+def save_diet():
+    """
+    Guarda una nueva dieta para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos de la dieta a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            dietName:
+              type: string
+              description: Nombre de la dieta.
+            days:
+              type: array
+              description: Lista de días de la dieta.
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Nombre del día (ejemplo Lunes).
+                  meals:
+                    type: array
+                    description: Lista de comidas del día.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Nombre de la comida.
+                        foods:
+                          type: array
+                          description: Lista de alimentos de la comida.
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: Nombre del alimento.
+                              grams:
+                                type: number
+                                description: Cantidad en gramos.
+    responses:
+      201:
+        description: Dieta guardada exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Dieta guardada exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar la dieta.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar la dieta"
+                - "Error interno del servidor"
+    """
+    # Verificar que el usuario esté logueado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    data = request.json
+    title = data.get('dietName', 'Entrenamiento sin título')
+    days = data.get('days', [])
+
+    # Crear la dieta
+    diet = {
+        "title": title,
+        "days": days
+    }
+
+    if(UserModel.exist_diet_with_title(usuario, title)):
+      return jsonify({"error": "Dieta con ese nombre ya creado"}), 409
+     
+
+    result = UserModel.insert_diet_for_user(usuario, diet)
+
+
+    if result.modified_count > 0:
+        return jsonify({"message": "Dieta guardada exitosamente"}), 201
+    else:
+        return jsonify({"error": "No se pudo guardar la dieta"}), 500
+
+
+@user_bp.route('/diets', methods=['GET'])
+def get_diets():
+
+    """
+    Obtiene las dietas del usuario.
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de dietas del usuario.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: ID de la dieta.
+              title:
+                type: string
+                description: Nombre de la dieta.
+              days:
+                type: array
+                description: Lista de días de la dieta.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Nombre del día.
+                    meals:
+                      type: array
+                      description: Lista de comidas del día.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Nombre de la comida.
+                          foods:
+                            type: array
+                            description: Lista de alimentos de la comida.
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  description: Nombre del alimento.
+                                grams:
+                                  type: number
+                                  description: Cantidad en gramos.
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Error al obtener dietas"
+    """
+    
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+    usuario = session['usuario']
+    try:
+        diets = UserModel.get_diets_for_user(usuario)
+        diets_list = list(diets)
+        return dumps(diets_list), 200, {'Content-Type': 'application/json'}
+    except Exception:
+        return jsonify({"message": "Error al obtener entrenamientos"}), 500
+    
+
+@user_bp.route('/modworkout', methods=['POST'])
+def modify_workout():
+    """
+    Guarda un nuevo entrenamiento para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Título del entrenamiento.
+            description:
+              type: string
+              description: Descripción del entrenamiento.
+            weeks:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la semana si fuera necesario.
+              description: Semanas del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento guardado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Entrenamiento guardado exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar el entrenamiento"
+                - "Error interno del servidor"
+    """
+    # Verificar que el usuario esté logueado
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    # Obtener el ID del usuario desde la sesión
+    usuario = session['usuario']
+
+    data = request.json
+    title = data.get('title', 'Entrenamiento sin título')
+    description = data.get('description', 'Sin descripción')
+    weeks = data.get('weeks', [])
+
+    tituloAnterior = request.args.get('titulo')
+
+    # Crear el entrenamiento con un ID único
+    entrenamiento = {
+      "title": title,
+      "description": description,
+      "weeks": weeks
+    }
+        
+    result = UserModel.update_workout_for_user(usuario, tituloAnterior, entrenamiento)
+
+    if result.modified_count > 0:
+      return jsonify({"message": "Entrenamiento modificado exitosamente"}), 201
+    else:
+      return jsonify({"error": "No se pudo modificar el entrenamiento"}), 500
+    
+
+@user_bp.route('/moddiet', methods=['POST'])
+def modify_diet():
+    """
+    Guarda un nuevo entrenamiento para el usuario.
+    ---
+    tags:
+      - Usuarios
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a guardar.
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Título del entrenamiento.
+            description:
+              type: string
+              description: Descripción del entrenamiento.
+            weeks:
+              type: array
+              items:
+                type: object # Se deberia definir el esquema de la semana si fuera necesario.
+              description: Semanas del entrenamiento.
+    responses:
+      201:
+        description: Entrenamiento guardado exitosamente.
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Entrenamiento guardado exitosamente"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Usuario no autenticado"
+      500:
+        description: Error interno del servidor o no se pudo guardar el entrenamiento.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              examples:
+                - "No se pudo guardar el entrenamiento"
+                - "Error interno del servidor"
+    """
+    if 'usuario' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    usuario = session['usuario']
+
+    data = request.json
+    dietName = data.get('dietName', 'Dieta sin título')
+    days = data.get('days', [])
+
+    tituloAnterior = request.args.get('titulo')
+
+    dieta = {
+      "dietName": dietName,
+      "days": days
+    }
+ 
+    result = UserModel.update_diet_for_user(usuario, tituloAnterior, dieta)
+
+    if result.modified_count > 0:
+      return jsonify({"message": "Dieta editada exitosamente"}), 201
+    else:
+      return jsonify({"error": "No se pudo editar la dieta"}), 500
+    
+@user_bp.route('/delworkout', methods=['DELETE'])
+def removeworkout():
+    """
+    Elimina un entrenamiento de un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a eliminar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      200:
+        description: Entrenamiento eliminado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento eliminado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Entrenamiento no encontrado o no asociado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "El entrenamiento no existe o no está asociado"
+    """
+    if 'usuario' in session:
+        usuario = session['usuario']
+    else:
+        return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+    workoutTitle = request.args.get('titulo')
+    id_entrenador = session['usuario']
+
+    if workoutTitle and id_entrenador:
+        result = UserModel.remove_workout_for_user(id_entrenador, workoutTitle)
+        if result.modified_count > 0:
+            return jsonify({"mensaje": "Entrenamiento eliminado con éxito"}), 200
+        else:
+            return jsonify({"mensaje": "El entrenamiento no existe"}), 404
+    else:
+        return jsonify({"mensaje": "Faltan datos"}), 400
+    
+@user_bp.route('/deldiet', methods=['DELETE'])
+def removediet():
+    """
+    Elimina un entrenamiento de un cliente.
+    ---
+    tags:
+      - Asociaciones
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        description: Datos del entrenamiento a eliminar.
+        required: true
+        schema:
+          type: object
+          properties:
+            cliente:
+              type: string
+              description: ID del cliente.
+            id_workout:
+              type: string
+              description: ID del entrenamiento.
+    responses:
+      200:
+        description: Entrenamiento eliminado con éxito.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Entrenamiento eliminado con éxito"
+      400:
+        description: Error en la solicitud (datos faltantes, etc.).
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Faltan datos"
+      401:
+        description: Usuario no autenticado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "Usuario no autenticado"
+      404:
+        description: Entrenamiento no encontrado o no asociado.
+        schema:
+          type: object
+          properties:
+            mensaje:
+              type: string
+              example: "El entrenamiento no existe o no está asociado"
+    """
+    if not 'usuario' in session:
+      return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+    dietTitle = request.args.get('titulo')
+    id_entrenador = session['usuario']
+
+    if dietTitle and id_entrenador:
+        result = UserModel.remove_diet_for_user(id_entrenador, dietTitle)
+        if result.modified_count > 0:
+            return jsonify({"mensaje": "Dieta eliminada con éxito"}), 200
+        else:
+            return jsonify({"mensaje": "La dieta no existe"}), 404
+    else:
+        return jsonify({"mensaje": "Faltan datos"}), 400
+    
+
+@user_bp.route('/profileimage', methods=['POST'])
+def putprofileimage():
+    if not 'usuario' in session:
+      return jsonify({"mensaje": "Usuario no autenticado"}), 401
+    
+    username = session['usuario']
+    
+    if 'avatar' not in request.files:
+      return jsonify({"message": "No se encontró el archivo 'avatar' en la petición"}), 400
+
+    file = request.files['avatar']
+    file_id = saveImage(username, file)
+
+    UserModel.set_profile_image(username, file_id)
+
+    return jsonify({"mensaje": "Imagen subida correctamente"}), 200
+
+
+@user_bp.route('/profileimage', methods=['GET'])
+def getprofileimage():
+
+    username = request.args.get('username')
+
+    imagenId = UserModel.get_profile_image(username)
+
+    return jsonify({"imagenId": imagenId}), 200
+
+@user_bp.route('/evolutionimage', methods=['POST'])
+def postevolutionimage():
+    if not 'usuario' in session:
+      return jsonify({"mensaje": "Usuario no autenticado"}), 401
+    
+    username = session['usuario']
+    
+    if 'foto' not in request.files:
+      return jsonify({"message": "No se encontró el archivo 'avatar' en la petición"}), 400
+
+    file = request.files['foto']
+    file_id = saveImage(username, file)
+
+    UserModel.push_evolution_image(username, file_id)
+
+    return jsonify({"mensaje": "Imagen subida correctamente"}), 200
+
+
+@user_bp.route('/togglefavoritepost', methods=['POST'])
+def toggle_favorite_post():
+    try:
+        if 'usuario' not in session:
+            return jsonify({"mensaje": "Usuario no autenticado"}), 401
+
+        username = session['usuario']
+        data = request.get_json()
+        post_id = data.get('postId')
+
+        if not post_id:
+            return jsonify({"error": "Falta el ID de la publicación."}), 400
+
+        try:
+            post_object_id = ObjectId(post_id)
+        except Exception:
+            return jsonify({"error": "ID de publicación inválido."}), 400
+
+        favoritos = UserModel.get_favourite_post(username)
+
+        db = UserModel.get_db()
+
+        if post_object_id in favoritos:
+            # Si ya existe → quitarlo
+            UserModel.del_favourite_post(username, post_object_id)
+            return jsonify({"message": "Publicación eliminada de favoritos."}), 200
+        else:
+            # Si no existe → añadirlo
+            UserModel.add_favourite_post(username, post_object_id)
+            return jsonify({"message": "Publicación añadida a favoritos."}), 200
+
+    except Exception as e:
+        print(f"Error en toggle_favorite_post: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500
+
+    
+@user_bp.route('/getfavoriteposts', methods=['GET'])
+def get_favorite_posts():
+    try:
+        if 'usuario' not in session:
+            return jsonify({"error": "Usuario no autenticado"}), 401
+
+        username = session['usuario']
+        favoritos = UserModel.get_favourite_post(username)
+
+        # Convertimos ObjectId a string para enviar al frontend
+        favoritos_str = [str(fav) for fav in favoritos]
+
+        return jsonify({"favoritos": favoritos_str}), 200
+
+    except Exception as e:
+        print(f"Error en get_favorite_posts: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500
+
+
+@user_bp.route('/getfavoritepublications', methods=['GET'])
+def get_favorite_publications():
+    try:
+        if 'usuario' not in session:
+            return jsonify({"error": "Usuario no autenticado"}), 401
+
+        username = session['usuario']
+        
+        favoritos = UserModel.get_favourite_post(username)
+
+        if not favoritos:
+            return jsonify({"publicaciones": []}), 200
+
+        publicaciones = get_posts_by_ids(favoritos)
+
+        # Convertir ObjectId a string para el frontend
+        for pub in publicaciones:
+            pub['_id'] = str(pub['_id'])
+
+        return jsonify({"publicaciones": publicaciones}), 200
+
+    except Exception as e:
+        print(f"Error en get_favorite_publications: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500

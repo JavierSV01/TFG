@@ -1,10 +1,12 @@
 import { React, useState, useEffect } from 'react'
-import Navbar from '../componentes/Navbar'
 import { useAuthCheck } from '../hooks/useAuthCheck'
-import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast } from '@chakra-ui/react'
+import { ChakraProvider, Box, Flex, Heading, Center, Spinner, Container, SimpleGrid, Text, Button, useToast, HStack } from '@chakra-ui/react'
 import axios from 'axios'
 import { ENDPOINTS } from '../constantes/endponits'
 import colors from '../constantes/colores'
+import { useNavigate } from 'react-router-dom'
+import { Publicaciones } from '../componentes/Publicaciones'
+import FotoDePerfil from '../componentes/FotoDePerfil'
 
 const Card = ({ key, nombre, presentacion }) => {
   const toast = useToast() // Utilizamos el Toast de Chakra UI para mostrar notificaciones
@@ -38,11 +40,28 @@ const Card = ({ key, nombre, presentacion }) => {
   }
 
   return (
-    <Box borderWidth='1px' borderRadius='lg' p={4} boxShadow='md' background={colors.neutral} color={colors.primary}>
-      <Heading as='h3' size='md' mb={2}>
-        {nombre}
-      </Heading>
-      <Text>{presentacion || 'Entrenador sin presentación'}</Text>
+    <Box
+      borderWidth='1px'
+      borderRadius='lg'
+      p={4}
+      boxShadow='md'
+      background={colors.neutral}
+      color={colors.primary}
+      display='flex'
+      flexDirection='column'
+      height='100%'
+    >
+      <Box flexGrow={1}>
+        <HStack spacing={4}>
+          <Box width={{ base: '60px', md: '80px' }} flexShrink={0}>
+            <FotoDePerfil username={nombre} />
+          </Box>
+          <Heading as='h3' size='md'>
+            {nombre}
+          </Heading>
+        </HStack>
+      </Box>
+
       <Button
         mt={4}
         color={colors.white}
@@ -52,6 +71,7 @@ const Card = ({ key, nombre, presentacion }) => {
         width='100%'
         _hover={{ bgColor: colors.primary, color: colors.neutral }}
         size={{ base: 'sm', md: 'md' }}
+        flexShrink={0}
       >
         Solicitar
       </Button>
@@ -110,13 +130,19 @@ const CardList = () => {
 export function PaginaPrincipal () {
   const { authenticated, message } = useAuthCheck()
 
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    const rutaDestino = '/publicar'
+    navigate(rutaDestino)
+  }
+
   if (!authenticated) {
     return <div>{message}</div>
   }
 
   return (
     <ChakraProvider>
-      <Navbar />
       <Box bg={colors.neutral} color={colors.white} minH='100vh' p={6}>
 
         <Flex direction='column' gap={6}>
@@ -126,7 +152,22 @@ export function PaginaPrincipal () {
             <Heading as='h1' size='md' mb={2}>Entrenadores</Heading>
             <CardList />
           </Box>
+          <Box bg={colors.secondary} borderRadius='md' p={6} width='100%' display='flex' flexDirection='column' alignItems='start' justifyContent='center'>
+            <Heading as='h1' size='md' mb={2}>Publicaciones</Heading>
+            <Publicaciones />
+          </Box>
         </Flex>
+
+        <Box
+          position='fixed'
+          bottom='10'
+          right='10'
+          zIndex='sticky'
+        >
+          <Button size='lg' colorScheme='teal' onClick={handleClick}>
+            Publicar
+          </Button>
+        </Box>
       </Box>
     </ChakraProvider>
   )

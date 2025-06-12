@@ -17,9 +17,22 @@ export const ENDPOINTS = {
     INFO: `${BASE_URL}/user/allinfo`,
     NAME: `${BASE_URL}/user/username`,
     UPDATE_DATA: `${BASE_URL}/user/data`,
-    CLIENT_INFO: `${BASE_URL}/user/clientinfo`
+    CLIENT_INFO: `${BASE_URL}/user/clientinfo`,
+    UPDATE_ATTR: `${BASE_URL}/user/attrdinamico`,
+    DIET: `${BASE_URL}/user/diet`,
+    DIETS: `${BASE_URL}/user/diets`,
+    MODIFYWORKOUT: `${BASE_URL}/user/modworkout`,
+    MODIFYDIET: `${BASE_URL}/user/moddiet`,
+    DELETEWORKOUT: `${BASE_URL}/user/delworkout`,
+    DELETEDIET: `${BASE_URL}/user/deldiet`,
+    POSTPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
+    GETPROFILEIMAGE: `${BASE_URL}/user/profileimage`,
+    POSTEVOLUCIONFISICA: `${BASE_URL}/user/evolutionimage`,
+    GETEVOLUTIONFISICA: `${BASE_URL}/user/evolutionimage`,
+    TOGGLEFAVORITEPOST: `${BASE_URL}/user/togglefavoritepost`,
+    GETFAVORITEPOSTSIDS: `${BASE_URL}/user/getfavoriteposts`,
+    GETFAVORITEPOSTS: `${BASE_URL}/user/getfavoritepublications`
   },
-
   SOLICITUDE: {
     MYSOLICITUDE: `${BASE_URL}/sol/mysolicitude`,
     APPLY: `${BASE_URL}/sol/apply`,
@@ -29,10 +42,21 @@ export const ENDPOINTS = {
     ADDWORKOUT: `${BASE_URL}/ass/addworkout`,
     GETASSOCITIONSBYUSER: `${BASE_URL}/ass/myassociations`,
     REMOVEWORKOUT: `${BASE_URL}/ass/removeworkout`,
-    UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`
+    UPDATEWORKOUT: `${BASE_URL}/ass/updateworkout`,
+    PUTDIET: `${BASE_URL}/ass/putdiet`
   },
   CHAT: {
     EXIST: `${BASE_URL}/chat/exist`, // Necesita /id1, /id2
-    GETCHATBYID: `${BASE_URL}/chat/getchat` // Necesita chat_id
+    GETCHATBYID: `${BASE_URL}/chat/getchat`, // Necesita chat_id
+    GETCHATS: `${BASE_URL}/chat/getchats`
+  },
+  IMAGE: {
+    GETIMAGE: `${BASE_URL}/image/img` // Necesita /id
+  },
+  PUBLICACION: {
+    POSTPUBLICACION1: `${BASE_URL}/publicpost/publish`,
+    GETPUBLICACIONES: `${BASE_URL}/publicpost/posts`,
+    POSTCOMENTARIO: `${BASE_URL}/publicpost/comment`,
+    TOGGLELIKEDPOST: `${BASE_URL}/publicpost/togglelike`
   }
 }

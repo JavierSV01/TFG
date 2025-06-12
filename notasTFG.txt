@@ -24,6 +24,7 @@ python3 3.13.3
 	Instalar mongodb en el sistema anfitrion
 	pip install python-dotenv
 	pip install Flask-SocketIO
+	pip install flask-swagger-ui flasgger
 
 	
 	
@@ -35,9 +36,10 @@ react
 	npm i @chakra-ui/icons
 	npm install react-chartjs-2 chart.js
 	npm install react-hook-form
+	npm install socket.io-client
 
-
+	npm install keen-slider
 	
-to do 
+	npm install react-icons
 
-- error al volver ha hacer login sin hacer logout. No recarga nuevo tipo de perfil mantiene el anterior
+
