@@ -16,6 +16,8 @@ app = create_app(Config)
 swagger = Swagger(app)
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5001))
+    host = '0.0.0.0'
     socketio.run(app, host=hostEnv, port=portEnv, debug=True)
     #app.run(host=hostEnv, port=portEnv)
 
