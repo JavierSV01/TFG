@@ -1,5 +1,6 @@
 from flask import current_app
-from pymongo import MongoClient, DESCENDING
+from flask_pymongo import PyMongo
+from pymongo import DESCENDING
 from bson import ObjectId
 
 from .. import mongo

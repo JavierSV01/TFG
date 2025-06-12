@@ -1,7 +1,6 @@
-from pymongo import MongoClient
 from flask import current_app, json
 from bson.objectid import ObjectId
-
+from flask_pymongo import PyMongo
 from .. import mongo
 class ChatModel:
     @staticmethod

@@ -1,10 +1,9 @@
-from pymongo import MongoClient
+from flask_pymongo import PyMongo
 from flask import current_app
 
 import os
 import uuid
 from datetime import datetime, timezone
-from pymongo import MongoClient
 from werkzeug.utils import secure_filename # Aunque no usemos el nombre, sí el objeto file
 
 from .. import mongo
