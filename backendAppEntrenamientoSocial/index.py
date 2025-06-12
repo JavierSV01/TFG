@@ -24,7 +24,7 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permite compartir cookies entr
 app.config['SESSION_COOKIE_SECURE'] = True      # Requiere HTTPS; usa False solo para desarrollo en HTTP
 
 # Conectar a la base de datos 'appEntrenamiento'
-app.config["MONGO_URI"] = "mongodb://localhost:27017/appEntrenamiento"  # Cambia a tu URI si usas MongoDB en la nube
+app.config["MONGO_URI"] = "mongodb+srv://javier:>@cluster0.i0x30.mongodb.net/appEntrenamiento?retryWrites=true&w=majority&appName=Cluster0"  # Cambia a tu URI si usas MongoDB en la nube
 mongo = PyMongo(app)
 
 # Acceder a la colección 'usuarios'
