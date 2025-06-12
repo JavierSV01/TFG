@@ -22,7 +22,7 @@ function formatearFecha (fechaString) {
 }
 
 function PaginaUnChat () {
-  const socket = io('http://' + process.env.REACT_APP_BACKEND_HOST + ':' + process.env.REACT_APP_BACKEND_PORT)
+  const socket = io(process.env.REACT_APP_BACKEND_HOST)
   const { idChat } = useParams()
   const { authenticated, message } = useAuthCheck()
   const { username } = useUserNameId()
