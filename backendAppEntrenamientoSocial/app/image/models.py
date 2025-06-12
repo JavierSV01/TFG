@@ -7,13 +7,12 @@ from datetime import datetime, timezone
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename # Aunque no usemos el nombre, sí el objeto file
 
+from .. import mongo
 class ImageModel:
     @staticmethod
     def get_db():
-        mongo_uri = current_app.config.get("MONGO_URI")
-        client = MongoClient(mongo_uri)
-        db_name = mongo_uri.split("/")[-1]  # Extrae el nombre de la base de datos de la URI
-        db = client[db_name]
+        
+        db = mongo.db
         return db
     
     @staticmethod

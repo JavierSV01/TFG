@@ -2,13 +2,12 @@ from flask import current_app
 from pymongo import MongoClient, DESCENDING
 from bson import ObjectId
 
+from .. import mongo
+
 class PublicPostModel:
     @staticmethod
     def get_db():
-        mongo_uri = current_app.config.get("MONGO_URI")
-        client = MongoClient(mongo_uri)
-        db_name = mongo_uri.split("/")[-1]  # Extrae el nombre de la base de datos de la URI
-        db = client[db_name]
+        db = mongo.db
         return db
     
     @staticmethod
