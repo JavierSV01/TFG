@@ -4,6 +4,9 @@ from app.config import Config
 from flask import Flask
 from flasgger import Swagger
 import os
+import eventlet
+
+eventlet.monkey_patch()
 
 load_dotenv()
 hostEnv = os.getenv('BACKEND_HOST')
