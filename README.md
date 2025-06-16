@@ -1,70 +1,160 @@
-# Getting Started with Create React App
+# Proyecto de Fin de Grado - Aplicación Web con React y Flask
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este proyecto consiste en una aplicación web desarrollada con **React** (frontend) y **Flask** (backend), conectada a una base de datos **MongoDB**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Requisitos del sistema
+
+Para ejecutar correctamente este proyecto, se requieren **tres servidores funcionando**:
+
+1. **Servidor Backend (Flask + Python)**
+2. **Servidor Frontend (React)**
+3. **Servidor de base de datos MongoDB**
+
+---
+
+## 🔧 Instalación de dependencias
+
+### Backend (Python + Flask)
+
+#### Requisitos:
+- Python 3.13.3
+- MongoDB instalado en el sistema anfitrión
+
+#### Pasos de instalación:
+
+```bash
+sudo apt install python3.12-venv
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Instalación de dependencias:
+
+```bash
+pip install Flask Flask-CORS
+pip install Flask-PyMongo
+pip install python-dotenv
+pip install Flask-SocketIO
+pip install flask-swagger-ui flasgger
+```
+
+Instalar MongoDB si no está disponible en otro servidor:
+- https://www.mongodb.com/try/download/community
+
+---
+
+### Frontend (React)
+
+#### Requisitos:
+- Node.js y npm
+
+#### Pasos de instalación:
+
+```bash
+sudo apt install npm
+```
+
+Instalación de dependencias del proyecto (en la carpeta del frontend):
+
+```bash
+npm install
+npm install axios
+npm install react-router-dom
+npm install @chakra-ui/icons
+npm install react-chartjs-2 chart.js
+npm install react-hook-form
+npm install socket.io-client
+npm install keen-slider
+npm install react-icons
+```
+
+> ⚠️ **Importante:** Algunas dependencias podrían tener versiones más nuevas al momento de la instalación. Asegúrate de revisar posibles incompatibilidades con el repositorio original.
+
+---
+
+## ⚙️ Variables de entorno
+
+Es necesario configurar las variables de entorno en **ambos proyectos** (frontend y backend).
+
+### Backend – `.env`
+
+```env
+MONGO_URI=mongodb://localhost:27017/tu_base_de_datos
+FRONTEND_URL=http://localhost:3000
+```
+
+### Frontend – `.env`
+
+```env
+REACT_APP_BACKEND_URL=http://localhost:5000
+```
+
+Ajusta las URLs según la ubicación de tus servidores.
+
+---
+
+## ▶️ Ejecución del proyecto
+
+### Lanzar el Backend (Flask)
+
+Desde la carpeta del backend:
+
+```bash
+source venv/bin/activate
+python3 run.py
+```
+
+Asegúrate de que MongoDB esté en funcionamiento antes de lanzar el backend.
+
+---
+
+### Lanzar el Frontend (React)
+
+Desde la carpeta del frontend:
+
+```bash
+npm start
+```
+
+La aplicación estará disponible en: http://localhost:3000
+
+---
+
+## 📜 Scripts disponibles (Frontend)
+
+En el directorio del frontend puedes ejecutar:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Inicia la aplicación en modo desarrollo.  
+Abre [http://localhost:3000](http://localhost:3000) en el navegador.  
+La página se recargará si haces cambios y mostrará errores de lint en la consola.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Ejecuta el test runner en modo interactivo.  
+Más información en: https://facebook.github.io/create-react-app/docs/running-tests
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Compila la app para producción en la carpeta `build`.  
+La build está optimizada y minificada, con nombres de archivo con hash para cacheo.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Más información en: https://facebook.github.io/create-react-app/docs/deployment
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+⚠️ Esta operación es irreversible.  
+Copia toda la configuración de build y dependencias para darte control total.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📚 Recursos adicionales
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Documentación de React: https://reactjs.org/
+- Documentación de Create React App: https://facebook.github.io/create-react-app/
+- Documentación de Flask: https://flask.palletsprojects.com/
+- Documentación de MongoDB: https://www.mongodb.com/docs/
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
